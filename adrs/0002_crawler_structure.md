@@ -2,13 +2,12 @@
 
 ## Motivation
 
-We need an easy way to extend new crawler selectors independently form the URL; 
-which might be different depending on the context of the crawled data. 
+We need an easy way to extend new crawler selectors independently form the URL; which might be different depending on
+the context of the crawled data.
 
 ## Decision
 
-The Company Module has a sub-module called Crawler. 
-There, you can find a directory per section:
+The Company Module has a sub-module called HtmlCrawler. There, you can find a directory per section:
 
 - Summary
 - Company Outlook
@@ -23,7 +22,7 @@ There, you can find a directory per section:
 - Holders
 - Sustainability
 
-And inside each section you can find the selectors that you might be interested on.
+Inside each section you can find the selectors that you might be interested on.
 
 ## Consequences
 

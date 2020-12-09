@@ -16,11 +16,10 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 
 Dotenv\Dotenv::createImmutable(__DIR__)->load();
 
-$rootMainAppJsonCrawler = new RootAppJsonCrawler(
+$rootAppJsonCrawler = new RootAppJsonCrawler(
     'https://finance.yahoo.com/quote/%s',
     fn (array $json): array => [
-        // "3,048.00"
-        'fmtPrice' => $json['context']['dispatcher']['stores']['QuoteSummaryStore']['financialData']['targetLowPrice']['fmt'],
+        'RawPrice' => $json['context']['dispatcher']['stores']['QuoteSummaryStore']['financialData']['targetLowPrice']['raw'],
     ]
 );
 
@@ -43,7 +42,7 @@ $financeYahoo = new FinYahoo(
     HttpClient::create(),
     $summaryCrawler,
     $analysisCrawler,
-    $rootMainAppJsonCrawler
+    $rootAppJsonCrawler
 );
 
 $companies = $financeYahoo->crawlStock(...createTickersFromEnv());
