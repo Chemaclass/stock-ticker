@@ -5,31 +5,31 @@ declare(strict_types=1);
 namespace App\Company;
 
 use App\Company\Crawler\CrawlerInterface;
-use App\Company\ReadModel\Company;
+use App\Company\ReadModel\Site;
 use App\Company\ReadModel\Ticker;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-final class CompanyCrawler
+final class SiteCrawler
 {
     private const REQUEST_METHOD = 'GET';
 
     private string $requestUrl;
 
     /** @var array<string, CrawlerInterface> */
-    private array $crawlerInterfaces;
+    private array $crawlers;
 
     /**
-     * @param array<string, CrawlerInterface> $crawlerInterfaces
+     * @param array<string, CrawlerInterface> $crawlers
      */
     public function __construct(
         string $requestUrl,
-        array $crawlerInterfaces
+        array $crawlers
     ) {
         $this->requestUrl = $requestUrl;
-        $this->crawlerInterfaces = $crawlerInterfaces;
+        $this->crawlers = $crawlers;
     }
 
-    public function crawl(HttpClientInterface $httpClient, Ticker $ticker): Company
+    public function crawl(HttpClientInterface $httpClient, Ticker $ticker): Site
     {
         $url = sprintf($this->requestUrl, $ticker->symbol());
 
@@ -37,12 +37,12 @@ final class CompanyCrawler
             ->request(self::REQUEST_METHOD, $url)
             ->getContent();
 
-        $summary = [];
+        $crawled = [];
 
-        foreach ($this->crawlerInterfaces as $name => $crawler) {
-            $summary[$name] = $crawler->crawlHtml($html);
+        foreach ($this->crawlers as $name => $crawler) {
+            $crawled[$name] = $crawler->crawlHtml($html);
         }
 
-        return new Company($summary);
+        return new Site($crawled);
     }
 }

@@ -4,24 +4,25 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Company\CompanyCrawler;
 use App\Company\ReadModel\Company;
+use App\Company\ReadModel\Site;
 use App\Company\ReadModel\Ticker;
+use App\Company\SiteCrawler;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class FinYahoo
 {
     private HttpClientInterface $httpClient;
 
-    /** @var CompanyCrawler[] */
-    private array $companyCrawlers;
+    /** @var SiteCrawler[] */
+    private array $siteCrawlers;
 
     public function __construct(
         HttpClientInterface $httpClient,
-        CompanyCrawler ...$companyCrawlers
+        SiteCrawler ...$siteCrawlers
     ) {
         $this->httpClient = $httpClient;
-        $this->companyCrawlers = $companyCrawlers;
+        $this->siteCrawlers = $siteCrawlers;
     }
 
     /**
@@ -32,34 +33,37 @@ final class FinYahoo
         $result = [];
 
         foreach ($tickers as $ticker) {
-            $crawlResults = $this->crawlAllUrlsForTicker($ticker);
+            $sites = $this->crawlAllSitesForTicker($ticker);
 
-            $result[$ticker->symbol()] = new Company($this->flat($crawlResults));
+            $result[$ticker->symbol()] = new Company($this->flat(...$sites));
         }
 
         return $result;
     }
 
-    private function crawlAllUrlsForTicker(Ticker $ticker): array
+    /**
+     * @return Site[]
+     */
+    private function crawlAllSitesForTicker(Ticker $ticker): array
     {
         return array_map(
-            fn (CompanyCrawler $crawler): Company => $crawler->crawl($this->httpClient, $ticker),
-            $this->companyCrawlers
+            fn (SiteCrawler $crawler): Site => $crawler->crawl($this->httpClient, $ticker),
+            $this->siteCrawlers
         );
     }
 
-    private function flat(array $companies): array
+    private function flat(Site ...$sites): array
     {
         return array_merge(
-            ...$this->normalizeCompanies(...$companies)
+            ...$this->normalizeSites(...$sites)
         );
     }
 
-    private function normalizeCompanies(Company ...$companies): array
+    private function normalizeSites(Site ...$sites): array
     {
         return array_map(
-            static fn (Company $company) => $company->summary(),
-            array_values($companies)
+            static fn (Site $site): array => $site->crawled(),
+            array_values($sites)
         );
     }
 }

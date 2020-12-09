@@ -3,11 +3,11 @@
 
 declare(strict_types=1);
 
-use App\Company\CompanyCrawler;
 use App\Company\Crawler\Analysis\EarningsEstimateCrawler;
 use App\Company\Crawler\CompanyFullNameCrawler;
 use App\Company\Crawler\Summary\EstimateReturnCrawler;
 use App\Company\ReadModel\Ticker;
+use App\Company\SiteCrawler;
 use App\FinYahoo;
 use Symfony\Component\HttpClient\HttpClient;
 
@@ -15,7 +15,7 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 
 Dotenv\Dotenv::createImmutable(__DIR__)->load();
 
-$summaryCrawler = new CompanyCrawler(
+$summaryCrawler = new SiteCrawler(
     'https://finance.yahoo.com/quote/%s',
     [
         'CompanyFullName' => new CompanyFullNameCrawler(),
@@ -23,7 +23,7 @@ $summaryCrawler = new CompanyCrawler(
     ]
 );
 
-$analysisCrawler = new CompanyCrawler(
+$analysisCrawler = new SiteCrawler(
     'https://finance.yahoo.com/quote/%s/analysis',
     [
         'EarningsEstimate' => new EarningsEstimateCrawler(),
