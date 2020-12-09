@@ -6,7 +6,7 @@ namespace App\Company;
 
 use App\Company\Crawler\CrawlerInterface;
 use App\Company\ReadModel\Company;
-use App\Company\ReadModel\TickerSymbol;
+use App\Company\ReadModel\Ticker;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class CompanyCrawler
@@ -29,9 +29,9 @@ final class CompanyCrawler
         $this->crawlerInterfaces = $crawlerInterfaces;
     }
 
-    public function crawl(HttpClientInterface $httpClient, TickerSymbol $tickerSymbol): Company
+    public function crawl(HttpClientInterface $httpClient, Ticker $ticker): Company
     {
-        $url = sprintf($this->requestUrl, $tickerSymbol->toString());
+        $url = sprintf($this->requestUrl, $ticker->symbol());
 
         $html = $httpClient
             ->request(self::REQUEST_METHOD, $url)

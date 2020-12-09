@@ -6,7 +6,7 @@ namespace App;
 
 use App\Company\CompanyCrawler;
 use App\Company\ReadModel\Company;
-use App\Company\ReadModel\TickerSymbol;
+use App\Company\ReadModel\Ticker;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class FinYahoo
@@ -27,34 +27,31 @@ final class FinYahoo
     /**
      * @psalm-return array<string,Company>
      */
-    public function crawlStock(TickerSymbol ...$tickerSymbols): array
+    public function crawlStock(Ticker ...$tickers): array
     {
         $result = [];
 
-        foreach ($tickerSymbols as $symbol) {
-            $crawlResultForSymbol = $this->crawlAllUrlsForSymbol($symbol);
+        foreach ($tickers as $ticker) {
+            $crawlResults = $this->crawlAllUrlsForTicker($ticker);
 
-            $result[$symbol->toString()] = new Company($this->flat($crawlResultForSymbol));
+            $result[$ticker->symbol()] = new Company($this->flat($crawlResults));
         }
 
         return $result;
     }
 
-    private function crawlAllUrlsForSymbol(TickerSymbol $symbol): array
+    private function crawlAllUrlsForTicker(Ticker $ticker): array
     {
-        $result = [];
-
-        foreach ($this->companyCrawlers as $crawler) {
-            $result[] = $crawler->crawl($this->httpClient, $symbol);
-        }
-
-        return $result;
+        return array_map(
+            fn (CompanyCrawler $crawler): Company => $crawler->crawl($this->httpClient, $ticker),
+            $this->companyCrawlers
+        );
     }
 
-    private function flat(array $crawlResultForSymbol): array
+    private function flat(array $companies): array
     {
         return array_merge(
-            ...$this->normalizeCompanies(...$crawlResultForSymbol)
+            ...$this->normalizeCompanies(...$companies)
         );
     }
 

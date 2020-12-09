@@ -7,7 +7,7 @@ use App\Company\CompanyCrawler;
 use App\Company\Crawler\Analysis\EarningsEstimateCrawler;
 use App\Company\Crawler\CompanyFullNameCrawler;
 use App\Company\Crawler\Summary\EstimateReturnCrawler;
-use App\Company\ReadModel\TickerSymbol;
+use App\Company\ReadModel\Ticker;
 use App\FinYahoo;
 use Symfony\Component\HttpClient\HttpClient;
 
@@ -36,19 +36,19 @@ $financeYahoo = new FinYahoo(
     $analysisCrawler
 );
 
-$companies = $financeYahoo->crawlStock(...createTickerSymbols());
+$companies = $financeYahoo->crawlStock(...createTickersFromEnv());
 
 dump($companies);
 
 /**
- * @return TickerSymbol[] based on the .env TICKER_SYMBOLS array
+ * @return Ticker[] based on the .env TICKERS array
  */
-function createTickerSymbols(): array
+function createTickersFromEnv(): array
 {
     try {
         return array_map(
-            static fn (string $symbol) => new TickerSymbol($symbol),
-            json_decode($_ENV['TICKER_SYMBOLS'], true, 512, JSON_THROW_ON_ERROR)
+            static fn (string $symbol) => new Ticker($symbol),
+            json_decode($_ENV['TICKERS'], true, 512, JSON_THROW_ON_ERROR)
         );
     } catch (JsonException $e) {
         die($e->getMessage());

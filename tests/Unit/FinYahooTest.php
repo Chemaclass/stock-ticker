@@ -7,7 +7,7 @@ namespace Tests\Unit;
 use App\Company\CompanyCrawler;
 use App\Company\Crawler\CrawlerInterface;
 use App\Company\ReadModel\Company;
-use App\Company\ReadModel\TickerSymbol;
+use App\Company\ReadModel\Ticker;
 use App\FinYahoo;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -29,7 +29,7 @@ final class FinYahooTest extends TestCase
     }
 
     /** @test */
-    public function crawlStockForOneTickerSymbolAndMultipleCrawlers(): void
+    public function crawlStockForOneTickerAndMultipleCrawlers(): void
     {
         $finYahoo = new FinYahoo(
             $this->mockHttpClient(),
@@ -38,7 +38,7 @@ final class FinYahooTest extends TestCase
         );
 
         $actual = $finYahoo->crawlStock(
-            new TickerSymbol('EXAMPLE_TICKER')
+            new Ticker('EXAMPLE_TICKER')
         );
 
         self::assertEquals([
@@ -50,7 +50,7 @@ final class FinYahooTest extends TestCase
     }
 
     /** @test */
-    public function crawlStockForMultipleTickerSymbols(): void
+    public function crawlStockForMultipleTickers(): void
     {
         $finYahoo = new FinYahoo(
             $this->mockHttpClient(),
@@ -58,8 +58,8 @@ final class FinYahooTest extends TestCase
         );
 
         $actual = $finYahoo->crawlStock(
-            new TickerSymbol('EXAMPLE_TICKER_1'),
-            new TickerSymbol('EXAMPLE_TICKER_2'),
+            new Ticker('EXAMPLE_TICKER_1'),
+            new Ticker('EXAMPLE_TICKER_2'),
         );
 
         self::assertEquals([
