@@ -10,9 +10,11 @@
     "require": {
         "php": ">=7.4",
         "ext-zip": "*",
+        "ext-json": "*",
         "symfony/http-client": "^5.2",
         "symfony/dom-crawler": "^5.2",
-        "symfony/css-selector": "^5.2"
+        "symfony/css-selector": "^5.2",
+        "vlucas/phpdotenv": "^5.2"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",

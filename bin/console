@@ -13,6 +13,8 @@ use Symfony\Component\HttpClient\HttpClient;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
+Dotenv\Dotenv::createImmutable(__DIR__)->load();
+
 $summaryCrawler = new CompanyCrawler(
     'https://finance.yahoo.com/quote/%s',
     [
@@ -34,9 +36,21 @@ $financeYahoo = new FinYahoo(
     $analysisCrawler
 );
 
-$companies = $financeYahoo->crawlStock(
-    new TickerSymbol('BABA'),
-    new TickerSymbol('AAPL'),
-);
+$companies = $financeYahoo->crawlStock(...createTickerSymbols());
 
 dump($companies);
+
+/**
+ * @return TickerSymbol[] based on the .env TICKER_SYMBOLS array
+ */
+function createTickerSymbols(): array
+{
+    try {
+        return array_map(
+            static fn (string $symbol) => new TickerSymbol($symbol),
+            json_decode($_ENV['TICKER_SYMBOLS'], true, 512, JSON_THROW_ON_ERROR)
+        );
+    } catch (JsonException $e) {
+        die($e->getMessage());
+    }
+}
