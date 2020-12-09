@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use App\Company\CompanyBuilder;
-use App\Company\CompanySummaryBuilderInterface;
 use App\Company\CompanySummaryResult;
 use App\Company\ReadModel\Company;
 use App\Company\ReadModel\Summary;
 use App\Company\ReadModel\TickerSymbol;
+use App\Company\SummaryCrawlerInterface;
 use App\FinYahoo;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -31,7 +31,7 @@ final class FinYahooTest extends TestCase
     {
         $httpClient = $this->createHttpClientWithResponse('');
         $finYahoo = new FinYahoo($httpClient, new CompanyBuilder(
-            new class() implements CompanySummaryBuilderInterface {
+            new class() implements SummaryCrawlerInterface {
                 public function crawlHtml(string $html): CompanySummaryResult
                 {
                     return new CompanySummaryResult('summary-key', 'summary-value');

@@ -5,7 +5,9 @@ declare(strict_types=1);
 
 use App\Company\CompanyBuilder;
 use App\Company\ReadModel\TickerSymbol;
-use App\Company\Summary\EstimateReturnBuilder;
+use App\Company\Summary\CompanyFullNameCrawler;
+use App\Company\Summary\EstimateReturnCrawler;
+use App\Company\Summary\RecommendationRatingCrawler;
 use App\FinYahoo;
 use Symfony\Component\HttpClient\HttpClient;
 
@@ -14,7 +16,8 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 $finYahoo = new FinYahoo(
     HttpClient::create(),
     new CompanyBuilder(
-        new EstimateReturnBuilder()
+        new CompanyFullNameCrawler(),
+        new EstimateReturnCrawler(),
     )
 );
 

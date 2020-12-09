@@ -9,11 +9,13 @@
     ],
     "require": {
         "php": ">=7.4",
+        "ext-zip": "*",
         "symfony/http-client": "^5.2",
         "symfony/dom-crawler": "^5.2",
         "symfony/css-selector": "^5.2"
     },
     "require-dev": {
+        "roave/security-advisories": "dev-master",
         "ext-readline": "*",
         "symfony/var-dumper": "^5.2",
         "phpunit/phpunit": "^9.5",

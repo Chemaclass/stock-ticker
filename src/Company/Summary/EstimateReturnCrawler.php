@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Company\Summary;
 
-use App\Company\CompanySummaryBuilderInterface;
 use App\Company\CompanySummaryResult;
+use App\Company\SummaryCrawlerInterface;
 use Symfony\Component\DomCrawler\Crawler;
 
-final class EstimateReturnBuilder implements CompanySummaryBuilderInterface
+final class EstimateReturnCrawler implements SummaryCrawlerInterface
 {
     public const NAME = 'EstimateReturn';
 

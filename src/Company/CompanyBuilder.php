@@ -9,28 +9,27 @@ use App\Company\ReadModel\Summary;
 
 final class CompanyBuilder
 {
-    /** @var CompanySummaryBuilderInterface[] */
-    private array $companySummaryBuilderInterfaces;
+    /** @var SummaryCrawlerInterface[] */
+    private array $summaryCrawlerInterfaces;
 
-    public function __construct(
-        CompanySummaryBuilderInterface ...$companyBuilderPieceInterfaces
-    ) {
-        $this->companySummaryBuilderInterfaces = $companyBuilderPieceInterfaces;
+    public function __construct(SummaryCrawlerInterface ...$summaryCrawlerInterfaces)
+    {
+        $this->summaryCrawlerInterfaces = $summaryCrawlerInterfaces;
     }
 
     public function buildFromHtml(string $html): Company
     {
-        $summary = $this->buildSummary($html);
+        $summary = $this->crawlSummary($html);
 
         return new Company($summary);
     }
 
-    private function buildSummary(string $html): Summary
+    private function crawlSummary(string $html): Summary
     {
         $summary = [];
 
-        foreach ($this->companySummaryBuilderInterfaces as $summaryBuilder) {
-            $result = $summaryBuilder->crawlHtml($html);
+        foreach ($this->summaryCrawlerInterfaces as $crawler) {
+            $result = $crawler->crawlHtml($html);
             $summary[$result->key()] = $result->value();
         }
 
