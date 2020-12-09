@@ -7,7 +7,8 @@ the context of the crawled data.
 
 ## Decision
 
-The Company Module has a sub-module called HtmlCrawler. There, you can find a directory per section:
+The `Crawler` Module has a sub-module called `HtmlCrawler`. 
+That directory is the place where you would find: 
 
 - Summary
 - Company Outlook

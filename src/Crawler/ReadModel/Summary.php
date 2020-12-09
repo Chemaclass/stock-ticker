@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahoo\Company\ReadModel;
+namespace Chemaclass\FinanceYahoo\Crawler\ReadModel;
 
 /** @psalm-immutable */
 final class Summary

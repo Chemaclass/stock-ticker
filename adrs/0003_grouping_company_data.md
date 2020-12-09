@@ -15,7 +15,7 @@ For example:
 ## Decision
 
 Unify all crawled data from the different sites in the same "Company object" (independently of the URLs which was used
-to collect that data), group by the Ticker symbol.
+to collect that data), group by the Ticker Symbol.
 
 ## Consequences
 

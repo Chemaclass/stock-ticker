@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahooTests\Unit;
+namespace Chemaclass\FinanceYahooTests\Unit\Company;
 
-use Chemaclass\FinanceYahoo\Company\HtmlCrawler\CrawlerInterface;
-use Chemaclass\FinanceYahoo\Company\HtmlSiteCrawler;
-use Chemaclass\FinanceYahoo\Company\ReadModel\Company;
-use Chemaclass\FinanceYahoo\Company\ReadModel\Ticker;
-use Chemaclass\FinanceYahoo\FinanceYahoo;
+use Chemaclass\FinanceYahoo\Company\CompanyCrawler;
+use Chemaclass\FinanceYahoo\Crawler\HtmlCrawler\CrawlerInterface;
+use Chemaclass\FinanceYahoo\Crawler\HtmlSiteCrawler;
+use Chemaclass\FinanceYahoo\Crawler\ReadModel\Company;
+use Chemaclass\FinanceYahoo\Crawler\ReadModel\Ticker;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
-final class FinanceYahooTest extends TestCase
+final class CompanyCrawlerTest extends TestCase
 {
     private const EXAMPLE_REQUEST_URL = 'https://example.url.com/%s/';
 
     /** @test */
     public function crawlEmptyStock(): void
     {
-        $finYahoo = new FinanceYahoo(
+        $finYahoo = new CompanyCrawler(
             $this->mockHttpClient(),
             new HtmlSiteCrawler(self::EXAMPLE_REQUEST_URL, [])
         );
@@ -31,7 +31,7 @@ final class FinanceYahooTest extends TestCase
     /** @test */
     public function crawlStockForOneTickerAndMultipleCrawlers(): void
     {
-        $finYahoo = new FinanceYahoo(
+        $finYahoo = new CompanyCrawler(
             $this->mockHttpClient(),
             $this->createCompanyCrawler('key1', 'value1'),
             $this->createCompanyCrawler('key2', 'value2')
@@ -52,7 +52,7 @@ final class FinanceYahooTest extends TestCase
     /** @test */
     public function crawlStockForMultipleTickers(): void
     {
-        $finYahoo = new FinanceYahoo(
+        $finYahoo = new CompanyCrawler(
             $this->mockHttpClient(),
             $this->createCompanyCrawler('key1', 'value1'),
         );

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahoo\Company\HtmlCrawler;
+namespace Chemaclass\FinanceYahoo\Crawler\HtmlCrawler;
 
 interface CrawlerInterface
 {
