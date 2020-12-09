@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  fin_yahoo:
+    build:
+      context: .
+      dockerfile: devops/dev/php.dockerfile
+    container_name: fin_yahoo
+    hostname: php
+    volumes:
+      - .:/srv/FinYahoo:delegated
