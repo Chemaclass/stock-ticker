@@ -38,10 +38,10 @@ $siteCrawlers = [
     ),
 ];
 
-$facade = (new FinanceYahooFacade(
+$facade = new FinanceYahooFacade(
     new FinanceYahooConfig($_ENV['TICKERS']),
     new CompanyCrawlerFactory(HttpClient::create())
-));
+);
 
 $companies = $facade->crawlStock(...$siteCrawlers);
 
