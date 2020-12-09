@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Company\Crawler;
+namespace App\Company\HtmlCrawler\Summary;
 
+use App\Company\HtmlCrawler\CrawlerInterface;
 use Symfony\Component\DomCrawler\Crawler;
 
 final class CompanyFullNameCrawler implements CrawlerInterface
 {
-    public const NAME = 'CompanyFullName';
-
     public function crawlHtml(string $html): string
     {
         $text = (new Crawler($html))

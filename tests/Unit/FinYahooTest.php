@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\Company\Crawler\CrawlerInterface;
+use App\Company\HtmlCrawler\CrawlerInterface;
+use App\Company\HtmlSiteCrawler;
 use App\Company\ReadModel\Company;
 use App\Company\ReadModel\Ticker;
-use App\Company\SiteCrawler;
 use App\FinYahoo;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -22,7 +22,7 @@ final class FinYahooTest extends TestCase
     {
         $finYahoo = new FinYahoo(
             $this->mockHttpClient(),
-            new SiteCrawler(self::EXAMPLE_REQUEST_URL, [])
+            new HtmlSiteCrawler(self::EXAMPLE_REQUEST_URL, [])
         );
 
         self::assertEmpty($finYahoo->crawlStock());
@@ -72,9 +72,9 @@ final class FinYahooTest extends TestCase
         ], $actual);
     }
 
-    private function createCompanyCrawler(string $crawlerKey, string $extractedValue): SiteCrawler
+    private function createCompanyCrawler(string $crawlerKey, string $extractedValue): HtmlSiteCrawler
     {
-        return new SiteCrawler(
+        return new HtmlSiteCrawler(
             self::EXAMPLE_REQUEST_URL,
             [
                 $crawlerKey => new class($extractedValue) implements CrawlerInterface {

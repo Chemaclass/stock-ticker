@@ -7,19 +7,19 @@ namespace App;
 use App\Company\ReadModel\Company;
 use App\Company\ReadModel\Site;
 use App\Company\ReadModel\Ticker;
-use App\Company\SiteCrawler;
+use App\Company\SiteCrawlerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class FinYahoo
 {
     private HttpClientInterface $httpClient;
 
-    /** @var SiteCrawler[] */
+    /** @var SiteCrawlerInterface[] */
     private array $siteCrawlers;
 
     public function __construct(
         HttpClientInterface $httpClient,
-        SiteCrawler ...$siteCrawlers
+        SiteCrawlerInterface ...$siteCrawlers
     ) {
         $this->httpClient = $httpClient;
         $this->siteCrawlers = $siteCrawlers;
@@ -47,7 +47,7 @@ final class FinYahoo
     private function crawlAllSitesForTicker(Ticker $ticker): array
     {
         return array_map(
-            fn (SiteCrawler $crawler): Site => $crawler->crawl($this->httpClient, $ticker),
+            fn (SiteCrawlerInterface $crawler): Site => $crawler->crawl($this->httpClient, $ticker),
             $this->siteCrawlers
         );
     }

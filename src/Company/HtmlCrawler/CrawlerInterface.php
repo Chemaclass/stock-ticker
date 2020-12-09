@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Company\Crawler;
+namespace App\Company\HtmlCrawler;
 
 interface CrawlerInterface
 {

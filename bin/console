@@ -3,11 +3,12 @@
 
 declare(strict_types=1);
 
-use App\Company\Crawler\Analysis\EarningsEstimateCrawler;
-use App\Company\Crawler\CompanyFullNameCrawler;
-use App\Company\Crawler\Summary\EstimateReturnCrawler;
+use App\Company\HtmlCrawler\Analysis\EarningsEstimateCrawler;
+use App\Company\HtmlCrawler\Summary\CompanyFullNameCrawler;
+use App\Company\HtmlCrawler\Summary\EstimateReturnCrawler;
+use App\Company\HtmlSiteCrawler;
 use App\Company\ReadModel\Ticker;
-use App\Company\SiteCrawler;
+use App\Company\RootAppJsonCrawler;
 use App\FinYahoo;
 use Symfony\Component\HttpClient\HttpClient;
 
@@ -15,15 +16,23 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 
 Dotenv\Dotenv::createImmutable(__DIR__)->load();
 
-$summaryCrawler = new SiteCrawler(
+$rootMainAppJsonCrawler = new RootAppJsonCrawler(
     'https://finance.yahoo.com/quote/%s',
+    fn (array $json): array => [
+        // "3,048.00"
+        'fmtPrice' => $json['context']['dispatcher']['stores']['QuoteSummaryStore']['financialData']['targetLowPrice']['fmt'],
+    ]
+);
+
+$summaryCrawler = new HtmlSiteCrawler(
+    'https://finance.yahoo.com/quote/%s/summary',
     [
         'CompanyFullName' => new CompanyFullNameCrawler(),
         'EstimateReturn' => new EstimateReturnCrawler(),
     ]
 );
 
-$analysisCrawler = new SiteCrawler(
+$analysisCrawler = new HtmlSiteCrawler(
     'https://finance.yahoo.com/quote/%s/analysis',
     [
         'EarningsEstimate' => new EarningsEstimateCrawler(),
@@ -33,7 +42,8 @@ $analysisCrawler = new SiteCrawler(
 $financeYahoo = new FinYahoo(
     HttpClient::create(),
     $summaryCrawler,
-    $analysisCrawler
+    $analysisCrawler,
+    $rootMainAppJsonCrawler
 );
 
 $companies = $financeYahoo->crawlStock(...createTickersFromEnv());
@@ -47,7 +57,7 @@ function createTickersFromEnv(): array
 {
     try {
         return array_map(
-            static fn (string $symbol) => new Ticker($symbol),
+            static fn(string $symbol) => new Ticker($symbol),
             json_decode($_ENV['TICKERS'], true, 512, JSON_THROW_ON_ERROR)
         );
     } catch (JsonException $e) {

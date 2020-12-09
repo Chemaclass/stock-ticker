@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Company;
 
-use App\Company\Crawler\CrawlerInterface;
+use App\Company\HtmlCrawler\CrawlerInterface;
 use App\Company\ReadModel\Site;
 use App\Company\ReadModel\Ticker;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-final class SiteCrawler
+final class HtmlSiteCrawler implements SiteCrawlerInterface
 {
     private const REQUEST_METHOD = 'GET';
 
