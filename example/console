@@ -1,0 +1,58 @@
+#!/usr/local/bin/php
+<?php
+
+declare(strict_types=1);
+
+use Chemaclass\FinanceYahoo\Company\HtmlCrawler\Analysis;
+use Chemaclass\FinanceYahoo\Company\HtmlCrawler\Summary;
+use Chemaclass\FinanceYahoo\Company\HtmlSiteCrawler;
+use Chemaclass\FinanceYahoo\Company\ReadModel\Ticker;
+use Chemaclass\FinanceYahoo\Company\RootAppJsonCrawler;
+use Chemaclass\FinanceYahoo\FinanceYahoo;
+use Symfony\Component\HttpClient\HttpClient;
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+Dotenv\Dotenv::createImmutable(__DIR__)->load();
+
+$siteCrawlers = [
+    new HtmlSiteCrawler(
+        'https://finance.yahoo.com/quote/%s/summary',
+        [
+            'CompanyFullName' => new Summary\CompanyFullNameCrawler(),
+            'EstimateReturn' => new Summary\EstimateReturnCrawler(),
+        ]
+    ),
+    new HtmlSiteCrawler(
+        'https://finance.yahoo.com/quote/%s/analysis',
+        [
+            'EarningsEstimate' => new Analysis\EarningsEstimateCrawler(),
+        ]
+    ),
+    new RootAppJsonCrawler(
+        'https://finance.yahoo.com/quote/%s',
+        fn (array $json): array => [
+            'RawPrice' => $json['context']['dispatcher']['stores']['QuoteSummaryStore']['financialData']['targetLowPrice']['raw'],
+        ]
+    ),
+];
+
+$financeYahoo = new FinanceYahoo(HttpClient::create(), ...$siteCrawlers);
+$companies = $financeYahoo->crawlStock(...createTickersFromEnv());
+
+dump($companies);
+
+/**
+ * @return Ticker[] based on the .env TICKERS array
+ */
+function createTickersFromEnv(): array
+{
+    try {
+        return array_map(
+            static fn(string $symbol) => new Ticker($symbol),
+            json_decode($_ENV['TICKERS'], true, 512, JSON_THROW_ON_ERROR)
+        );
+    } catch (JsonException $e) {
+        die($e->getMessage());
+    }
+}
