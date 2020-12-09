@@ -8,7 +8,10 @@
         "scaffolding"
     ],
     "require": {
-        "php": ">=7.4"
+        "php": ">=7.4",
+        "symfony/http-client": "^5.2",
+        "symfony/dom-crawler": "^5.2",
+        "symfony/css-selector": "^5.2"
     },
     "require-dev": {
         "ext-readline": "*",
@@ -37,6 +40,7 @@
         ],
         "test-unit": "./vendor/bin/phpunit",
         "psalm": "./vendor/bin/psalm",
-        "csfix": "vendor/bin/php-cs-fixer fix"
+        "csfix": "vendor/bin/php-cs-fixer fix",
+        "csrun": "./vendor/bin/php-cs-fixer fix --dry-run"
     }
 }

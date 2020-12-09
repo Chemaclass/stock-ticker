@@ -4,21 +4,48 @@ declare(strict_types=1);
 
 namespace App;
 
-use function array_reduce;
+use App\Company\CompanyBuilder;
+use App\Company\ReadModel\Company;
+use App\Company\ReadModel\TickerSymbol;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-/**
- * This is an example of your logic-entry-point.
- *
- * @psalm-immutable
- */
 final class FinYahoo
 {
-    public static function sum(int ...$numbers): int
+    private const BASE_REQUEST_URL = 'https://finance.yahoo.com/quote/';
+
+    private const REQUEST_METHOD = 'GET';
+
+    private HttpClientInterface $httpClient;
+
+    private CompanyBuilder $companyBuilder;
+
+    public function __construct(
+        HttpClientInterface $httpClient,
+        CompanyBuilder $companyBuilder
+    ) {
+        $this->httpClient = $httpClient;
+        $this->companyBuilder = $companyBuilder;
+    }
+
+    /**
+     * @psalm-return array<string,Company>
+     */
+    public function crawlStock(TickerSymbol ...$tickerSymbols): array
     {
-        return array_reduce(
-            $numbers,
-            static fn (int $carry, int $current): int => $carry + $current,
-            $initial = 0
-        );
+        $result = [];
+
+        foreach ($tickerSymbols as $tickerSymbol) {
+            $result[$tickerSymbol->toString()] = $this->crawlTickerSymbol($tickerSymbol);
+        }
+
+        return $result;
+    }
+
+    private function crawlTickerSymbol(TickerSymbol $tickerSymbol): Company
+    {
+        $url = self::BASE_REQUEST_URL . $tickerSymbol->toString();
+        $response = $this->httpClient->request(self::REQUEST_METHOD, $url);
+
+        return $this->companyBuilder->buildFromHtml($response->getContent());
     }
 }

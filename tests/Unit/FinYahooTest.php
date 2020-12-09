@@ -4,18 +4,60 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use App\Company\CompanyBuilder;
+use App\Company\CompanySummaryBuilderInterface;
+use App\Company\CompanySummaryResult;
+use App\Company\ReadModel\Company;
+use App\Company\ReadModel\Summary;
+use App\Company\ReadModel\TickerSymbol;
 use App\FinYahoo;
 use PHPUnit\Framework\TestCase;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 final class FinYahooTest extends TestCase
 {
     /** @test */
-    public function itCanSum(): void
+    public function crawlEmptyStock(): void
     {
-        self::assertSame(0, FinYahoo::sum());
-        self::assertSame(1, FinYahoo::sum(1));
-        self::assertSame(3, FinYahoo::sum(1, 2));
-        self::assertSame(6, FinYahoo::sum(1, 2, 3));
-        self::assertSame(10, FinYahoo::sum(1, 2, 3, 4));
+        $httpClient = $this->createHttpClientWithResponse('');
+        $finYahoo = new FinYahoo($httpClient, new CompanyBuilder());
+
+        self::assertEmpty($finYahoo->crawlStock());
+    }
+
+    /** @test */
+    public function crawlStockForOneTicketSymbol(): void
+    {
+        $httpClient = $this->createHttpClientWithResponse('');
+        $finYahoo = new FinYahoo($httpClient, new CompanyBuilder(
+            new class() implements CompanySummaryBuilderInterface {
+                public function crawlHtml(string $html): CompanySummaryResult
+                {
+                    return new CompanySummaryResult('summary-key', 'summary-value');
+                }
+            }
+        ));
+
+        $actual = $finYahoo->crawlStock(new TickerSymbol('EXAMPLE_TICKER'));
+
+        self::assertEquals([
+            'EXAMPLE_TICKER' => new Company(
+                new Summary([
+                    'summary-key' => 'summary-value',
+                ])
+            ),
+        ], $actual);
+    }
+
+    private function createHttpClientWithResponse(string $responseBody): HttpClientInterface
+    {
+        $response = $this->createMock(ResponseInterface::class);
+        $response->method('getContent')->willReturn($responseBody);
+
+        $httpClient = $this->createMock(HttpClientInterface::class);
+        $httpClient->method('request')->willReturn($response);
+
+        return $httpClient;
     }
 }

@@ -3,12 +3,24 @@
 
 declare(strict_types=1);
 
+use App\Company\CompanyBuilder;
+use App\Company\ReadModel\TickerSymbol;
+use App\Company\Summary\EstimateReturnBuilder;
 use App\FinYahoo;
+use Symfony\Component\HttpClient\HttpClient;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-$date = (new DateTimeImmutable())->format(DATE_ATOM);
-$sum = FinYahoo::sum(1, 2, 3);
+$finYahoo = new FinYahoo(
+    HttpClient::create(),
+    new CompanyBuilder(
+        new EstimateReturnBuilder()
+    )
+);
 
-echo "The date: {$date}" . PHP_EOL;
-echo "The sum: {$sum}" . PHP_EOL;
+$companies = $finYahoo->crawlStock(
+    new TickerSymbol('BABA'),
+    new TickerSymbol('AAPL'),
+);
+
+dump($companies);
