@@ -7,10 +7,15 @@ namespace App\Company\ReadModel;
 /** @psalm-immutable */
 final class Company
 {
-    private Summary $summary;
+    private array $summary;
 
-    public function __construct(Summary $summary)
+    public function __construct(array $summary)
     {
         $this->summary = $summary;
+    }
+
+    public function summary(): array
+    {
+        return $this->summary;
     }
 }

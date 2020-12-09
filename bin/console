@@ -4,24 +4,23 @@
 declare(strict_types=1);
 
 use App\Company\CompanyBuilder;
+use App\Company\Crawler\CompanyFullNameCrawler;
+use App\Company\Crawler\EstimateReturnCrawler;
 use App\Company\ReadModel\TickerSymbol;
-use App\Company\Summary\CompanyFullNameCrawler;
-use App\Company\Summary\EstimateReturnCrawler;
-use App\Company\Summary\RecommendationRatingCrawler;
 use App\FinYahoo;
 use Symfony\Component\HttpClient\HttpClient;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-$finYahoo = new FinYahoo(
+$financeYahoo = new FinYahoo(
     HttpClient::create(),
-    new CompanyBuilder(
-        new CompanyFullNameCrawler(),
-        new EstimateReturnCrawler(),
-    )
+    new CompanyBuilder([
+        'CompanyFullName' => new CompanyFullNameCrawler(),
+        'EstimateReturn' => new EstimateReturnCrawler(),
+    ])
 );
 
-$companies = $finYahoo->crawlStock(
+$companies = $financeYahoo->crawlStock(
     new TickerSymbol('BABA'),
     new TickerSymbol('AAPL'),
 );

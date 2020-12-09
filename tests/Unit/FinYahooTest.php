@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use App\Company\CompanyBuilder;
-use App\Company\CompanySummaryResult;
+use App\Company\Crawler\CrawlerInterface;
 use App\Company\ReadModel\Company;
-use App\Company\ReadModel\Summary;
 use App\Company\ReadModel\TickerSymbol;
-use App\Company\SummaryCrawlerInterface;
 use App\FinYahoo;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -20,8 +18,8 @@ final class FinYahooTest extends TestCase
     /** @test */
     public function crawlEmptyStock(): void
     {
-        $httpClient = $this->createHttpClientWithResponse('');
-        $finYahoo = new FinYahoo($httpClient, new CompanyBuilder());
+        $httpClient = $this->mockHttpClient();
+        $finYahoo = new FinYahoo($httpClient, new CompanyBuilder([]));
 
         self::assertEmpty($finYahoo->crawlStock());
     }
@@ -29,28 +27,30 @@ final class FinYahooTest extends TestCase
     /** @test */
     public function crawlStockForOneTicketSymbol(): void
     {
-        $httpClient = $this->createHttpClientWithResponse('');
+        $httpClient = $this->mockHttpClient();
         $finYahoo = new FinYahoo($httpClient, new CompanyBuilder(
-            new class() implements SummaryCrawlerInterface {
-                public function crawlHtml(string $html): CompanySummaryResult
-                {
-                    return new CompanySummaryResult('summary-key', 'summary-value');
-                }
-            }
+            [
+                'summary-key' => new class() implements CrawlerInterface {
+                    public function crawlHtml(string $html): string
+                    {
+                        return 'summary-value';
+                    }
+                },
+            ]
         ));
 
         $actual = $finYahoo->crawlStock(new TickerSymbol('EXAMPLE_TICKER'));
 
         self::assertEquals([
             'EXAMPLE_TICKER' => new Company(
-                new Summary([
+                [
                     'summary-key' => 'summary-value',
-                ])
+                ]
             ),
         ], $actual);
     }
 
-    private function createHttpClientWithResponse(string $responseBody): HttpClientInterface
+    private function mockHttpClient(string $responseBody = ''): HttpClientInterface
     {
         $response = $this->createMock(ResponseInterface::class);
         $response->method('getContent')->willReturn($responseBody);

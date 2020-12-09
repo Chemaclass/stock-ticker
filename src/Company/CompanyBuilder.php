@@ -4,35 +4,30 @@ declare(strict_types=1);
 
 namespace App\Company;
 
+use App\Company\Crawler\CrawlerInterface;
 use App\Company\ReadModel\Company;
-use App\Company\ReadModel\Summary;
 
 final class CompanyBuilder
 {
-    /** @var SummaryCrawlerInterface[] */
-    private array $summaryCrawlerInterfaces;
+    /** @var array<string, CrawlerInterface> */
+    private array $crawlerInterfaces;
 
-    public function __construct(SummaryCrawlerInterface ...$summaryCrawlerInterfaces)
+    /**
+     * @param array<string, CrawlerInterface> $crawlerInterfaces
+     */
+    public function __construct(array $crawlerInterfaces)
     {
-        $this->summaryCrawlerInterfaces = $summaryCrawlerInterfaces;
+        $this->crawlerInterfaces = $crawlerInterfaces;
     }
 
     public function buildFromHtml(string $html): Company
     {
-        $summary = $this->crawlSummary($html);
-
-        return new Company($summary);
-    }
-
-    private function crawlSummary(string $html): Summary
-    {
         $summary = [];
 
-        foreach ($this->summaryCrawlerInterfaces as $crawler) {
-            $result = $crawler->crawlHtml($html);
-            $summary[$result->key()] = $result->value();
+        foreach ($this->crawlerInterfaces as $name => $crawler) {
+            $summary[$name] = $crawler->crawlHtml($html);
         }
 
-        return new Summary($summary);
+        return new Company($summary);
     }
 }
