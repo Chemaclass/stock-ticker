@@ -54,11 +54,12 @@ final class CompanyCrawler
 
     private function flat(Site ...$sites): array
     {
-        return array_merge(
-            ...$this->normalizeSites(...$sites)
-        );
+        return array_merge(...$this->normalizeSites(...$sites));
     }
 
+    /**
+     * @return list<array<array-key, mixed>>
+     */
     private function normalizeSites(Site ...$sites): array
     {
         return array_map(

@@ -9,12 +9,13 @@ use Chemaclass\FinanceYahoo\Crawler\HtmlCrawler\CrawlerInterface;
 use Chemaclass\FinanceYahoo\Crawler\HtmlSiteCrawler;
 use Chemaclass\FinanceYahoo\Crawler\ReadModel\Company;
 use Chemaclass\FinanceYahoo\Crawler\ReadModel\Ticker;
+use Chemaclass\FinanceYahooTests\WithFakeHttpClient;
 use PHPUnit\Framework\TestCase;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Contracts\HttpClient\ResponseInterface;
 
 final class CompanyCrawlerTest extends TestCase
 {
+    use WithFakeHttpClient;
+
     private const EXAMPLE_REQUEST_URL = 'https://example.url.com/%s/';
 
     /** @test */
@@ -92,16 +93,5 @@ final class CompanyCrawlerTest extends TestCase
                 },
             ]
         );
-    }
-
-    private function mockHttpClient(string $responseBody = ''): HttpClientInterface
-    {
-        $response = $this->createMock(ResponseInterface::class);
-        $response->method('getContent')->willReturn($responseBody);
-
-        $httpClient = $this->createMock(HttpClientInterface::class);
-        $httpClient->method('request')->willReturn($response);
-
-        return $httpClient;
     }
 }

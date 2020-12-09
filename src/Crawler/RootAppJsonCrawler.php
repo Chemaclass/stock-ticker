@@ -33,8 +33,8 @@ final class RootAppJsonCrawler implements SiteCrawlerInterface
 
         preg_match('/root\.App\.main\ =\ (?<json>.*);/m', $html, $matches);
 
-        $json = json_decode($matches['json'], true);
-        $data = $this->jsonExtractor->call($this, $json);
+        $json = (array) json_decode($matches['json'], true);
+        $data = (array) $this->jsonExtractor->call($this, $json);
 
         return new Site($data);
     }

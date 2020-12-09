@@ -39,7 +39,7 @@ $siteCrawlers = [
 ];
 
 $facade = (new FinanceYahooFacade(
-    new FinanceYahooConfig(),
+    new FinanceYahooConfig($_ENV['TICKERS']),
     new CompanyCrawlerFactory(HttpClient::create())
 ));
 

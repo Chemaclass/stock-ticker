@@ -1,5 +1,5 @@
 {
-    "description": "A basic PHP scaffolding with Docker",
+    "description": "A simple web crawler for the Finance Yahoo Website",
     "type": "project",
     "license": "MIT",
     "keywords": [
@@ -43,6 +43,7 @@
             "@psalm"
         ],
         "test-unit": "./vendor/bin/phpunit",
+        "test-coverage": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-html coverage",
         "psalm": "./vendor/bin/psalm",
         "csfix": "vendor/bin/php-cs-fixer fix",
         "csrun": "./vendor/bin/php-cs-fixer fix --dry-run"

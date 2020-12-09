@@ -9,18 +9,23 @@ use JsonException;
 
 final class FinanceYahooConfig implements FinanceYahooConfigInterface
 {
+    private string $tickers;
+
+    public function __construct(string $tickers)
+    {
+        $this->tickers = $tickers;
+    }
+
     /**
+     * @throws JsonException
+     *
      * @return Ticker[]
      */
     public function getTickers(): array
     {
-        try {
-            return array_map(
-                static fn (string $symbol) => new Ticker($symbol),
-                json_decode($_ENV['TICKERS'], true, 512, JSON_THROW_ON_ERROR)
-            );
-        } catch (JsonException $e) {
-            die($e->getMessage());
-        }
+        return array_map(
+            static fn (string $symbol) => new Ticker($symbol),
+            (array) json_decode($this->tickers, true, 512, JSON_THROW_ON_ERROR)
+        );
     }
 }
