@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Company\ReadModel;
+namespace Chemaclass\FinanceYahoo\Company\ReadModel;
 
 /** @psalm-immutable */
 final class Company

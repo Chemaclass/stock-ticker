@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit;
+namespace Chemaclass\FinanceYahooTests\Unit;
 
-use App\Company\HtmlCrawler\CrawlerInterface;
-use App\Company\HtmlSiteCrawler;
-use App\Company\ReadModel\Company;
-use App\Company\ReadModel\Ticker;
-use App\FinYahoo;
+use Chemaclass\FinanceYahoo\Company\HtmlCrawler\CrawlerInterface;
+use Chemaclass\FinanceYahoo\Company\HtmlSiteCrawler;
+use Chemaclass\FinanceYahoo\Company\ReadModel\Company;
+use Chemaclass\FinanceYahoo\Company\ReadModel\Ticker;
+use Chemaclass\FinanceYahoo\FinanceYahoo;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
-final class FinYahooTest extends TestCase
+final class FinanceYahooTest extends TestCase
 {
     private const EXAMPLE_REQUEST_URL = 'https://example.url.com/%s/';
 
     /** @test */
     public function crawlEmptyStock(): void
     {
-        $finYahoo = new FinYahoo(
+        $finYahoo = new FinanceYahoo(
             $this->mockHttpClient(),
             new HtmlSiteCrawler(self::EXAMPLE_REQUEST_URL, [])
         );
@@ -31,7 +31,7 @@ final class FinYahooTest extends TestCase
     /** @test */
     public function crawlStockForOneTickerAndMultipleCrawlers(): void
     {
-        $finYahoo = new FinYahoo(
+        $finYahoo = new FinanceYahoo(
             $this->mockHttpClient(),
             $this->createCompanyCrawler('key1', 'value1'),
             $this->createCompanyCrawler('key2', 'value2')
@@ -52,7 +52,7 @@ final class FinYahooTest extends TestCase
     /** @test */
     public function crawlStockForMultipleTickers(): void
     {
-        $finYahoo = new FinYahoo(
+        $finYahoo = new FinanceYahoo(
             $this->mockHttpClient(),
             $this->createCompanyCrawler('key1', 'value1'),
         );

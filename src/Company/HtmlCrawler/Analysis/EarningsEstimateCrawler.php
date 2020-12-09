@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Company\HtmlCrawler\Analysis;
+namespace Chemaclass\FinanceYahoo\Company\HtmlCrawler\Analysis;
 
-use App\Company\HtmlCrawler\CrawlerInterface;
+use Chemaclass\FinanceYahoo\Company\HtmlCrawler\CrawlerInterface;
 use Symfony\Component\DomCrawler\Crawler;
 
 final class EarningsEstimateCrawler implements CrawlerInterface

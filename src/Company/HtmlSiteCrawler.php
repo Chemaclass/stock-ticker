@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Company;
+namespace Chemaclass\FinanceYahoo\Company;
 
-use App\Company\HtmlCrawler\CrawlerInterface;
-use App\Company\ReadModel\Site;
-use App\Company\ReadModel\Ticker;
+use Chemaclass\FinanceYahoo\Company\HtmlCrawler\CrawlerInterface;
+use Chemaclass\FinanceYahoo\Company\ReadModel\Site;
+use Chemaclass\FinanceYahoo\Company\ReadModel\Ticker;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class HtmlSiteCrawler implements SiteCrawlerInterface

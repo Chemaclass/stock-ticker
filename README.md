@@ -1,4 +1,4 @@
-# Finance-Yahoo
+# Finance Yahoo
 
 [![MIT Software License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE.md)
 
@@ -8,13 +8,13 @@ To set up the container and install the composer dependencies:
 
 ```bash
 docker-compose up -d
-docker-compose exec fin_yahoo composer install
+docker-compose exec finance_yahoo composer install
 ```
 
 You can go inside the docker container:
 
 ```bash
-docker exec -ti -u dev fin_yahoo bash
+docker exec -ti -u dev finance_yahoo bash
 ```
 
 ## Some composer scripts

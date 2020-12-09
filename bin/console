@@ -3,13 +3,13 @@
 
 declare(strict_types=1);
 
-use App\Company\HtmlCrawler\Analysis\EarningsEstimateCrawler;
-use App\Company\HtmlCrawler\Summary\CompanyFullNameCrawler;
-use App\Company\HtmlCrawler\Summary\EstimateReturnCrawler;
-use App\Company\HtmlSiteCrawler;
-use App\Company\ReadModel\Ticker;
-use App\Company\RootAppJsonCrawler;
-use App\FinYahoo;
+use Chemaclass\FinanceYahoo\Company\HtmlCrawler\Analysis\EarningsEstimateCrawler;
+use Chemaclass\FinanceYahoo\Company\HtmlCrawler\Summary\CompanyFullNameCrawler;
+use Chemaclass\FinanceYahoo\Company\HtmlCrawler\Summary\EstimateReturnCrawler;
+use Chemaclass\FinanceYahoo\Company\HtmlSiteCrawler;
+use Chemaclass\FinanceYahoo\Company\ReadModel\Ticker;
+use Chemaclass\FinanceYahoo\Company\RootAppJsonCrawler;
+use Chemaclass\FinanceYahoo\FinanceYahoo;
 use Symfony\Component\HttpClient\HttpClient;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
@@ -38,7 +38,7 @@ $analysisCrawler = new HtmlSiteCrawler(
     ]
 );
 
-$financeYahoo = new FinYahoo(
+$financeYahoo = new FinanceYahoo(
     HttpClient::create(),
     $summaryCrawler,
     $analysisCrawler,

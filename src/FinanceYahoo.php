@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App;
+namespace Chemaclass\FinanceYahoo;
 
-use App\Company\ReadModel\Company;
-use App\Company\ReadModel\Site;
-use App\Company\ReadModel\Ticker;
-use App\Company\SiteCrawlerInterface;
+use Chemaclass\FinanceYahoo\Company\ReadModel\Company;
+use Chemaclass\FinanceYahoo\Company\ReadModel\Site;
+use Chemaclass\FinanceYahoo\Company\ReadModel\Ticker;
+use Chemaclass\FinanceYahoo\Company\SiteCrawlerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-final class FinYahoo
+final class FinanceYahoo
 {
     private HttpClientInterface $httpClient;
 
