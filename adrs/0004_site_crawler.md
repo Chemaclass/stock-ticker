@@ -8,12 +8,13 @@ We might want to crawl the html elements from a website, or a json within the he
 
 We have two different SiteCrawlers:
 
-- The `HtmlSiteCrawler`: receives a list of `CrawlerInterfaces`, and with them it can easily crawl the html body using
-  the `DomCrawler` (from `Symfony`, for example)
+- The `HtmlSiteCrawler`: receives a list of `Crawler interfaces`, and with them it can easily crawl the html body using
+  the `DomCrawler`.
 - The `RootAppJsonCrawler`: which receives a Closure from which you can retrieve to any data that you might be
-  interested in from the `root.App.main`.
+  interested in from the `root.App.main`. You can see the structure of that json in this
+  example [snapshot](../data/RootAppMainJsonExample.json).
 
 ## Consequences
 
-Crawling each individual site, and within each individual element, gets super easy. This applies to the
-whole `root.App.main` json that it's just dumped on the head of the page.
+You might want to crawl just an individual site/url by using the `HtmlSiteCrawler`. Or if you find the correct data in
+the root.App.main json, then you might want to use the `RootAppJsonCrawler` instead. Or both.
