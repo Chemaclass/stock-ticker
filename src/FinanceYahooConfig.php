@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Chemaclass\FinanceYahoo;
 
-use Chemaclass\FinanceYahoo\ReadModel\Ticker;
+use Chemaclass\FinanceYahoo\Domain\ReadModel\Ticker;
 use JsonException;
 
 final class FinanceYahooConfig implements FinanceYahooConfigInterface

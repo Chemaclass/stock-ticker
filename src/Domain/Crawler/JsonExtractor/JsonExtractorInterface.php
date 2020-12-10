@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahoo\Crawler\JsonExtractor;
+namespace Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor;
 
-use Chemaclass\FinanceYahoo\ReadModel\ExtractedFromJson;
+use Chemaclass\FinanceYahoo\Domain\ReadModel\ExtractedFromJson;
 
 interface JsonExtractorInterface
 {

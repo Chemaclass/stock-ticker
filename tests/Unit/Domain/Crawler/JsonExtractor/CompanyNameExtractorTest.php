@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahooTests\Unit\Crawler\JsonExtractor;
+namespace Chemaclass\FinanceYahooTests\Unit\Domain\Crawler\JsonExtractor;
 
-use Chemaclass\FinanceYahoo\Crawler\JsonExtractor\CompanyNameJsonExtractor;
-use Chemaclass\FinanceYahoo\ReadModel\ExtractedFromJson;
+use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor\CompanyNameExtractor;
+use Chemaclass\FinanceYahoo\Domain\ReadModel\ExtractedFromJson;
 use PHPUnit\Framework\TestCase;
 
-final class CompanyNameJsonExtractorTest extends TestCase
+final class CompanyNameExtractorTest extends TestCase
 {
     public function testName(): void
     {
-        self::assertSame('name', CompanyNameJsonExtractor::name());
+        self::assertSame('name', CompanyNameExtractor::name());
     }
 
     public function testExtractFromJson(): void
@@ -21,7 +21,7 @@ final class CompanyNameJsonExtractorTest extends TestCase
 
         self::assertEquals(
             ExtractedFromJson::fromString('Example company name, Inc'),
-            (new CompanyNameJsonExtractor())->extractFromJson($json)
+            (new CompanyNameExtractor())->extractFromJson($json)
         );
     }
 

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahooTests\Unit\Crawler;
+namespace Chemaclass\FinanceYahooTests\Unit\Domain\Crawler;
 
-use Chemaclass\FinanceYahoo\Crawler\JsonExtractor\JsonExtractorInterface;
-use Chemaclass\FinanceYahoo\Crawler\RootAppJsonCrawler;
-use Chemaclass\FinanceYahoo\ReadModel\ExtractedFromJson;
-use Chemaclass\FinanceYahoo\ReadModel\Site;
-use Chemaclass\FinanceYahoo\ReadModel\Ticker;
+use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor\JsonExtractorInterface;
+use Chemaclass\FinanceYahoo\Domain\Crawler\RootAppJsonCrawler;
+use Chemaclass\FinanceYahoo\Domain\ReadModel\ExtractedFromJson;
+use Chemaclass\FinanceYahoo\Domain\ReadModel\Site;
+use Chemaclass\FinanceYahoo\Domain\ReadModel\Ticker;
 use Chemaclass\FinanceYahooTests\WithFakeHttpClient;
 use PHPUnit\Framework\TestCase;
 

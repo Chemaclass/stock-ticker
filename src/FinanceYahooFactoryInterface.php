@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Chemaclass\FinanceYahoo;
 
-use Chemaclass\FinanceYahoo\Crawler\CompanyCrawler;
-use Chemaclass\FinanceYahoo\Crawler\SiteCrawlerInterface;
+use Chemaclass\FinanceYahoo\Domain\Crawler\CompanyCrawler;
+use Chemaclass\FinanceYahoo\Domain\Crawler\SiteCrawlerInterface;
 
 interface FinanceYahooFactoryInterface
 {

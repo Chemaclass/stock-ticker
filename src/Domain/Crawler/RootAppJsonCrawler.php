@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahoo\Crawler;
+namespace Chemaclass\FinanceYahoo\Domain\Crawler;
 
-use Chemaclass\FinanceYahoo\Crawler\JsonExtractor\JsonExtractorInterface;
-use Chemaclass\FinanceYahoo\ReadModel\Site;
-use Chemaclass\FinanceYahoo\ReadModel\Ticker;
+use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor\JsonExtractorInterface;
+use Chemaclass\FinanceYahoo\Domain\ReadModel\Site;
+use Chemaclass\FinanceYahoo\Domain\ReadModel\Ticker;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**

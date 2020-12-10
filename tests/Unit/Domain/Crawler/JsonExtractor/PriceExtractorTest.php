@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahooTests\Unit\Crawler\JsonExtractor;
+namespace Chemaclass\FinanceYahooTests\Unit\Domain\Crawler\JsonExtractor;
 
-use Chemaclass\FinanceYahoo\Crawler\JsonExtractor\PriceJsonExtractor;
-use Chemaclass\FinanceYahoo\ReadModel\ExtractedFromJson;
+use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor\PriceExtractor;
+use Chemaclass\FinanceYahoo\Domain\ReadModel\ExtractedFromJson;
 use PHPUnit\Framework\TestCase;
 
-final class PriceJsonExtractorTest extends TestCase
+final class PriceExtractorTest extends TestCase
 {
     public function testName(): void
     {
-        self::assertSame('price', PriceJsonExtractor::name());
+        self::assertSame('price', PriceExtractor::name());
     }
 
     public function testExtractFromJson(): void
@@ -21,7 +21,7 @@ final class PriceJsonExtractorTest extends TestCase
 
         self::assertEquals(
             ExtractedFromJson::fromString('11.6501'),
-            (new PriceJsonExtractor())->extractFromJson($json)
+            (new PriceExtractor())->extractFromJson($json)
         );
     }
 

@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahoo\ReadModel;
+namespace Chemaclass\FinanceYahoo\Domain\ReadModel;
 
-/** @psalm-immutable */
+/**
+ * @psalm-immutable
+ */
 final class Ticker
 {
     private string $symbol;

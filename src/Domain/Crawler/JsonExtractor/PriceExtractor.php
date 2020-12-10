@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahoo\Crawler\JsonExtractor;
+namespace Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor;
 
-use Chemaclass\FinanceYahoo\ReadModel\ExtractedFromJson;
+use Chemaclass\FinanceYahoo\Domain\ReadModel\ExtractedFromJson;
 
-final class PriceJsonExtractor implements JsonExtractorInterface
+final class PriceExtractor implements JsonExtractorInterface
 {
     public static function name(): string
     {

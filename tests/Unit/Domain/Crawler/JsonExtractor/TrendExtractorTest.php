@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahooTests\Unit\Crawler\JsonExtractor;
+namespace Chemaclass\FinanceYahooTests\Unit\Domain\Crawler\JsonExtractor;
 
-use Chemaclass\FinanceYahoo\Crawler\JsonExtractor\RecommendationTrendJsonExtractor;
-use Chemaclass\FinanceYahoo\ReadModel\ExtractedFromJson;
+use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor\TrendExtractor;
+use Chemaclass\FinanceYahoo\Domain\ReadModel\ExtractedFromJson;
 use PHPUnit\Framework\TestCase;
 
-final class RecommendationTrendJsonExtractorTest extends TestCase
+final class TrendExtractorTest extends TestCase
 {
     public function testName(): void
     {
-        self::assertSame('recommendationTrend', RecommendationTrendJsonExtractor::name());
+        self::assertSame('recommendationTrend', TrendExtractor::name());
     }
 
     public function testExtractFromJson(): void
@@ -22,7 +22,7 @@ final class RecommendationTrendJsonExtractorTest extends TestCase
 
         self::assertEquals(
             ExtractedFromJson::fromArray($recommendationTrend),
-            (new RecommendationTrendJsonExtractor())->extractFromJson($json)
+            (new TrendExtractor())->extractFromJson($json)
         );
     }
 

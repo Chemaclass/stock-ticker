@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Chemaclass\FinanceYahooTests\Unit;
 
+use Chemaclass\FinanceYahoo\Domain\ReadModel\Ticker;
 use Chemaclass\FinanceYahoo\FinanceYahooConfig;
-use Chemaclass\FinanceYahoo\ReadModel\Ticker;
 use JsonException;
 use PHPUnit\Framework\TestCase;
 
