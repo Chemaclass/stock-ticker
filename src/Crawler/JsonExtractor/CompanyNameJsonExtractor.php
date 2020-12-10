@@ -6,7 +6,7 @@ namespace Chemaclass\FinanceYahoo\Crawler\JsonExtractor;
 
 use Chemaclass\FinanceYahoo\ReadModel\ExtractedFromJson;
 
-final class NameJsonExtractor implements JsonExtractorInterface
+final class CompanyNameJsonExtractor implements JsonExtractorInterface
 {
     public static function name(): string
     {

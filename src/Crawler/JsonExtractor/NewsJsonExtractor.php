@@ -19,9 +19,20 @@ final class NewsJsonExtractor implements JsonExtractorInterface
         $first = reset($streams);
         $items = $first['data']['stream_items'];
 
-        $titles = array_filter($items, static fn (array $i): bool => 'ad' !== $i['type']);
-        $titles = array_map(static fn (array $i): string => $i['title'], $titles);
+        $titles = $this->mapTitles($this->filterAdds($items));
 
         return ExtractedFromJson::fromArray($titles);
+    }
+
+    private function filterAdds(array $items): array
+    {
+        return array_filter($items, static fn (array $i): bool => 'ad' !== $i['type']);
+    }
+
+    private function mapTitles(array $items): array
+    {
+        return array_values(
+            array_map(static fn (array $i): string => $i['title'], $items)
+        );
     }
 }

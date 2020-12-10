@@ -4,7 +4,7 @@
 declare(strict_types=1);
 
 use Chemaclass\FinanceYahoo\Company\CompanyCrawlerFactory;
-use Chemaclass\FinanceYahoo\Crawler\JsonExtractor\NameJsonExtractor;
+use Chemaclass\FinanceYahoo\Crawler\JsonExtractor\CompanyNameJsonExtractor;
 use Chemaclass\FinanceYahoo\Crawler\JsonExtractor\NewsJsonExtractor;
 use Chemaclass\FinanceYahoo\Crawler\JsonExtractor\PriceJsonExtractor;
 use Chemaclass\FinanceYahoo\Crawler\JsonExtractor\RecommendationTrendJsonExtractor;
@@ -23,7 +23,7 @@ $facade = new FinanceYahooFacade(
 );
 
 $siteCrawler = new RootAppJsonCrawler(
-    new NameJsonExtractor(),
+    new CompanyNameJsonExtractor(),
     new PriceJsonExtractor(),
     new RecommendationTrendJsonExtractor(),
     new NewsJsonExtractor(),
@@ -37,5 +37,5 @@ dump($companies);
 
 print '-----------------------------------' . PHP_EOL;
 $summary = reset($companies)->summary();
-print 'name: ' . $summary[NameJsonExtractor::name()] . PHP_EOL;
+print 'name: ' . $summary[CompanyNameJsonExtractor::name()] . PHP_EOL;
 print 'news: ' . json_encode($summary[NewsJsonExtractor::name()]->asArray()) . PHP_EOL;
