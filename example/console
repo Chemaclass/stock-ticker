@@ -4,9 +4,6 @@
 declare(strict_types=1);
 
 use Chemaclass\FinanceYahoo\Company\CompanyCrawlerFactory;
-use Chemaclass\FinanceYahoo\Crawler\HtmlCrawler\Analysis;
-use Chemaclass\FinanceYahoo\Crawler\HtmlCrawler\Summary;
-use Chemaclass\FinanceYahoo\Crawler\HtmlSiteCrawler;
 use Chemaclass\FinanceYahoo\Crawler\RootAppJsonCrawler;
 use Chemaclass\FinanceYahoo\FinanceYahooConfig;
 use Chemaclass\FinanceYahoo\FinanceYahooFacade;
@@ -16,33 +13,19 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 Dotenv\Dotenv::createImmutable(__DIR__)->load();
 
-$siteCrawlers = [
-    new HtmlSiteCrawler(
-        'https://finance.yahoo.com/quote/%s/summary',
-        [
-            'CompanyFullName' => new Summary\CompanyFullNameCrawler(),
-            'EstimateReturn' => new Summary\EstimateReturnCrawler(),
-        ]
-    ),
-    new HtmlSiteCrawler(
-        'https://finance.yahoo.com/quote/%s/analysis',
-        [
-            'EarningsEstimate' => new Analysis\EarningsEstimateCrawler(),
-        ]
-    ),
-    new RootAppJsonCrawler(
-        'https://finance.yahoo.com/quote/%s',
-        fn (array $json): array => [
-            'RawPrice' => $json['context']['dispatcher']['stores']['QuoteSummaryStore']['financialData']['targetLowPrice']['raw'],
-        ]
-    ),
-];
-
 $facade = new FinanceYahooFacade(
     new FinanceYahooConfig($_ENV['TICKERS']),
     new CompanyCrawlerFactory(HttpClient::create())
 );
 
-$companies = $facade->crawlStock(...$siteCrawlers);
+$jsonExtractor = new RootAppJsonCrawler(
+    fn (array $json): array => [
+        'name' => $json['context']['dispatcher']['stores']['QuoteSummaryStore']['price']['shortName'],
+        'price' => $json['context']['dispatcher']['stores']['QuoteSummaryStore']['financialData']['targetLowPrice']['fmt'],
+        'recommendationTrend' => $json['context']['dispatcher']['stores']['QuoteSummaryStore']['recommendationTrend']['trend']['0'],
+    ]
+);
+
+$companies = $facade->crawlStock($jsonExtractor);
 
 dump($companies);

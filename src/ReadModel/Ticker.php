@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahoo\Crawler\ReadModel;
+namespace Chemaclass\FinanceYahoo\ReadModel;
 
 /** @psalm-immutable */
 final class Ticker

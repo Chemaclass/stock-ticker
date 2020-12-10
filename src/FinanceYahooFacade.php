@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Chemaclass\FinanceYahoo;
 
 use Chemaclass\FinanceYahoo\Company\CompanyCrawlerFactoryInterface;
-use Chemaclass\FinanceYahoo\Crawler\ReadModel\Company;
 use Chemaclass\FinanceYahoo\Crawler\SiteCrawlerInterface;
+use Chemaclass\FinanceYahoo\ReadModel\Company;
 
 final class FinanceYahooFacade
 {

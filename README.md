@@ -16,20 +16,33 @@ $facade = new FinanceYahooFacade(
     new CompanyCrawlerFactory(HttpClient::create())
 );
 
-$companies = $facade->crawlStock(new HtmlSiteCrawler(
-    'https://finance.yahoo.com/quote/%s/summary',
-    [
-        'CompanyFullName' => new CompanyFullNameCrawler(),
-        'EstimateReturn' => new EstimateReturnCrawler(),
+$jsonExtractor = new RootAppJsonCrawler(
+    fn (array $json): array => [
+        'name' => $json['context']['dispatcher']['stores']['QuoteSummaryStore']['price']['shortName'],
+        'price' => $json['context']['dispatcher']['stores']['QuoteSummaryStore']['financialData']['targetLowPrice']['fmt'],
+        'recommendationTrend' => $json['context']['dispatcher']['stores']['QuoteSummaryStore']['recommendationTrend']['trend']['0'],
     ]
-));
+);
 
-// [
-//   'AMZN' => new Company(
-//     'CompanyFullName' => 'Amazon.com, Inc. (AMZN)',
-//     'EstimateReturn' => '14% Est. Return',
-//   ),
-// ]
+$companies = $facade->crawlStock($jsonExtractor);
+
+//[
+//  "AMZN" => Chemaclass\FinanceYahoo\ReadModel\Company {
+//    -summary: array:3 [
+//      "name" => "Amazon.com, Inc."
+//      "price" => "3,048.00"
+//      "recommendationTrend" => array:6 [
+//        "period" => "0m"
+//        "strongBuy" => 15
+//        "buy" => 28
+//        "hold" => 3
+//        "sell" => 1
+//        "strongSell" => 0
+//      ]
+//    ]
+//  }
+//]
+
 ```
 
 ## Set up the project

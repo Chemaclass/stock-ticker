@@ -5,25 +5,24 @@ declare(strict_types=1);
 namespace Chemaclass\FinanceYahooTests\Unit\Company;
 
 use Chemaclass\FinanceYahoo\Company\CompanyCrawler;
-use Chemaclass\FinanceYahoo\Crawler\HtmlCrawler\CrawlerInterface;
-use Chemaclass\FinanceYahoo\Crawler\HtmlSiteCrawler;
-use Chemaclass\FinanceYahoo\Crawler\ReadModel\Company;
-use Chemaclass\FinanceYahoo\Crawler\ReadModel\Ticker;
+use Chemaclass\FinanceYahoo\Crawler\SiteCrawlerInterface;
+use Chemaclass\FinanceYahoo\ReadModel\Company;
+use Chemaclass\FinanceYahoo\ReadModel\Site;
+use Chemaclass\FinanceYahoo\ReadModel\Ticker;
 use Chemaclass\FinanceYahooTests\WithFakeHttpClient;
 use PHPUnit\Framework\TestCase;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class CompanyCrawlerTest extends TestCase
 {
     use WithFakeHttpClient;
-
-    private const EXAMPLE_REQUEST_URL = 'https://example.url.com/%s/';
 
     /** @test */
     public function crawlEmptyStock(): void
     {
         $finYahoo = new CompanyCrawler(
             $this->mockHttpClient(),
-            new HtmlSiteCrawler(self::EXAMPLE_REQUEST_URL, [])
+            $this->mockSiteCrawler('key1', 'value1')
         );
 
         self::assertEmpty($finYahoo->crawlStock());
@@ -34,8 +33,8 @@ final class CompanyCrawlerTest extends TestCase
     {
         $finYahoo = new CompanyCrawler(
             $this->mockHttpClient(),
-            $this->createCompanyCrawler('key1', 'value1'),
-            $this->createCompanyCrawler('key2', 'value2')
+            $this->mockSiteCrawler('key1', 'value1'),
+            $this->mockSiteCrawler('key2', 'value2')
         );
 
         $actual = $finYahoo->crawlStock(
@@ -55,7 +54,7 @@ final class CompanyCrawlerTest extends TestCase
     {
         $finYahoo = new CompanyCrawler(
             $this->mockHttpClient(),
-            $this->createCompanyCrawler('key1', 'value1'),
+            $this->mockSiteCrawler('key1', 'value1'),
         );
 
         $actual = $finYahoo->crawlStock(
@@ -73,25 +72,23 @@ final class CompanyCrawlerTest extends TestCase
         ], $actual);
     }
 
-    private function createCompanyCrawler(string $crawlerKey, string $extractedValue): HtmlSiteCrawler
+    private function mockSiteCrawler(string $crawlerKey, string $extractedValue): SiteCrawlerInterface
     {
-        return new HtmlSiteCrawler(
-            self::EXAMPLE_REQUEST_URL,
-            [
-                $crawlerKey => new class($extractedValue) implements CrawlerInterface {
-                    private string $value;
+        return new class($crawlerKey, $extractedValue) implements SiteCrawlerInterface {
+            private string $crawlerKey;
 
-                    public function __construct(string $value)
-                    {
-                        $this->value = $value;
-                    }
+            private string $extractedValue;
 
-                    public function crawlHtml(string $html): string
-                    {
-                        return $this->value;
-                    }
-                },
-            ]
-        );
+            public function __construct(string $crawlerKey, string $extractedValue)
+            {
+                $this->crawlerKey = $crawlerKey;
+                $this->extractedValue = $extractedValue;
+            }
+
+            public function crawl(HttpClientInterface $httpClient, Ticker $ticker): Site
+            {
+                return new Site([$this->crawlerKey => $this->extractedValue]);
+            }
+        };
     }
 }

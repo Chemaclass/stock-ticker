@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Chemaclass\FinanceYahoo;
 
-use Chemaclass\FinanceYahoo\Crawler\ReadModel\Ticker;
+use Chemaclass\FinanceYahoo\ReadModel\Ticker;
 
 interface FinanceYahooConfigInterface
 {
