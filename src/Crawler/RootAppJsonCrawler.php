@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Chemaclass\FinanceYahoo\Crawler;
 
+use Chemaclass\FinanceYahoo\Crawler\JsonExtractor\JsonExtractorInterface;
 use Chemaclass\FinanceYahoo\ReadModel\Site;
 use Chemaclass\FinanceYahoo\ReadModel\Ticker;
-use Closure;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
@@ -19,11 +19,12 @@ final class RootAppJsonCrawler implements SiteCrawlerInterface
 
     private const REQUEST_URL = 'https://finance.yahoo.com/quote/%s';
 
-    private Closure $jsonExtractor;
+    /** @var JsonExtractorInterface[] */
+    private array $jsonExtractors;
 
-    public function __construct(Closure $jsonExtractor)
+    public function __construct(JsonExtractorInterface ...$jsonExtractors)
     {
-        $this->jsonExtractor = $jsonExtractor;
+        $this->jsonExtractors = $jsonExtractors;
     }
 
     public function crawl(HttpClientInterface $httpClient, Ticker $ticker): Site
@@ -37,7 +38,11 @@ final class RootAppJsonCrawler implements SiteCrawlerInterface
         preg_match('/root\.App\.main\ =\ (?<json>.*);/m', $html, $matches);
 
         $json = (array) json_decode($matches['json'], true);
-        $data = (array) $this->jsonExtractor->call($this, $json);
+        $data = [];
+
+        foreach ($this->jsonExtractors as $extractor) {
+            $data[$extractor->name()] = $extractor->extractFromJson($json);
+        }
 
         return new Site($data);
     }

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Chemaclass\FinanceYahooTests\Unit\Crawler;
 
+use Chemaclass\FinanceYahoo\Crawler\JsonExtractor\JsonExtractorInterface;
 use Chemaclass\FinanceYahoo\Crawler\RootAppJsonCrawler;
+use Chemaclass\FinanceYahoo\ReadModel\ExtractedFromJson;
 use Chemaclass\FinanceYahoo\ReadModel\Site;
 use Chemaclass\FinanceYahoo\ReadModel\Ticker;
 use Chemaclass\FinanceYahooTests\WithFakeHttpClient;
@@ -18,9 +20,17 @@ final class RootAppJsonCrawlerTest extends TestCase
     public function crawl(): void
     {
         $crawler = new RootAppJsonCrawler(
-            fn (array $json): array => [
-                'TheKey' => $json['key']['sub-key'],
-            ]
+            new class() implements JsonExtractorInterface {
+                public static function name(): string
+                {
+                    return 'TheKey';
+                }
+
+                public function extractFromJson(array $json): ExtractedFromJson
+                {
+                    return ExtractedFromJson::fromString($json['key']['sub-key']);
+                }
+            }
         );
 
         $responseBody = <<<BODY

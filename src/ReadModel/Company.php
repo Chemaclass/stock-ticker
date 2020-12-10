@@ -7,6 +7,9 @@ namespace Chemaclass\FinanceYahoo\ReadModel;
 /** @psalm-immutable */
 final class Company
 {
+    /**
+     * @var array<string, ExtractedFromJson>
+     */
     private array $summary;
 
     public function __construct(array $summary)
@@ -14,6 +17,9 @@ final class Company
         $this->summary = $summary;
     }
 
+    /**
+     * @return array<string, ExtractedFromJson>
+     */
     public function summary(): array
     {
         return $this->summary;

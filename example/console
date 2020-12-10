@@ -4,6 +4,10 @@
 declare(strict_types=1);
 
 use Chemaclass\FinanceYahoo\Company\CompanyCrawlerFactory;
+use Chemaclass\FinanceYahoo\Crawler\JsonExtractor\NameJsonExtractor;
+use Chemaclass\FinanceYahoo\Crawler\JsonExtractor\NewsJsonExtractor;
+use Chemaclass\FinanceYahoo\Crawler\JsonExtractor\PriceJsonExtractor;
+use Chemaclass\FinanceYahoo\Crawler\JsonExtractor\RecommendationTrendJsonExtractor;
 use Chemaclass\FinanceYahoo\Crawler\RootAppJsonCrawler;
 use Chemaclass\FinanceYahoo\FinanceYahooConfig;
 use Chemaclass\FinanceYahoo\FinanceYahooFacade;
@@ -18,14 +22,20 @@ $facade = new FinanceYahooFacade(
     new CompanyCrawlerFactory(HttpClient::create())
 );
 
-$jsonExtractor = new RootAppJsonCrawler(
-    fn (array $json): array => [
-        'name' => $json['context']['dispatcher']['stores']['QuoteSummaryStore']['price']['shortName'],
-        'price' => $json['context']['dispatcher']['stores']['QuoteSummaryStore']['financialData']['targetLowPrice']['fmt'],
-        'recommendationTrend' => $json['context']['dispatcher']['stores']['QuoteSummaryStore']['recommendationTrend']['trend']['0'],
-    ]
+$siteCrawler = new RootAppJsonCrawler(
+    new NameJsonExtractor(),
+    new PriceJsonExtractor(),
+    new RecommendationTrendJsonExtractor(),
+    new NewsJsonExtractor(),
 );
 
-$companies = $facade->crawlStock($jsonExtractor);
+$companies = $facade->crawlStock($siteCrawler);
+
+// You can now do whatever you want with the crawled data :)
 
 dump($companies);
+
+print '-----------------------------------' . PHP_EOL;
+$summary = reset($companies)->summary();
+print 'name: ' . $summary[NameJsonExtractor::name()] . PHP_EOL;
+print 'news: ' . json_encode($summary[NewsJsonExtractor::name()]->asArray()) . PHP_EOL;

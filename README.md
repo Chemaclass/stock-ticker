@@ -16,32 +16,45 @@ $facade = new FinanceYahooFacade(
     new CompanyCrawlerFactory(HttpClient::create())
 );
 
-$jsonExtractor = new RootAppJsonCrawler(
-    fn (array $json): array => [
-        'name' => $json['context']['dispatcher']['stores']['QuoteSummaryStore']['price']['shortName'],
-        'price' => $json['context']['dispatcher']['stores']['QuoteSummaryStore']['financialData']['targetLowPrice']['fmt'],
-        'recommendationTrend' => $json['context']['dispatcher']['stores']['QuoteSummaryStore']['recommendationTrend']['trend']['0'],
-    ]
+$siteCrawler = new RootAppJsonCrawler(
+    new NameJsonExtractor(),
+    new PriceJsonExtractor(),
+    new RecommendationTrendJsonExtractor(),
+    new NewsJsonExtractor(),
 );
 
-$companies = $facade->crawlStock($jsonExtractor);
-
+$companies = $facade->crawlStock($siteCrawler);
 //[
-//  "AMZN" => Chemaclass\FinanceYahoo\ReadModel\Company {
-//    -summary: array:3 [
-//      "name" => "Amazon.com, Inc."
-//      "price" => "3,048.00"
-//      "recommendationTrend" => array:6 [
-//        "period" => "0m"
-//        "strongBuy" => 15
-//        "buy" => 28
-//        "hold" => 3
-//        "sell" => 1
-//        "strongSell" => 0
-//      ]
+//  "AMZN" => Company {
+//    -summary: [
+//      "name" => ExtractedFromJson {
+//        -data: ["Amazon.com, Inc."]
+//      }
+//      "price" => ExtractedFromJson {
+//        -data: ["3,048.00"]
+//      }
+//      "recommendationTrend" => ExtractedFromJson {
+//        -data: [
+//          "period" => "0m"
+//          "strongBuy" => 15
+//          "buy" => 28
+//          "hold" => 3
+//          "sell" => 1
+//          "strongSell" => 0
+//        ]
+//      }
+//      "news" => ExtractedFromJson {
+//        -data: [
+//          0 => "Facebook sued by FTC, 48 attorneys general alleging it operates an illegal monopoly"
+//          1 => "COVID-19 pandemic has forever changed the pet products business: Chewy CEO"
+//          2 => "Where to Invest $10,000 Right Now"
+//          ...
+//        ]
+//      }
 //    ]
 //  }
 //]
+
 
 ```
 
