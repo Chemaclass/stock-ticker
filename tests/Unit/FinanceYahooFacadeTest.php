@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Chemaclass\FinanceYahooTests\Unit;
 
-use Chemaclass\FinanceYahoo\Company\CompanyCrawlerFactory;
 use Chemaclass\FinanceYahoo\Crawler\SiteCrawlerInterface;
 use Chemaclass\FinanceYahoo\FinanceYahooConfig;
 use Chemaclass\FinanceYahoo\FinanceYahooFacade;
+use Chemaclass\FinanceYahoo\FinanceYahooFactory;
 use Chemaclass\FinanceYahoo\ReadModel\Company;
 use Chemaclass\FinanceYahoo\ReadModel\Site;
 use Chemaclass\FinanceYahoo\ReadModel\Ticker;
@@ -24,7 +24,7 @@ final class FinanceYahooFacadeTest extends TestCase
     {
         $facade = (new FinanceYahooFacade(
             new FinanceYahooConfig('["AAA","BBB"]'),
-            new CompanyCrawlerFactory($this->mockHttpClient())
+            new FinanceYahooFactory($this->mockHttpClient())
         ));
 
         $actual = $facade->crawlStock(new class() implements SiteCrawlerInterface {

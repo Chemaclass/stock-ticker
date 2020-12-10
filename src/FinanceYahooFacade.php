@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Chemaclass\FinanceYahoo;
 
-use Chemaclass\FinanceYahoo\Company\CompanyCrawlerFactoryInterface;
 use Chemaclass\FinanceYahoo\Crawler\SiteCrawlerInterface;
 use Chemaclass\FinanceYahoo\ReadModel\Company;
 
@@ -12,14 +11,14 @@ final class FinanceYahooFacade
 {
     private FinanceYahooConfigInterface $config;
 
-    private CompanyCrawlerFactoryInterface $companyCrawlerFactory;
+    private FinanceYahooFactoryInterface $factory;
 
     public function __construct(
         FinanceYahooConfigInterface $config,
-        CompanyCrawlerFactoryInterface $companyCrawlerFactory
+        FinanceYahooFactoryInterface $factory
     ) {
         $this->config = $config;
-        $this->companyCrawlerFactory = $companyCrawlerFactory;
+        $this->factory = $factory;
     }
 
     /**
@@ -27,8 +26,8 @@ final class FinanceYahooFacade
      */
     public function crawlStock(SiteCrawlerInterface ...$siteCrawlers): array
     {
-        return $this->companyCrawlerFactory
-            ->createWithCrawlers(...$siteCrawlers)
+        return $this->factory
+            ->createCompanyCrawler(...$siteCrawlers)
             ->crawlStock(...$this->config->getTickers());
     }
 }

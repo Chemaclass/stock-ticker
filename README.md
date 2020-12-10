@@ -13,7 +13,7 @@ See full & working example [here](example/console).
 ```php
 $facade = new FinanceYahooFacade(
     new FinanceYahooConfig('["AMZN"]'),
-    new CompanyCrawlerFactory(HttpClient::create())
+    new FinanceYahooFactory(HttpClient::create())
 );
 
 $siteCrawler = new RootAppJsonCrawler(

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahooTests\Unit\Company;
+namespace Chemaclass\FinanceYahooTests\Unit\Crawler;
 
-use Chemaclass\FinanceYahoo\Company\CompanyCrawler;
+use Chemaclass\FinanceYahoo\Crawler\CompanyCrawler;
 use Chemaclass\FinanceYahoo\Crawler\SiteCrawlerInterface;
 use Chemaclass\FinanceYahoo\ReadModel\Company;
 use Chemaclass\FinanceYahoo\ReadModel\Site;

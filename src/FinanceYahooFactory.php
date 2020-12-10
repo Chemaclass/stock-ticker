@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahoo\Company;
+namespace Chemaclass\FinanceYahoo;
 
+use Chemaclass\FinanceYahoo\Crawler\CompanyCrawler;
 use Chemaclass\FinanceYahoo\Crawler\SiteCrawlerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-final class CompanyCrawlerFactory implements CompanyCrawlerFactoryInterface
+final class FinanceYahooFactory implements FinanceYahooFactoryInterface
 {
     private HttpClientInterface $httpClient;
 
@@ -16,7 +17,7 @@ final class CompanyCrawlerFactory implements CompanyCrawlerFactoryInterface
         $this->httpClient = $httpClient;
     }
 
-    public function createWithCrawlers(SiteCrawlerInterface ...$siteCrawlers): CompanyCrawler
+    public function createCompanyCrawler(SiteCrawlerInterface ...$siteCrawlers): CompanyCrawler
     {
         return new CompanyCrawler($this->httpClient, ...$siteCrawlers);
     }

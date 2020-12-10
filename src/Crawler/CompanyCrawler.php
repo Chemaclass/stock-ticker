@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahoo\Company;
+namespace Chemaclass\FinanceYahoo\Crawler;
 
-use Chemaclass\FinanceYahoo\Crawler\SiteCrawlerInterface;
 use Chemaclass\FinanceYahoo\ReadModel\Company;
 use Chemaclass\FinanceYahoo\ReadModel\Site;
 use Chemaclass\FinanceYahoo\ReadModel\Ticker;
