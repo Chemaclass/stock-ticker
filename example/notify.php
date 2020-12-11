@@ -20,7 +20,7 @@ $result = sendNotifications($facade, [
     // You can define multiple policies for the same Ticker
     // As a function or a callable class
     'AMZN' => new PolicyGroup([
-        'high trend to buy' => static fn (Company $c): bool => $c->info('trend')->get('buy') > 25,
+        'high trend to buy' => static fn (Company $c): bool => $c->info('trend')->get('0')['buy'] > 25,
         'buy higher than sell' => new BuyHigherThanSell(),
     ]),
     // And combine them however you want

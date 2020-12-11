@@ -6,6 +6,10 @@
 [![MIT Software License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE.md)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.4-8892BF.svg?style=flat-square)](https://php.net/)
 
+This is an API to get a report/notification (via email and/or slack) of the latest news (from finance.yahoo.com) related
+to the Tinker (Stock Symbol) that you are interested in based on a personal lookup that you can define yourself
+independently of each Tinker.
+
 ## Example
 
 See a full & working example for 
@@ -22,7 +26,7 @@ $result = sendNotifications($facade, [
     // You can define multiple policies for the same Ticker
     // As a function or a callable class
     'AMZN' => new PolicyGroup([
-        'high trend to buy' => fn (Company $c): bool => $c->info('trend')->get('buy') > 25,
+        'high trend to buy' => fn (Company $c): bool => $c->info('trend')->get('0')['buy'] > 25,
         'buy higher than sell' => new BuyHigherThanSell(),
     ]),
     // And combine them however you want
@@ -73,6 +77,20 @@ composer test-unit    # run phpunit
 
 composer psalm  # run Psalm coverage
 ```
+
+## Substantial changes
+
+Substantial changes are architecture decisions, documentation restructuring, breaking changes, etc. Not Bug Reports, Bug
+Fixes, Tests, etc.
+
+### How to contribute a substantial change
+
+In order to make a substantial change it is a good practice to discuss the idea before implementing it.
+
+- An [ADR](https://github.com/joelparkerhenderson/architecture_decision_record) can be proposed with an issue.
+- The issue is the place to discuss everything.
+- The result of the issue can be an ADR file (under the [adrs](./adrs) directory), but also just as CS Fixer rule to
+  check then during CI.
 
 ----------
 
