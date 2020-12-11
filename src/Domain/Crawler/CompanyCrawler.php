@@ -25,11 +25,12 @@ final class CompanyCrawler
     }
 
     /**
-     * @psalm-return array<string,Company>
+     * @return array<string,Company>
      */
-    public function crawlStock(Ticker ...$tickers): array
+    public function crawlStock(string ...$tickerSymbos): array
     {
         $result = [];
+        $tickers = $this->mapTickersFromSymbols($tickerSymbos);
 
         foreach ($tickers as $ticker) {
             $sites = $this->crawlAllSitesForTicker($ticker);
@@ -41,6 +42,19 @@ final class CompanyCrawler
         }
 
         return $result;
+    }
+
+    /**
+     * @param string[] $tickerSymbos
+     *
+     * @return Ticker[]
+     */
+    private function mapTickersFromSymbols(array $tickerSymbos): array
+    {
+        return array_map(
+            static fn (string $symbol) => Ticker::withSymbol($symbol),
+            $tickerSymbos
+        );
     }
 
     /**

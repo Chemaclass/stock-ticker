@@ -11,26 +11,24 @@ use Chemaclass\FinanceYahoo\Domain\ReadModel\Company;
 
 final class FinanceYahooFacade
 {
-    private FinanceYahooConfigInterface $config;
-
     private FinanceYahooFactoryInterface $factory;
 
-    public function __construct(
-        FinanceYahooConfigInterface $config,
-        FinanceYahooFactoryInterface $factory
-    ) {
-        $this->config = $config;
+    public function __construct(FinanceYahooFactoryInterface $factory)
+    {
         $this->factory = $factory;
     }
 
     /**
+     * @param list<SiteCrawlerInterface> $siteCrawlers
+     * @param list<string> $tickerSymbols
+     *
      * @return array<string,Company>
      */
-    public function crawlStock(SiteCrawlerInterface ...$siteCrawlers): array
+    public function crawlStock(array $siteCrawlers, array $tickerSymbols): array
     {
         return $this->factory
             ->createCompanyCrawler(...$siteCrawlers)
-            ->crawlStock(...$this->config->getTickers());
+            ->crawlStock(...$tickerSymbols);
     }
 
     /**

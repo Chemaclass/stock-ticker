@@ -35,9 +35,7 @@ final class CompanyCrawlerTest extends TestCase
             $this->mockSiteCrawler('key2', 'value2')
         );
 
-        $actual = $companyCrawler->crawlStock(
-            Ticker::withSymbol('SYMBOL')
-        );
+        $actual = $companyCrawler->crawlStock('SYMBOL');
 
         self::assertEquals([
             'SYMBOL' => new Company(
@@ -57,10 +55,7 @@ final class CompanyCrawlerTest extends TestCase
             $this->mockSiteCrawler('key1', 'value1'),
         );
 
-        $actual = $companyCrawler->crawlStock(
-            Ticker::withSymbol('SYMBOL_1'),
-            Ticker::withSymbol('SYMBOL_2'),
-        );
+        $actual = $companyCrawler->crawlStock('SYMBOL_1', 'SYMBOL_2');
 
         self::assertEquals([
             'SYMBOL_1' => new Company(

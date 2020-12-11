@@ -12,7 +12,6 @@ use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\PolicyGroup;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\Company;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\ExtractedFromJson;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\Ticker;
-use Chemaclass\FinanceYahoo\FinanceYahooConfig;
 use Chemaclass\FinanceYahoo\FinanceYahooFacade;
 use Chemaclass\FinanceYahoo\FinanceYahooFactory;
 use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
@@ -29,7 +28,7 @@ final class FinanceYahooFacadeTest extends TestCase
             'name' => new CompanyNameExtractor(),
         ]);
 
-        $companies = $facade->crawlStock($siteCrawler);
+        $companies = $facade->crawlStock([$siteCrawler], ['AMZN']);
 
         $first = reset($companies);
         self::assertEquals(Ticker::withSymbol('AMZN'), $first->ticker());
@@ -75,7 +74,6 @@ final class FinanceYahooFacadeTest extends TestCase
         $channel->expects($channelSendExpected)->method('send');
 
         return new FinanceYahooFacade(
-            new FinanceYahooConfig('["AMZN"]'),
             new FinanceYahooFactory(
                 HttpClient::create(),
                 $channel

@@ -37,11 +37,10 @@ function crawlStock(FinanceYahooFacade $facade): array
         'news' => new JsonExtractor\NewsExtractor(),
     ]);
 
-    return $facade->crawlStock($siteCrawler);
+    return $facade->crawlStock([$siteCrawler], ['AMZN']);
 }
 
 $facade = new FinanceYahooFacade(
-    new FinanceYahooConfig($_ENV['TICKERS']),
     new FinanceYahooFactory(
         HttpClient::create(),
         new EmailChannel(
