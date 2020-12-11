@@ -6,7 +6,7 @@ namespace Chemaclass\FinanceYahooTests\E2E;
 
 use Chemaclass\FinanceYahoo\Domain\Crawler\CrawlResult;
 use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor\CompanyNameExtractor;
-use Chemaclass\FinanceYahoo\Domain\Crawler\RootAppJsonCrawler;
+use Chemaclass\FinanceYahoo\Domain\Crawler\RootJsonSiteCrawler;
 use Chemaclass\FinanceYahoo\Domain\Notifier\ChannelInterface;
 use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\NotifierPolicy;
 use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\PolicyGroup;
@@ -25,7 +25,7 @@ final class FinanceYahooFacadeTest extends TestCase
     {
         $facade = $this->createFinanceYahooFacade(self::never());
 
-        $siteCrawler = new RootAppJsonCrawler([
+        $siteCrawler = new RootJsonSiteCrawler([
             'name' => new CompanyNameExtractor(),
         ]);
 

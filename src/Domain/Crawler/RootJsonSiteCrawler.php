@@ -14,7 +14,7 @@ use Webmozart\Assert\Assert;
  * @see "data/RootAppMainJsonExample.json" to see the structure of the `root.App.main` json.
  * @see https://jsoneditoronline.org/ to visualize and find what you are interested in.
  */
-final class RootAppJsonCrawler implements SiteCrawlerInterface
+final class RootJsonSiteCrawler implements SiteCrawlerInterface
 {
     private const REQUEST_METHOD = 'GET';
 

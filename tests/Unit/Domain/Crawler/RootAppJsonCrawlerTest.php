@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Chemaclass\FinanceYahooTests\Unit\Domain\Crawler;
 
 use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor\JsonExtractorInterface;
-use Chemaclass\FinanceYahoo\Domain\Crawler\RootAppJsonCrawler;
+use Chemaclass\FinanceYahoo\Domain\Crawler\RootJsonSiteCrawler;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\ExtractedFromJson;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\Site;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\Ticker;
@@ -24,7 +24,7 @@ BODY;
 
     public function testCrawlUsingNamedExtractor(): void
     {
-        $crawler = new RootAppJsonCrawler([
+        $crawler = new RootJsonSiteCrawler([
             'extractor name' => $this->stubJsonExtractor(),
         ]);
 
@@ -41,7 +41,7 @@ BODY;
     public function testCrawlUsingExtractorWithoutName(): void
     {
         $jsonExtractor = $this->stubJsonExtractor();
-        $crawler = new RootAppJsonCrawler([$jsonExtractor]);
+        $crawler = new RootJsonSiteCrawler([$jsonExtractor]);
 
         $actual = $crawler->crawl(
             $this->mockHttpClient(self::RESPONSE_BODY),

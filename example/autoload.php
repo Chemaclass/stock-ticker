@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Chemaclass\FinanceYahoo\Domain\Crawler\CrawlResult;
 use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor;
-use Chemaclass\FinanceYahoo\Domain\Crawler\RootAppJsonCrawler;
+use Chemaclass\FinanceYahoo\Domain\Crawler\RootJsonSiteCrawler;
 use Chemaclass\FinanceYahoo\Domain\Notifier\Channel\Email\EmailChannel;
 use Chemaclass\FinanceYahoo\Domain\Notifier\Channel\Slack\SlackChannel;
 use Chemaclass\FinanceYahoo\Domain\Notifier\Channel\Slack\SlackHttpClient;
@@ -44,7 +44,7 @@ function sendNotifications(FinanceYahooFacade $facade, array $policyGroupedBySym
 
 function crawlStock(FinanceYahooFacade $facade, array $tickerSymbols): CrawlResult
 {
-    $siteCrawler = new RootAppJsonCrawler([
+    $siteCrawler = new RootJsonSiteCrawler([
         'name' => new JsonExtractor\CompanyNameExtractor(),
         'price' => new JsonExtractor\PriceExtractor(),
         'trend' => new JsonExtractor\TrendExtractor(),
