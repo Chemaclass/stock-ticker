@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Chemaclass\FinanceYahoo;
 
+use Chemaclass\FinanceYahoo\Domain\Crawler\CrawlResult;
 use Chemaclass\FinanceYahoo\Domain\Crawler\SiteCrawlerInterface;
 use Chemaclass\FinanceYahoo\Domain\Notifier\NotifyResult;
 use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\NotifierPolicy;
-use Chemaclass\FinanceYahoo\Domain\ReadModel\Company;
 
 final class FinanceYahooFacade
 {
@@ -21,20 +21,15 @@ final class FinanceYahooFacade
     /**
      * @param list<SiteCrawlerInterface> $siteCrawlers
      * @param list<string> $tickerSymbols
-     *
-     * @return array<string,Company>
      */
-    public function crawlStock(array $siteCrawlers, array $tickerSymbols): array
+    public function crawlStock(array $siteCrawlers, array $tickerSymbols): CrawlResult
     {
         return $this->factory
             ->createCompanyCrawler(...$siteCrawlers)
             ->crawlStock(...$tickerSymbols);
     }
 
-    /**
-     * @param $companies array<string,Company>
-     */
-    public function notify(NotifierPolicy $policy, array $companies): NotifyResult
+    public function notify(NotifierPolicy $policy, CrawlResult $companies): NotifyResult
     {
         return $this->factory
             ->createNotifier($policy)

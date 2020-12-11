@@ -8,53 +8,43 @@
 
 ## Example
 
-See full & working example [here](example/console).
+See a full & working example for 
+- [crawling](example/crawl.php)
+- [notifying](example/notify.php)
 
 ```php
-$facade = new FinanceYahooFacade(
-    new FinanceYahooConfig('["AMZN"]'),
-    new FinanceYahooFactory(HttpClient::create())
+$facade = createFacade(
+    new EmailChannel(
+        $_ENV['TO_ADDRESS'],
+        new Mailer(new GmailSmtpTransport(
+            $_ENV['MAILER_USERNAME'],
+            $_ENV['MAILER_PASSWORD']
+        ))
+    )
 );
 
-$siteCrawler = new RootAppJsonCrawler(
-    new NameJsonExtractor(),
-    new PriceJsonExtractor(),
-    new RecommendationTrendJsonExtractor(),
-    new NewsJsonExtractor(),
-);
+$result = sendNotifications($facade, [
+    // You can define multiple policies for the same Ticker
+    'AMZN' => new PolicyGroup([
+        'high trend to buy' => static fn (Company $c): bool => $c->get('trend')->asArray()['buy'] > 25,
+        'high trend to sell' => static fn (Company $c): bool => $c->get('trend')->asArray()['sell'] > 20,
+    ]),
+    // And combine them however you want
+    'GOOG' => new PolicyGroup([
+        'strongBuy higher than strongSell' => static function (Company $c): bool {
+            $strongBuy = $c->get('trend')->asArray()['strongBuy'];
+            $strongSell = $c->get('trend')->asArray()['strongSell'];
 
-$companies = $facade->crawlStock($siteCrawler);
-//[
-//  "AMZN" => Company {
-//    -summary: [
-//      "name" => ExtractedFromJson {
-//        -data: ["Amazon.com, Inc."]
-//      }
-//      "price" => ExtractedFromJson {
-//        -data: ["3,048.00"]
-//      }
-//      "recommendationTrend" => ExtractedFromJson {
-//        -data: [
-//          "period" => "0m"
-//          "strongBuy" => 15
-//          "buy" => 28
-//          "hold" => 3
-//          "sell" => 1
-//          "strongSell" => 0
-//        ]
-//      }
-//      "news" => ExtractedFromJson {
-//        -data: [
-//          0 => "Facebook sued by FTC, 48 attorneys general alleging it operates an illegal monopoly"
-//          1 => "COVID-19 pandemic has forever changed the pet products business: Chewy CEO"
-//          2 => "Where to Invest $10,000 Right Now"
-//          ...
-//        ]
-//      }
-//    ]
-//  }
-//]
-
+            return $strongBuy > $strongSell;
+        },
+    ]),
+]);
+//NotifyResult {
+//  -result: [
+//    "AMZN" => "high trend to buy"
+//    "GOOG" => "strongBuy higher than strongSell"
+//  ]
+//}
 
 ```
 

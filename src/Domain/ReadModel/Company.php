@@ -32,11 +32,8 @@ final class Company
         return $this->ticker;
     }
 
-    /**
-     * @return array<string, ExtractedFromJson>
-     */
-    public function summary(): array
+    public function get(string $key): ExtractedFromJson
     {
-        return $this->summary;
+        return $this->summary[$key];
     }
 }

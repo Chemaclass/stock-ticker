@@ -24,13 +24,10 @@ final class CompanyCrawler
         $this->siteCrawlers = $siteCrawlers;
     }
 
-    /**
-     * @return array<string,Company>
-     */
-    public function crawlStock(string ...$tickerSymbos): array
+    public function crawlStock(string ...$tickerSymbols): CrawlResult
     {
         $result = [];
-        $tickers = $this->mapTickersFromSymbols($tickerSymbos);
+        $tickers = $this->mapTickersFromSymbols($tickerSymbols);
 
         foreach ($tickers as $ticker) {
             $sites = $this->crawlAllSitesForTicker($ticker);
@@ -41,7 +38,7 @@ final class CompanyCrawler
             );
         }
 
-        return $result;
+        return new CrawlResult($result);
     }
 
     /**

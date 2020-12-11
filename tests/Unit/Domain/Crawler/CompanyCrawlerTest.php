@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Chemaclass\FinanceYahooTests\Unit\Domain\Crawler;
 
 use Chemaclass\FinanceYahoo\Domain\Crawler\CompanyCrawler;
+use Chemaclass\FinanceYahoo\Domain\Crawler\CrawlResult;
 use Chemaclass\FinanceYahoo\Domain\Crawler\SiteCrawlerInterface;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\Company;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\Site;
@@ -24,7 +25,7 @@ final class CompanyCrawlerTest extends TestCase
             $this->mockSiteCrawler('key1', 'value1')
         );
 
-        self::assertEmpty($companyCrawler->crawlStock());
+        self::assertEquals(new CrawlResult([]), $companyCrawler->crawlStock());
     }
 
     public function testCrawlStockForOneTickerAndMultipleCrawlers(): void
@@ -37,7 +38,7 @@ final class CompanyCrawlerTest extends TestCase
 
         $actual = $companyCrawler->crawlStock('SYMBOL');
 
-        self::assertEquals([
+        self::assertEquals(new CrawlResult([
             'SYMBOL' => new Company(
                 Ticker::withSymbol('SYMBOL'),
                 [
@@ -45,7 +46,7 @@ final class CompanyCrawlerTest extends TestCase
                     'key2' => 'value2',
                 ]
             ),
-        ], $actual);
+        ]), $actual);
     }
 
     public function testCrawlStockForMultipleTickerSymbols(): void
@@ -57,7 +58,7 @@ final class CompanyCrawlerTest extends TestCase
 
         $actual = $companyCrawler->crawlStock('SYMBOL_1', 'SYMBOL_2');
 
-        self::assertEquals([
+        self::assertEquals(new CrawlResult([
             'SYMBOL_1' => new Company(
                 Ticker::withSymbol('SYMBOL_1'),
                 [
@@ -70,7 +71,7 @@ final class CompanyCrawlerTest extends TestCase
                     'key1' => 'value1',
                 ]
             ),
-        ], $actual);
+        ]), $actual);
     }
 
     private function mockSiteCrawler(string $crawlerKey, string $extractedValue): SiteCrawlerInterface

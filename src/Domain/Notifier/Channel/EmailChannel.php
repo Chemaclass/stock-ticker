@@ -6,18 +6,18 @@ namespace Chemaclass\FinanceYahoo\Domain\Notifier\Channel;
 
 use Chemaclass\FinanceYahoo\Domain\Notifier\ChannelInterface;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\Company;
-use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
 final class EmailChannel implements ChannelInterface
 {
     private string $toAddress;
 
-    private Mailer $mailer;
+    private MailerInterface $mailer;
 
     public function __construct(
         string $toAddress,
-        Mailer $mailer
+        MailerInterface $mailer
     ) {
         $this->toAddress = $toAddress;
         $this->mailer = $mailer;

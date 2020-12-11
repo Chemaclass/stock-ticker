@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Chemaclass\FinanceYahooTests\E2E;
 
+use Chemaclass\FinanceYahoo\Domain\Crawler\CrawlResult;
 use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor\CompanyNameExtractor;
 use Chemaclass\FinanceYahoo\Domain\Crawler\RootAppJsonCrawler;
 use Chemaclass\FinanceYahoo\Domain\Notifier\ChannelInterface;
@@ -28,18 +29,18 @@ final class FinanceYahooFacadeTest extends TestCase
             'name' => new CompanyNameExtractor(),
         ]);
 
-        $companies = $facade->crawlStock([$siteCrawler], ['AMZN']);
+        $result = $facade->crawlStock([$siteCrawler], ['AMZN']);
+        $first = $result->get('AMZN');
 
-        $first = reset($companies);
         self::assertEquals(Ticker::withSymbol('AMZN'), $first->ticker());
-        self::assertEquals('Amazon.com, Inc.', $first->summary()['name']);
+        self::assertEquals('Amazon.com, Inc.', $first->get('name'));
     }
 
     public function testNotify(): void
     {
         $facade = $this->createFinanceYahooFacade(self::exactly(2));
 
-        $companies = [
+        $companies = new CrawlResult([
             'AMZN' => new Company(
                 Ticker::withSymbol('AMZN'),
                 ['trend' => ExtractedFromJson::fromArray(['buy' => 0, 'sell' => 10])],
@@ -48,11 +49,11 @@ final class FinanceYahooFacadeTest extends TestCase
                 Ticker::withSymbol('GOOG'),
                 ['trend' => ExtractedFromJson::fromArray(['buy' => 10, 'sell' => 0])],
             ),
-        ];
+        ]);
 
         $policyGroup = new PolicyGroup([
-            'high trend to buy' => static fn (Company $c) => $c->summary()['trend']->asArray()['buy'] > 5,
-            'high trend to sell' => static fn (Company $c) => $c->summary()['trend']->asArray()['sell'] > 5,
+            'high trend to buy' => static fn (Company $c) => $c->get('trend')->asArray()['buy'] > 5,
+            'high trend to sell' => static fn (Company $c) => $c->get('trend')->asArray()['sell'] > 5,
         ]);
 
         $policy = new NotifierPolicy([

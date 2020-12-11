@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Chemaclass\FinanceYahoo\Domain\Notifier;
 
+use Chemaclass\FinanceYahoo\Domain\Crawler\CrawlResult;
 use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\NotifierPolicy;
 use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\PolicyGroup;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\Company;
@@ -23,19 +24,16 @@ final class Notifier
         $this->channels = $channels;
     }
 
-    /**
-     * @param $companies array<string,Company>
-     */
-    public function notify(array $companies): NotifyResult
+    public function notify(CrawlResult $crawlResult): NotifyResult
     {
         $result = new NotifyResult();
 
         foreach ($this->policy->groupedBySymbol() as $symbol => $policyGroup) {
-            if (!isset($companies[$symbol])) {
+            if (!$crawlResult->has($symbol)) {
                 continue;
             }
 
-            $company = $companies[$symbol];
+            $company = $crawlResult->get($symbol);
             $policyName = $this->matchPolicy($policyGroup, $company);
 
             if (!empty($policyName)) {
@@ -45,13 +43,6 @@ final class Notifier
         }
 
         return $result;
-    }
-
-    private function sendNotification(Company $company, string $policyName): void
-    {
-        foreach ($this->channels as $channel) {
-            $channel->send($company, $policyName);
-        }
     }
 
     /**
@@ -66,5 +57,12 @@ final class Notifier
         }
 
         return '';
+    }
+
+    private function sendNotification(Company $company, string $policyName): void
+    {
+        foreach ($this->channels as $channel) {
+            $channel->send($company, $policyName);
+        }
     }
 }
