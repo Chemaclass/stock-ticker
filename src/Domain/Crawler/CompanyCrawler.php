@@ -34,7 +34,10 @@ final class CompanyCrawler
         foreach ($tickers as $ticker) {
             $sites = $this->crawlAllSitesForTicker($ticker);
 
-            $result[$ticker->symbol()] = new Company($this->flat(...$sites));
+            $result[$ticker->symbol()] = new Company(
+                $ticker,
+                $this->flat(...$sites)
+            );
         }
 
         return $result;

@@ -8,11 +8,6 @@ use Chemaclass\FinanceYahoo\Domain\ReadModel\ExtractedFromJson;
 
 final class NewsExtractor implements JsonExtractorInterface
 {
-    public static function name(): string
-    {
-        return 'news';
-    }
-
     public function extractFromJson(array $json): ExtractedFromJson
     {
         $streams = $json['context']['dispatcher']['stores']['StreamStore']['streams'];

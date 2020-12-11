@@ -8,6 +8,7 @@ use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor\JsonExtractorInterface;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\Site;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\Ticker;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Webmozart\Assert\Assert;
 
 /**
  * @see "data/RootAppMainJsonExample.json" to see the structure of the `root.App.main` json.
@@ -19,11 +20,12 @@ final class RootAppJsonCrawler implements SiteCrawlerInterface
 
     private const REQUEST_URL = 'https://finance.yahoo.com/quote/%s';
 
-    /** @var JsonExtractorInterface[] */
+    /** @var array<int|string,JsonExtractorInterface> */
     private array $jsonExtractors;
 
-    public function __construct(JsonExtractorInterface ...$jsonExtractors)
+    public function __construct(array $jsonExtractors)
     {
+        Assert::allIsInstanceOf($jsonExtractors, JsonExtractorInterface::class);
         $this->jsonExtractors = $jsonExtractors;
     }
 
@@ -40,8 +42,9 @@ final class RootAppJsonCrawler implements SiteCrawlerInterface
         $json = (array) json_decode($matches['json'], true);
         $data = [];
 
-        foreach ($this->jsonExtractors as $extractor) {
-            $data[$extractor->name()] = $extractor->extractFromJson($json);
+        foreach ($this->jsonExtractors as $name => $extractor) {
+            $name = is_int($name) ? get_class($extractor) : $name;
+            $data[$name] = $extractor->extractFromJson($json);
         }
 
         return new Site($data);

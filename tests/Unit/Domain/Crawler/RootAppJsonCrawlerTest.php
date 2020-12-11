@@ -16,35 +16,50 @@ final class RootAppJsonCrawlerTest extends TestCase
 {
     use WithFakeHttpClient;
 
-    /** @test */
-    public function crawl(): void
-    {
-        $crawler = new RootAppJsonCrawler(
-            new class() implements JsonExtractorInterface {
-                public static function name(): string
-                {
-                    return 'TheKey';
-                }
-
-                public function extractFromJson(array $json): ExtractedFromJson
-                {
-                    return ExtractedFromJson::fromString($json['key']['sub-key']);
-                }
-            }
-        );
-
-        $responseBody = <<<BODY
+    private const RESPONSE_BODY = <<<BODY
 any random string 1
-root.App.main = {"key": {"sub-key": "example value"}};
+root.App.main = {"key": {"sub-key": "example expected value"}};
 any random string 2
 BODY;
+
+    public function testCrawlUsingNamedExtractor(): void
+    {
+        $crawler = new RootAppJsonCrawler([
+            'extractor name' => $this->stubJsonExtractor(),
+        ]);
+
         $actual = $crawler->crawl(
-            $this->mockHttpClient($responseBody),
+            $this->mockHttpClient(self::RESPONSE_BODY),
             new Ticker('EXAMPLE_TICKER')
         );
 
         self::assertEquals(new Site([
-            'TheKey' => 'example value',
+            'extractor name' => 'example expected value',
         ]), $actual);
+    }
+
+    public function testCrawlUsingExtractorWithoutName(): void
+    {
+        $jsonExtractor = $this->stubJsonExtractor();
+        $crawler = new RootAppJsonCrawler([$jsonExtractor]);
+
+        $actual = $crawler->crawl(
+            $this->mockHttpClient(self::RESPONSE_BODY),
+            new Ticker('EXAMPLE_TICKER')
+        );
+
+        self::assertEquals(new Site([
+            get_class($jsonExtractor) => 'example expected value',
+        ]), $actual);
+    }
+
+    private function stubJsonExtractor(): JsonExtractorInterface
+    {
+        return new class() implements JsonExtractorInterface {
+            public function extractFromJson(array $json): ExtractedFromJson
+            {
+                return ExtractedFromJson::fromString($json['key']['sub-key']);
+            }
+        };
     }
 }

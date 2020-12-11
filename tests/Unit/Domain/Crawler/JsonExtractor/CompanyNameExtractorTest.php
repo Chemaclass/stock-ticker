@@ -10,11 +10,6 @@ use PHPUnit\Framework\TestCase;
 
 final class CompanyNameExtractorTest extends TestCase
 {
-    public function testName(): void
-    {
-        self::assertSame('name', CompanyNameExtractor::name());
-    }
-
     public function testExtractFromJson(): void
     {
         $json = $this->createJsonCompanyName('Example company name, Inc');

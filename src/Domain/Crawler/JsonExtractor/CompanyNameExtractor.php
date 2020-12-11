@@ -8,11 +8,6 @@ use Chemaclass\FinanceYahoo\Domain\ReadModel\ExtractedFromJson;
 
 final class CompanyNameExtractor implements JsonExtractorInterface
 {
-    public static function name(): string
-    {
-        return 'name';
-    }
-
     public function extractFromJson(array $json): ExtractedFromJson
     {
         return ExtractedFromJson::fromString(

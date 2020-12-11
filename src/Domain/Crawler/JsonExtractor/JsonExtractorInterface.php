@@ -8,7 +8,5 @@ use Chemaclass\FinanceYahoo\Domain\ReadModel\ExtractedFromJson;
 
 interface JsonExtractorInterface
 {
-    public static function name(): string;
-
     public function extractFromJson(array $json): ExtractedFromJson;
 }

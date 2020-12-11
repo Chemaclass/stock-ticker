@@ -8,11 +8,6 @@ use Chemaclass\FinanceYahoo\Domain\ReadModel\ExtractedFromJson;
 
 final class TrendExtractor implements JsonExtractorInterface
 {
-    public static function name(): string
-    {
-        return 'recommendationTrend';
-    }
-
     public function extractFromJson(array $json): ExtractedFromJson
     {
         return ExtractedFromJson::fromArray(

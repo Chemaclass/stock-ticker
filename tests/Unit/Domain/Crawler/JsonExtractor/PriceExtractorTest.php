@@ -10,11 +10,6 @@ use PHPUnit\Framework\TestCase;
 
 final class PriceExtractorTest extends TestCase
 {
-    public function testName(): void
-    {
-        self::assertSame('price', PriceExtractor::name());
-    }
-
     public function testExtractFromJson(): void
     {
         $json = $this->createJsonWithPrice('11.6501');

@@ -42,10 +42,13 @@ final class CompanyCrawlerTest extends TestCase
         );
 
         self::assertEquals([
-            'EXAMPLE_TICKER' => new Company([
-                'key1' => 'value1',
-                'key2' => 'value2',
-            ]),
+            'EXAMPLE_TICKER' => new Company(
+                new Ticker('EXAMPLE_TICKER'),
+                [
+                    'key1' => 'value1',
+                    'key2' => 'value2',
+                ]
+            ),
         ], $actual);
     }
 
@@ -63,12 +66,18 @@ final class CompanyCrawlerTest extends TestCase
         );
 
         self::assertEquals([
-            'EXAMPLE_TICKER_1' => new Company([
-                'key1' => 'value1',
-            ]),
-            'EXAMPLE_TICKER_2' => new Company([
-                'key1' => 'value1',
-            ]),
+            'EXAMPLE_TICKER_1' => new Company(
+                new Ticker('EXAMPLE_TICKER_1'),
+                [
+                    'key1' => 'value1',
+                ]
+            ),
+            'EXAMPLE_TICKER_2' => new Company(
+                new Ticker('EXAMPLE_TICKER_2'),
+                [
+                    'key1' => 'value1',
+                ]
+            ),
         ], $actual);
     }
 

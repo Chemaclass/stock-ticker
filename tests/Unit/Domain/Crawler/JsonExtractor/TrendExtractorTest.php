@@ -10,11 +10,6 @@ use PHPUnit\Framework\TestCase;
 
 final class TrendExtractorTest extends TestCase
 {
-    public function testName(): void
-    {
-        self::assertSame('recommendationTrend', TrendExtractor::name());
-    }
-
     public function testExtractFromJson(): void
     {
         $recommendationTrend = ['k' => 'v'];

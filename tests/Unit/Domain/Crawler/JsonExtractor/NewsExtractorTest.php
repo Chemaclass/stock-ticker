@@ -11,11 +11,6 @@ use PHPUnit\Framework\TestCase;
 
 final class NewsExtractorTest extends TestCase
 {
-    public function testName(): void
-    {
-        self::assertSame('news', NewsExtractor::name());
-    }
-
     /**
      * @dataProvider providerExtractFromJson
      */
