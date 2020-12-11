@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahoo\Domain\Notifier\Channel;
+namespace Chemaclass\FinanceYahoo\Domain\Notifier\Channel\Email;
 
+use Chemaclass\FinanceYahoo\Domain\Notifier\Channel\TemplateGeneratorInterface;
 use Chemaclass\FinanceYahoo\Domain\Notifier\ChannelInterface;
 use Chemaclass\FinanceYahoo\Domain\Notifier\NotifyResult;
 use Symfony\Component\Mailer\MailerInterface;

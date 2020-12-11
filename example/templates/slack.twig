@@ -1,0 +1,11 @@
+Policy threshold reached for these companies
+
+{% for symbol in notifyResult.symbols() %}
+{% set companyName = notifyResult.companyForSymbol(symbol).info('name') %}
+> `{{ companyName }}` (*{{ symbol }}*)
+    {% for policy in notifyResult.policiesForSymbol(symbol) %}
+- {{ policy }}
+    {% endfor %}
+--------------------------------------------------
+{% endfor %}
+

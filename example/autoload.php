@@ -5,7 +5,9 @@ declare(strict_types=1);
 use Chemaclass\FinanceYahoo\Domain\Crawler\CrawlResult;
 use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor;
 use Chemaclass\FinanceYahoo\Domain\Crawler\RootAppJsonCrawler;
-use Chemaclass\FinanceYahoo\Domain\Notifier\Channel\EmailChannel;
+use Chemaclass\FinanceYahoo\Domain\Notifier\Channel\Email\EmailChannel;
+use Chemaclass\FinanceYahoo\Domain\Notifier\Channel\Slack\SlackChannel;
+use Chemaclass\FinanceYahoo\Domain\Notifier\Channel\Slack\SlackHttpClient;
 use Chemaclass\FinanceYahoo\Domain\Notifier\Channel\TwigTemplateGenerator;
 use Chemaclass\FinanceYahoo\Domain\Notifier\ChannelInterface;
 use Chemaclass\FinanceYahoo\Domain\Notifier\NotifyResult;
@@ -52,7 +54,7 @@ function crawlStock(FinanceYahooFacade $facade, array $tickerSymbols): CrawlResu
     return $facade->crawlStock([$siteCrawler], $tickerSymbols);
 }
 
-function createEmailChannel(): EmailChannel
+function createEmailChannel(string $templateName = 'email.twig'): EmailChannel
 {
     return new EmailChannel(
         $_ENV['TO_ADDRESS'],
@@ -62,7 +64,21 @@ function createEmailChannel(): EmailChannel
         )),
         new TwigTemplateGenerator(
             new Environment(new FilesystemLoader(__DIR__ . '/templates')),
-            'email-template.twig'
+            $templateName
+        )
+    );
+}
+
+function createSlackChannel(string $templateName = 'slack.twig'): SlackChannel
+{
+    return new SlackChannel(
+        $_ENV['SLACK_DESTINY_CHANNEL_ID'],
+        new SlackHttpClient(HttpClient::create([
+            'auth_bearer' => $_ENV['SLACK_BOT_USER_OAUTH_ACCESS_TOKEN'],
+        ])),
+        new TwigTemplateGenerator(
+            new Environment(new FilesystemLoader(__DIR__ . '/templates')),
+            $templateName
         )
     );
 }

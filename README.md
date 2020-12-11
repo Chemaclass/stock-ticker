@@ -14,24 +14,19 @@ See a full & working example for
 
 ```php
 $facade = createFacade(
-    new EmailChannel(
-        $_ENV['TO_ADDRESS'],
-        new Mailer(new GmailSmtpTransport(
-            $_ENV['MAILER_USERNAME'],
-            $_ENV['MAILER_PASSWORD']
-        ))
-    )
+    createEmailChannel(),
+    createSlackChannel(),
 );
 
 $result = sendNotifications($facade, [
     // You can define multiple policies for the same Ticker
     'AMZN' => new PolicyGroup([
-        'high trend to buy' => static fn (Company $c): bool => $c->info('trend')->get('buy') > 25,
-        'some trend to sell' => static fn (Company $c): bool => $c->info('trend')->get('sell') > 0,
+        'high trend to buy' => fn (Company $c): bool => $c->info('trend')->get('buy') > 25,
+        'some trend to sell' => fn (Company $c): bool => $c->info('trend')->get('sell') > 0,
     ]),
     // And combine them however you want
     'GOOG' => new PolicyGroup([
-        'strongBuy higher than strongSell' => static function (Company $c): bool {
+        'strongBuy higher than strongSell' => function (Company $c): bool {
             $strongBuy = $c->info('trend')->get('strongBuy');
             $strongSell = $c->info('trend')->get('strongSell');
 
