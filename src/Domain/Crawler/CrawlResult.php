@@ -19,13 +19,8 @@ final class CrawlResult
         $this->companiesGroupBySymbol = $companiesGroupBySymbol;
     }
 
-    public function has(string $symbol): bool
-    {
-        return isset($this->companiesGroupBySymbol[$symbol]);
-    }
-
     public function get(string $symbol): Company
     {
-        return $this->companiesGroupBySymbol[$symbol];
+        return $this->companiesGroupBySymbol[$symbol] ?? Company::empty();
     }
 }

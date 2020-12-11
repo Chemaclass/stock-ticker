@@ -16,6 +16,11 @@ final class Company
      */
     private array $info;
 
+    public static function empty(): self
+    {
+        return new self(Ticker::empty(), []);
+    }
+
     public function __construct(Ticker $ticker, array $info)
     {
         $this->ticker = $ticker;

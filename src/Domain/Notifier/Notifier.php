@@ -29,10 +29,6 @@ final class Notifier
         $result = new NotifyResult();
 
         foreach ($this->policy->groupedBySymbol() as $symbol => $policyGroup) {
-            if (!$crawlResult->has($symbol)) {
-                continue;
-            }
-
             $company = $crawlResult->get($symbol);
             $policyNames = $this->matchPolicy($policyGroup, $company);
 

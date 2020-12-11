@@ -16,6 +16,11 @@ final class Ticker
         return new self($symbol);
     }
 
+    public static function empty(): self
+    {
+        return new self('');
+    }
+
     private function __construct(string $symbol)
     {
         $this->symbol = $symbol;
