@@ -28,10 +28,10 @@ $siteCrawler = new RootJsonSiteCrawler([
     'change' => new RegularMarketChange(),
     'changePercent' => new RegularMarketChangePercent(),
     'trend' => new RecommendationTrend(),
-    'newsTitles' => new NewsTitle(),
+    'news' => new News(new DateTimeZone('Europe/Berlin'), 3),
 ]);
 
-$crawlResult = FinanceYahooFacade::crawl([$siteCrawler], ['AMZN','GOOG']); 
+$crawlResult = $financeYahooFacade->crawl([$siteCrawler], ['AMZN','GOOG']); 
 ```
 
 ## Consequences

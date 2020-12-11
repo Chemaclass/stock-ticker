@@ -1,14 +1,43 @@
 <h1>Policy threshold reached for these companies</h1>
 
-{% for symbol in notifyResult.symbols() %}
-<div class="company">
-    {% set companyName = notifyResult.companyForSymbol(symbol).info('name') %}
-    <h3>{{ companyName }} <small>{{ symbol }}</small></h3>
+<div class="companies">
+    {% for symbol in notifyResult.symbols() %}
+        <div id="s-{{ symbol }}"
+             class="company {{ symbol }}"
+             style="border:1px solid gray; margin-bottom: 8px; padding: 16px"
+        >
+            {% set company = notifyResult.companyForSymbol(symbol) %}
+            <h2>
+                {{ company.info('name') }}
+                <small class="symbol"
+                       style="font-weight: bold">
+                    ({{ symbol }})
+                </small>
+            </h2>
 
-    <ul class="policies">
-    {% for policy in notifyResult.policiesForSymbol(symbol) %}
-        <li>{{ policy }}</li>
+            <ul class="policies"
+                style="border:1px solid aliceblue; border-radius: 5px; padding: 10px"
+            >
+                {% for policy in notifyResult.policiesForSymbol(symbol) %}
+                    <li>{{ policy }}</li>
+                {% endfor %}
+            </ul>
+
+            <h3>LATEST NEWS</h3>
+            <div class="all-news"
+                 style="border:1px solid lightgray; padding: 5px"
+            >
+                {% for news in company.info('news').get() %}
+                    <div class="news"
+                         style="border-bottom:1px solid lightgray; margin: 10px;"
+                    >
+                        <h4>
+                            <a href="{{ news.url }}">{{ news.title | raw }}</a>
+                        </h4>
+                        <p>{{ news.summary | raw }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     {% endfor %}
-    </ul>
 </div>
-{% endfor %}

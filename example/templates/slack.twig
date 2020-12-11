@@ -1,10 +1,17 @@
-Policy threshold reached for these companies
+Policy threshold reached for these companies:
 
 {% for symbol in notifyResult.symbols() %}
-{% set companyName = notifyResult.companyForSymbol(symbol).info('name') %}
-> `{{ companyName }}` (*{{ symbol }}*)
+    {% set company = notifyResult.companyForSymbol(symbol) %}
+> `{{ company.info('name') }}` (*{{ symbol }}*)
     {% for policy in notifyResult.policiesForSymbol(symbol) %}
 - {{ policy }}
+    {% endfor %}
+
+*LATEST NEWS*
+    {% for news in company.info('news').get() %}
+> <{{ news.url }}|{{ news.title | raw }}> `{{ news.pubtime }}`
+> {{ news.summary | raw }}
+
     {% endfor %}
 --------------------------------------------------
 {% endfor %}

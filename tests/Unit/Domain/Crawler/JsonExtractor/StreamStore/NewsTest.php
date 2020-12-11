@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Chemaclass\FinanceYahooTests\Unit\Domain\Crawler\JsonExtractor\StreamStore;
 
-use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor\StreamStore\NewsTitle;
+use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor\StreamStore\News;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\ExtractedFromJson;
+use DateTimeZone;
 use Generator;
 use PHPUnit\Framework\TestCase;
 
-final class NewsExtractorTest extends TestCase
+final class NewsTest extends TestCase
 {
     /**
      * @dataProvider providerExtractFromJson
@@ -17,10 +18,11 @@ final class NewsExtractorTest extends TestCase
     public function testExtractFromJson(array $allItems, array $expected): void
     {
         $json = $this->createJsonWithItems($allItems);
+        $news = new News(new DateTimeZone('Europe/Berlin'));
 
         self::assertEquals(
             ExtractedFromJson::fromArray($expected),
-            (new NewsTitle())->extractFromJson($json)
+            $news->extractFromJson($json)
         );
     }
 
@@ -31,6 +33,9 @@ final class NewsExtractorTest extends TestCase
                 [
                     'type' => 'ad',
                     'title' => 'This is an add',
+                    'pubtime' => 1607651748000,
+                    'url' => 'url.com',
+                    'summary' => 'A summary',
                 ],
             ],
             'expected' => [],
@@ -41,10 +46,18 @@ final class NewsExtractorTest extends TestCase
                 [
                     'type' => '-',
                     'title' => 'The title',
+                    'pubtime' => 1607651748000,
+                    'url' => 'url.com',
+                    'summary' => 'A summary',
                 ],
             ],
             'expected' => [
-                'The title',
+                [
+                    'title' => 'The title',
+                    'pubtime' => '2020-12-11 01:55:48',
+                    'url' => 'url.com',
+                    'summary' => 'A summary',
+                ],
             ],
         ];
 
@@ -53,23 +66,45 @@ final class NewsExtractorTest extends TestCase
                 [
                     'type' => '-',
                     'title' => 'The first title',
+                    'pubtime' => 1607651748000,
+                    'url' => 'url.1.com',
+                    'summary' => 'A summary',
                 ],
                 [
                     'type' => 'ad',
                     'title' => 'This is an Add!',
+                    'pubtime' => 1607651748000,
+                    'url' => 'url.~1~.com',
+                    'summary' => 'First summary',
                 ],
                 [
                     'type' => '-',
                     'title' => 'The second title',
+                    'pubtime' => 1607651748000,
+                    'url' => 'url.2.com',
+                    'summary' => 'A second summary',
                 ],
                 [
                     'type' => 'ad',
                     'title' => 'This is another Add!',
+                    'pubtime' => 1607651748000,
+                    'url' => 'url.~2~.com',
+                    'summary' => 'A summary',
                 ],
             ],
             'expected' => [
-                'The first title',
-                'The second title',
+                [
+                    'title' => 'The first title',
+                    'pubtime' => '2020-12-11 01:55:48',
+                    'url' => 'url.1.com',
+                    'summary' => 'A summary',
+                ],
+                [
+                    'title' => 'The second title',
+                    'pubtime' => '2020-12-11 01:55:48',
+                    'url' => 'url.2.com',
+                    'summary' => 'A second summary',
+                ],
             ],
         ];
     }
