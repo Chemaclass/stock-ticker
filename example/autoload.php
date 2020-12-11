@@ -45,10 +45,12 @@ function sendNotifications(FinanceYahooFacade $facade, array $policyGroupedBySym
 function crawlStock(FinanceYahooFacade $facade, array $tickerSymbols): CrawlResult
 {
     $siteCrawler = new RootJsonSiteCrawler([
-        'name' => new JsonExtractor\CompanyNameExtractor(),
-        'price' => new JsonExtractor\PriceExtractor(),
-        'trend' => new JsonExtractor\TrendExtractor(),
-        'news' => new JsonExtractor\NewsExtractor(),
+        'name' => new JsonExtractor\QuoteSummaryStore\CompanyName(),
+        'price' => new JsonExtractor\QuoteSummaryStore\RegularMarketPrice(),
+        'change' => new JsonExtractor\QuoteSummaryStore\RegularMarketChange(),
+        'changePercent' => new JsonExtractor\QuoteSummaryStore\RegularMarketChangePercent(),
+        'lastTrend' => new JsonExtractor\QuoteSummaryStore\RecommendationTrend(),
+        'newsTitles' => new JsonExtractor\StreamStore\NewsTitle(),
     ]);
 
     return $facade->crawlStock([$siteCrawler], $tickerSymbols);

@@ -4586,7 +4586,7 @@
             "address1":"410 Terry Avenue North",
             "industry":"Internet Retail"
           },
-          "recommendationTrend":{
+          "LastTrend":{
             "trend":[
               {
                 "period":"0m",

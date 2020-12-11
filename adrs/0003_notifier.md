@@ -12,7 +12,7 @@ Create a new Module called `Notifier` which will be responsible for
 - Defining some already prepared channels (such as Email or Slack)
 - Create a `PolicyGroup` logic in which you are able to define a group of policy conditions per Ticker
 
-For example:
+See the [example/notify.php](../example/notify.php) file to see a fully working example.
 
 ```php
 $policy = new NotifierPolicy([
@@ -34,8 +34,6 @@ $crawlResult = $facade->crawl([SiteCrawlerInterface], ['AMZN','GOOG']);
 // And after crawling the site/s we just need to pass the policy with the crawled result 
 $notifyResult = $facade->notify($policy, $crawlResult);
 ```
-
-See the [example/notify.php](../example/notify.php) file to see a fully working example.
 
 ## Consequences
 

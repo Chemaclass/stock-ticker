@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor;
+namespace Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor\StreamStore;
 
+use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor\JsonExtractorInterface;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\ExtractedFromJson;
 
-final class NewsExtractor implements JsonExtractorInterface
+final class NewsTitle implements JsonExtractorInterface
 {
     public function extractFromJson(array $json): ExtractedFromJson
     {

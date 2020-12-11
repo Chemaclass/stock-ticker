@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahooTests\Unit\Domain\Crawler\JsonExtractor;
+namespace Chemaclass\FinanceYahooTests\Unit\Domain\Crawler\JsonExtractor\StreamStore;
 
-use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor\NewsExtractor;
+use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor\StreamStore\NewsTitle;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\ExtractedFromJson;
 use Generator;
 use PHPUnit\Framework\TestCase;
@@ -20,7 +20,7 @@ final class NewsExtractorTest extends TestCase
 
         self::assertEquals(
             ExtractedFromJson::fromArray($expected),
-            (new NewsExtractor())->extractFromJson($json)
+            (new NewsTitle())->extractFromJson($json)
         );
     }
 

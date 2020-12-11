@@ -73,13 +73,6 @@ composer test-unit    # run phpunit
 composer psalm  # run Psalm coverage
 ```
 
-## Roadmap
-
-This Project is currently in progress. To be done:
-
-- Be able to define a threshold at which you might want to get notify via email or slack, for example.  
-- ...
-
 ----------
 
 More info about this scaffolding -> https://github.com/Chemaclass/PhpScaffolding
