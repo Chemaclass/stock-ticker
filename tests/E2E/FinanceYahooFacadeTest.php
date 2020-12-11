@@ -8,7 +8,7 @@ use Chemaclass\FinanceYahoo\Domain\Crawler\CrawlResult;
 use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor\QuoteSummaryStore\CompanyName;
 use Chemaclass\FinanceYahoo\Domain\Crawler\RootJsonSiteCrawler;
 use Chemaclass\FinanceYahoo\Domain\Notifier\ChannelInterface;
-use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\NotifierPolicy;
+use Chemaclass\FinanceYahoo\Domain\Notifier\NotifierPolicy;
 use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\PolicyGroup;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\Company;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\ExtractedFromJson;

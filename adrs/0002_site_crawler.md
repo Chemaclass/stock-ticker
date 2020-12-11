@@ -27,7 +27,7 @@ $siteCrawler = new RootJsonSiteCrawler([
     'price' => new RegularMarketPrice(),
     'change' => new RegularMarketChange(),
     'changePercent' => new RegularMarketChangePercent(),
-    'lastTrend' => new RecommendationTrend(),
+    'trend' => new RecommendationTrend(),
     'newsTitles' => new NewsTitle(),
 ]);
 

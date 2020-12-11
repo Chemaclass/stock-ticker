@@ -14,7 +14,7 @@ final class RecommendationTrend implements JsonExtractorInterface
         $quoteSummaryStore = $json['context']['dispatcher']['stores']['QuoteSummaryStore'];
 
         return ExtractedFromJson::fromArray(
-            (array) $quoteSummaryStore['recommendationTrend']['trend'][0]
+            (array) $quoteSummaryStore['recommendationTrend']['trend']
         );
     }
 }

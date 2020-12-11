@@ -20,15 +20,16 @@ $facade = createFacade(
 
 $result = sendNotifications($facade, [
     // You can define multiple policies for the same Ticker
+    // As a function or a callable class
     'AMZN' => new PolicyGroup([
         'high trend to buy' => fn (Company $c): bool => $c->info('trend')->get('buy') > 25,
-        'some trend to sell' => fn (Company $c): bool => $c->info('trend')->get('sell') > 0,
+        'buy higher than sell' => new BuyHigherThanSell(),
     ]),
     // And combine them however you want
     'GOOG' => new PolicyGroup([
         'strongBuy higher than strongSell' => function (Company $c): bool {
-            $strongBuy = $c->info('trend')->get('strongBuy');
-            $strongSell = $c->info('trend')->get('strongSell');
+            $strongBuy = $c->info('trend')->get('0')['strongBuy'];
+            $strongSell = $c->info('trend')->get('0')['strongSell'];
 
             return $strongBuy > $strongSell;
         },
@@ -37,7 +38,7 @@ $result = sendNotifications($facade, [
 //[
 //  "AMZN" => [
 //    0 => "high trend to buy"
-//    1 => "some trend to sell"
+//    1 => "buy higher than sell"
 //  ]
 //  "GOOG" => [
 //    0 => "strongBuy higher than strongSell"

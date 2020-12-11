@@ -38,6 +38,10 @@ final class ExtractedFromJson
      */
     public function get(string $key = '')
     {
+        if (!isset($this->data[$key]) && is_array(reset($this->data))) {
+            return $this->data;
+        }
+
         return $this->data[$key] ?? (string) $this;
     }
 }

@@ -3,6 +3,7 @@
 
 declare(strict_types=1);
 
+use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\BuyHigherThanSell;
 use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\PolicyGroup;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\Company;
 
@@ -17,15 +18,16 @@ $facade = createFacade(
 
 $result = sendNotifications($facade, [
     // You can define multiple policies for the same Ticker
+    // As a function or a callable class
     'AMZN' => new PolicyGroup([
-        'high trend to buy' => fn (Company $c): bool => $c->info('lastTrend')->get('buy') > 25,
-        'some trend to sell' => fn (Company $c): bool => $c->info('lastTrend')->get('sell') > 0,
+        'high trend to buy' => static fn (Company $c): bool => $c->info('trend')->get('buy') > 25,
+        'buy higher than sell' => new BuyHigherThanSell(),
     ]),
     // And combine them however you want
     'GOOG' => new PolicyGroup([
-        'strongBuy higher than strongSell' => function (Company $c): bool {
-            $strongBuy = $c->info('lastTrend')->get('strongBuy');
-            $strongSell = $c->info('lastTrend')->get('strongSell');
+        'strongBuy higher than strongSell' => static function (Company $c): bool {
+            $strongBuy = $c->info('trend')->get('0')['strongBuy'];
+            $strongSell = $c->info('trend')->get('0')['strongSell'];
 
             return $strongBuy > $strongSell;
         },

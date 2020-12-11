@@ -10,8 +10,8 @@ use Chemaclass\FinanceYahoo\Domain\Notifier\Channel\Slack\SlackChannel;
 use Chemaclass\FinanceYahoo\Domain\Notifier\Channel\Slack\SlackHttpClient;
 use Chemaclass\FinanceYahoo\Domain\Notifier\Channel\TwigTemplateGenerator;
 use Chemaclass\FinanceYahoo\Domain\Notifier\ChannelInterface;
+use Chemaclass\FinanceYahoo\Domain\Notifier\NotifierPolicy;
 use Chemaclass\FinanceYahoo\Domain\Notifier\NotifyResult;
-use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\NotifierPolicy;
 use Chemaclass\FinanceYahoo\FinanceYahooFacade;
 use Chemaclass\FinanceYahoo\FinanceYahooFactory;
 use Symfony\Component\HttpClient\HttpClient;
@@ -49,7 +49,7 @@ function crawlStock(FinanceYahooFacade $facade, array $tickerSymbols): CrawlResu
         'price' => new JsonExtractor\QuoteSummaryStore\RegularMarketPrice(),
         'change' => new JsonExtractor\QuoteSummaryStore\RegularMarketChange(),
         'changePercent' => new JsonExtractor\QuoteSummaryStore\RegularMarketChangePercent(),
-        'lastTrend' => new JsonExtractor\QuoteSummaryStore\RecommendationTrend(),
+        'trend' => new JsonExtractor\QuoteSummaryStore\RecommendationTrend(),
         'newsTitles' => new JsonExtractor\StreamStore\NewsTitle(),
     ]);
 

@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahoo\Domain\Notifier\Policy;
+namespace Chemaclass\FinanceYahoo\Domain\Notifier;
+
+use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\PolicyGroup;
 
 final class NotifierPolicy
 {
