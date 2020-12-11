@@ -7,7 +7,7 @@ namespace Chemaclass\FinanceYahooTests\E2E;
 use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor\CompanyNameExtractor;
 use Chemaclass\FinanceYahoo\Domain\Crawler\RootAppJsonCrawler;
 use Chemaclass\FinanceYahoo\Domain\Notifier\ChannelInterface;
-use Chemaclass\FinanceYahoo\Domain\Notifier\NotifierPolicy;
+use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\NotifierPolicy;
 use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\PolicyGroup;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\Company;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\ExtractedFromJson;
@@ -32,7 +32,7 @@ final class FinanceYahooFacadeTest extends TestCase
         $companies = $facade->crawlStock($siteCrawler);
 
         $first = reset($companies);
-        self::assertEquals(new Ticker('AMZN'), $first->ticker());
+        self::assertEquals(Ticker::withSymbol('AMZN'), $first->ticker());
         self::assertEquals('Amazon.com, Inc.', $first->summary()['name']);
     }
 
@@ -42,11 +42,11 @@ final class FinanceYahooFacadeTest extends TestCase
 
         $companies = [
             'AMZN' => new Company(
-                new Ticker('AMZN'),
+                Ticker::withSymbol('AMZN'),
                 ['trend' => ExtractedFromJson::fromArray(['buy' => 0, 'sell' => 10])],
             ),
             'GOOG' => new Company(
-                new Ticker('GOOG'),
+                Ticker::withSymbol('GOOG'),
                 ['trend' => ExtractedFromJson::fromArray(['buy' => 10, 'sell' => 0])],
             ),
         ];

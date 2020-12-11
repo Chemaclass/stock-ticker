@@ -25,8 +25,8 @@ final class FinanceYahooConfigTest extends TestCase
         $config = new FinanceYahooConfig('["AAA","BBB"]');
 
         self::assertEquals([
-            new Ticker('AAA'),
-            new Ticker('BBB'),
+            Ticker::withSymbol('AAA'),
+            Ticker::withSymbol('BBB'),
         ], $config->getTickers());
     }
 }

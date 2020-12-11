@@ -7,7 +7,7 @@ namespace Chemaclass\FinanceYahoo;
 use Chemaclass\FinanceYahoo\Domain\Crawler\CompanyCrawler;
 use Chemaclass\FinanceYahoo\Domain\Crawler\SiteCrawlerInterface;
 use Chemaclass\FinanceYahoo\Domain\Notifier\Notifier;
-use Chemaclass\FinanceYahoo\Domain\Notifier\NotifierPolicy;
+use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\NotifierPolicy;
 
 interface FinanceYahooFactoryInterface
 {

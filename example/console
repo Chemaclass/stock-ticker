@@ -6,7 +6,8 @@ declare(strict_types=1);
 use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor;
 use Chemaclass\FinanceYahoo\Domain\Crawler\RootAppJsonCrawler;
 use Chemaclass\FinanceYahoo\Domain\Notifier\Channel\EmailChannel;
-use Chemaclass\FinanceYahoo\Domain\Notifier\NotifierPolicy;
+use Chemaclass\FinanceYahoo\Domain\Notifier\NotifyResult;
+use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\NotifierPolicy;
 use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\PolicyGroup;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\Company;
 use Chemaclass\FinanceYahoo\FinanceYahooConfig;
@@ -19,6 +20,25 @@ use Symfony\Component\Mailer\Mailer;
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 Dotenv\Dotenv::createImmutable(__DIR__)->load();
+
+function sendNotifications(FinanceYahooFacade $facade, array $policyGroupedBySymbol): NotifyResult
+{
+    $policy = new NotifierPolicy($policyGroupedBySymbol);
+
+    return $facade->notify($policy, crawlStock($facade));
+}
+
+function crawlStock(FinanceYahooFacade $facade): array
+{
+    $siteCrawler = new RootAppJsonCrawler([
+        'name' => new JsonExtractor\CompanyNameExtractor(),
+        'price' => new JsonExtractor\PriceExtractor(),
+        'trend' => new JsonExtractor\TrendExtractor(),
+        'news' => new JsonExtractor\NewsExtractor(),
+    ]);
+
+    return $facade->crawlStock($siteCrawler);
+}
 
 $facade = new FinanceYahooFacade(
     new FinanceYahooConfig($_ENV['TICKERS']),
@@ -34,26 +54,15 @@ $facade = new FinanceYahooFacade(
     )
 );
 
-$siteCrawler = new RootAppJsonCrawler([
-    'name' => new JsonExtractor\CompanyNameExtractor(),
-    'price' => new JsonExtractor\PriceExtractor(),
-    'trend' => new JsonExtractor\TrendExtractor(),
-    'news' => new JsonExtractor\NewsExtractor(),
-]);
-
-$companies = $facade->crawlStock($siteCrawler);
-
-// You can now do whatever you want with the crawled data :)
-dump($companies);
 print 'Sending notifications...' . PHP_EOL;
 
-$policy = new NotifierPolicy([
+$result = sendNotifications($facade, [
     'AMZN' => new PolicyGroup([
         'high trend to buy' => static fn (Company $c) => $c->summary()['trend']->asArray()['buy'] > 25,
         'high trend to sell' => static fn (Company $c) => $c->summary()['trend']->asArray()['sell'] > 20,
     ]),
 ]);
 
-$notifyResult = $facade->notify($policy, $companies);
-dump($notifyResult);
-print 'Done!' . PHP_EOL;
+dump($result);
+
+print 'Done.' . PHP_EOL;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Chemaclass\FinanceYahoo\Domain\Notifier;
 
+use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\NotifierPolicy;
 use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\PolicyGroup;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\Company;
 

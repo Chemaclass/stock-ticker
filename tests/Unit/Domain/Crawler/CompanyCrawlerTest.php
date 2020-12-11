@@ -17,33 +17,31 @@ final class CompanyCrawlerTest extends TestCase
 {
     use WithFakeHttpClient;
 
-    /** @test */
-    public function crawlEmptyStock(): void
+    public function testEmptyStockWhenNoTickerWasProvided(): void
     {
-        $finYahoo = new CompanyCrawler(
+        $companyCrawler = new CompanyCrawler(
             $this->mockHttpClient(),
             $this->mockSiteCrawler('key1', 'value1')
         );
 
-        self::assertEmpty($finYahoo->crawlStock());
+        self::assertEmpty($companyCrawler->crawlStock());
     }
 
-    /** @test */
-    public function crawlStockForOneTickerAndMultipleCrawlers(): void
+    public function testCrawlStockForOneTickerAndMultipleCrawlers(): void
     {
-        $finYahoo = new CompanyCrawler(
+        $companyCrawler = new CompanyCrawler(
             $this->mockHttpClient(),
             $this->mockSiteCrawler('key1', 'value1'),
             $this->mockSiteCrawler('key2', 'value2')
         );
 
-        $actual = $finYahoo->crawlStock(
-            new Ticker('EXAMPLE_TICKER')
+        $actual = $companyCrawler->crawlStock(
+            Ticker::withSymbol('SYMBOL')
         );
 
         self::assertEquals([
-            'EXAMPLE_TICKER' => new Company(
-                new Ticker('EXAMPLE_TICKER'),
+            'SYMBOL' => new Company(
+                Ticker::withSymbol('SYMBOL'),
                 [
                     'key1' => 'value1',
                     'key2' => 'value2',
@@ -52,28 +50,27 @@ final class CompanyCrawlerTest extends TestCase
         ], $actual);
     }
 
-    /** @test */
-    public function crawlStockForMultipleTickers(): void
+    public function testCrawlStockForMultipleTickerSymbols(): void
     {
-        $finYahoo = new CompanyCrawler(
+        $companyCrawler = new CompanyCrawler(
             $this->mockHttpClient(),
             $this->mockSiteCrawler('key1', 'value1'),
         );
 
-        $actual = $finYahoo->crawlStock(
-            new Ticker('EXAMPLE_TICKER_1'),
-            new Ticker('EXAMPLE_TICKER_2'),
+        $actual = $companyCrawler->crawlStock(
+            Ticker::withSymbol('SYMBOL_1'),
+            Ticker::withSymbol('SYMBOL_2'),
         );
 
         self::assertEquals([
-            'EXAMPLE_TICKER_1' => new Company(
-                new Ticker('EXAMPLE_TICKER_1'),
+            'SYMBOL_1' => new Company(
+                Ticker::withSymbol('SYMBOL_1'),
                 [
                     'key1' => 'value1',
                 ]
             ),
-            'EXAMPLE_TICKER_2' => new Company(
-                new Ticker('EXAMPLE_TICKER_2'),
+            'SYMBOL_2' => new Company(
+                Ticker::withSymbol('SYMBOL_2'),
                 [
                     'key1' => 'value1',
                 ]

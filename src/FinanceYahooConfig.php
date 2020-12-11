@@ -24,7 +24,7 @@ final class FinanceYahooConfig implements FinanceYahooConfigInterface
     public function getTickers(): array
     {
         return array_map(
-            static fn (string $symbol) => new Ticker($symbol),
+            static fn (string $symbol) => Ticker::withSymbol($symbol),
             (array) json_decode($this->tickers, true, 512, JSON_THROW_ON_ERROR)
         );
     }

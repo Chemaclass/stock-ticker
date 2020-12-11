@@ -11,7 +11,12 @@ final class Ticker
 {
     private string $symbol;
 
-    public function __construct(string $symbol)
+    public static function withSymbol(string $symbol): self
+    {
+        return new self($symbol);
+    }
+
+    private function __construct(string $symbol)
     {
         $this->symbol = $symbol;
     }

@@ -30,7 +30,7 @@ BODY;
 
         $actual = $crawler->crawl(
             $this->mockHttpClient(self::RESPONSE_BODY),
-            new Ticker('EXAMPLE_TICKER')
+            Ticker::withSymbol('EXAMPLE_TICKER')
         );
 
         self::assertEquals(new Site([
@@ -45,7 +45,7 @@ BODY;
 
         $actual = $crawler->crawl(
             $this->mockHttpClient(self::RESPONSE_BODY),
-            new Ticker('EXAMPLE_TICKER')
+            Ticker::withSymbol('EXAMPLE_TICKER')
         );
 
         self::assertEquals(new Site([

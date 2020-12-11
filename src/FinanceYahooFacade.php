@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Chemaclass\FinanceYahoo;
 
 use Chemaclass\FinanceYahoo\Domain\Crawler\SiteCrawlerInterface;
-use Chemaclass\FinanceYahoo\Domain\Notifier\NotifierPolicy;
 use Chemaclass\FinanceYahoo\Domain\Notifier\NotifyResult;
+use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\NotifierPolicy;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\Company;
 
 final class FinanceYahooFacade
