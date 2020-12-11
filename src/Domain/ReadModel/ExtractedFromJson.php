@@ -31,8 +31,17 @@ final class ExtractedFromJson
         return reset($this->data);
     }
 
-    public function asArray(): array
+    /**
+     * Gets the element with its original type
+     *
+     * @return array|bool|float|int|string
+     */
+    public function get(string $key = '')
     {
-        return $this->data;
+        if (isset($this->data[$key])) {
+            return $this->data[$key];
+        }
+
+        return (string) $this;
     }
 }

@@ -34,13 +34,14 @@ final class Notifier
             }
 
             $company = $crawlResult->get($symbol);
-            $policyName = $this->matchPolicy($policyGroup, $company);
+            $policyNames = $this->matchPolicy($policyGroup, $company);
 
-            if (!empty($policyName)) {
-                $this->sendNotification($company, $policyName);
-                $result->add($company, $policyName);
+            if (!empty($policyNames)) {
+                $result->add($company, $policyNames);
             }
         }
+
+        $this->sendNotification($result);
 
         return $result;
     }
@@ -48,21 +49,23 @@ final class Notifier
     /**
      * If any of the policies are true, then it can notify.
      */
-    private function matchPolicy(PolicyGroup $policyGroup, Company $company): string
+    private function matchPolicy(PolicyGroup $policyGroup, Company $company): array
     {
+        $policyNames = [];
+
         foreach ($policyGroup->policies() as $policyName => $callablePolicy) {
             if ($callablePolicy($company)) {
-                return $policyName;
+                $policyNames[] = $policyName;
             }
         }
 
-        return '';
+        return $policyNames;
     }
 
-    private function sendNotification(Company $company, string $policyName): void
+    private function sendNotification(NotifyResult $result): void
     {
         foreach ($this->channels as $channel) {
-            $channel->send($company, $policyName);
+            $channel->send($result);
         }
     }
 }

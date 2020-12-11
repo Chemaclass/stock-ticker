@@ -30,43 +30,42 @@ final class FinanceYahooFacadeTest extends TestCase
         ]);
 
         $result = $facade->crawlStock([$siteCrawler], ['AMZN']);
-        $first = $result->get('AMZN');
+        $amazon = $result->get('AMZN');
 
-        self::assertEquals(Ticker::withSymbol('AMZN'), $first->ticker());
-        self::assertEquals('Amazon.com, Inc.', $first->get('name'));
+        self::assertEquals(Ticker::withSymbol('AMZN'), $amazon->ticker());
+        self::assertEquals('Amazon.com, Inc.', $amazon->info('name'));
     }
 
     public function testNotify(): void
     {
-        $facade = $this->createFinanceYahooFacade(self::exactly(2));
+        $amazon = new Company(
+            Ticker::withSymbol('AMZN'),
+            ['trend' => ExtractedFromJson::fromArray(['buy' => 0, 'sell' => 10])],
+        );
 
-        $companies = new CrawlResult([
-            'AMZN' => new Company(
-                Ticker::withSymbol('AMZN'),
-                ['trend' => ExtractedFromJson::fromArray(['buy' => 0, 'sell' => 10])],
-            ),
-            'GOOG' => new Company(
-                Ticker::withSymbol('GOOG'),
-                ['trend' => ExtractedFromJson::fromArray(['buy' => 10, 'sell' => 0])],
-            ),
-        ]);
-
-        $policyGroup = new PolicyGroup([
-            'high trend to buy' => static fn (Company $c) => $c->get('trend')->asArray()['buy'] > 5,
-            'high trend to sell' => static fn (Company $c) => $c->get('trend')->asArray()['sell'] > 5,
-        ]);
+        $google = new Company(
+            Ticker::withSymbol('GOOG'),
+            ['trend' => ExtractedFromJson::fromArray(['buy' => 10, 'sell' => 0])],
+        );
 
         $policy = new NotifierPolicy([
-            'AMZN' => $policyGroup,
-            'GOOG' => $policyGroup,
+            $amazon->ticker()->symbol() => new PolicyGroup([
+                'high trend to buy' => static fn (Company $c) => $c->info('trend')->get('buy') > 5,
+                'high trend to sell' => static fn (Company $c) => $c->info('trend')->get('sell') > 5,
+            ]),
+            'UNKNOWN' => new PolicyGroup([]),
         ]);
 
-        $notifyResult = $facade->notify($policy, $companies);
+        $facade = $this->createFinanceYahooFacade(self::once());
 
-        self::assertEquals([
-            'AMZN' => 'high trend to sell',
-            'GOOG' => 'high trend to buy',
-        ], $notifyResult->asArray());
+        $notifyResult = $facade->notify($policy, new CrawlResult([
+            $amazon->ticker()->symbol() => $amazon,
+            $google->ticker()->symbol() => $google,
+        ]));
+
+        self::assertSame(['AMZN'], $notifyResult->symbols());
+        self::assertSame($amazon, $notifyResult->companyForSymbol('AMZN'));
+        self::assertSame(['high trend to sell'], $notifyResult->policiesForSymbol('AMZN'));
     }
 
     private function createFinanceYahooFacade(InvocationOrder $channelSendExpected): FinanceYahooFacade

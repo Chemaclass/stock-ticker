@@ -26,20 +26,20 @@ $facade = createFacade(
 $result = sendNotifications($facade, [
     // You can define multiple policies for the same Ticker
     'AMZN' => new PolicyGroup([
-        'high trend to buy' => static fn (Company $c): bool => $c->get('trend')->asArray()['buy'] > 25,
-        'high trend to sell' => static fn (Company $c): bool => $c->get('trend')->asArray()['sell'] > 20,
+        'high trend to buy' => static fn (Company $c): bool => $c->info('trend')->get('buy') > 25,
+        'some trend to sell' => static fn (Company $c): bool => $c->info('trend')->get('sell') > 0,
     ]),
     // And combine them however you want
     'GOOG' => new PolicyGroup([
         'strongBuy higher than strongSell' => static function (Company $c): bool {
-            $strongBuy = $c->get('trend')->asArray()['strongBuy'];
-            $strongSell = $c->get('trend')->asArray()['strongSell'];
+            $strongBuy = $c->info('trend')->get('strongBuy');
+            $strongSell = $c->info('trend')->get('strongSell');
 
             return $strongBuy > $strongSell;
         },
     ]),
 ]);
 
-dump($result);
+dump($result->policiesGroupBySymbol());
 
 print 'Done.' . PHP_EOL;

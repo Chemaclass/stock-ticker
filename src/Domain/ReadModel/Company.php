@@ -14,17 +14,17 @@ final class Company
     /**
      * @var array<string, ExtractedFromJson>
      */
-    private array $summary;
+    private array $info;
 
-    public function __construct(Ticker $ticker, array $summary)
+    public function __construct(Ticker $ticker, array $info)
     {
         $this->ticker = $ticker;
-        $this->summary = $summary;
+        $this->info = $info;
     }
 
     public function __toString(): string
     {
-        return 'Ticker: ' . $this->ticker->symbol();
+        return sprintf('Ticker: %s', $this->ticker->symbol());
     }
 
     public function ticker(): Ticker
@@ -32,8 +32,8 @@ final class Company
         return $this->ticker;
     }
 
-    public function get(string $key): ExtractedFromJson
+    public function info(string $key): ExtractedFromJson
     {
-        return $this->summary[$key];
+        return $this->info[$key];
     }
 }
