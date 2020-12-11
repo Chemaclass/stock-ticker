@@ -17,12 +17,16 @@ final class EmailChannel implements ChannelInterface
 
     private MailerInterface $mailer;
 
+    private TemplateGeneratorInterface $templateGenerator;
+
     public function __construct(
         string $toAddress,
-        MailerInterface $mailer
+        MailerInterface $mailer,
+        TemplateGeneratorInterface $templateGenerator
     ) {
         $this->toAddress = $toAddress;
         $this->mailer = $mailer;
+        $this->templateGenerator = $templateGenerator;
     }
 
     public function send(NotifyResult $notifyResult): void
@@ -31,7 +35,7 @@ final class EmailChannel implements ChannelInterface
             ->to($this->toAddress)
             ->from(self::NOREPLY_EMAIL)
             ->subject($this->generateSubject($notifyResult))
-            ->html($this->generateHtml($notifyResult));
+            ->html($this->templateGenerator->generateHtml($notifyResult));
 
         $this->mailer->send($email);
     }
@@ -41,23 +45,5 @@ final class EmailChannel implements ChannelInterface
         $symbols = implode(', ', array_values($notifyResult->symbols()));
 
         return "FinanceYahoo alert for {$symbols}";
-    }
-
-    private function generateHtml(NotifyResult $notifyResult): string
-    {
-        $text = '<h1>Policy threshold reached for these companies</h1>';
-
-        foreach ($notifyResult->symbols() as $symbol) {
-            $companyName = (string) $notifyResult->companyForSymbol($symbol)->info('name');
-            $text .= "<h2>{$companyName} <small>$symbol</small></h2>";
-            $text .= '<ul>';
-            $text .= implode(array_map(
-                static fn (string $s): string => "<li>{$s}</li>",
-                $notifyResult->policiesForSymbol($symbol)
-            ));
-            $text .= '</ul>';
-        }
-
-        return $text;
     }
 }

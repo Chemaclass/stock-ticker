@@ -1,0 +1,14 @@
+<h1>Policy threshold reached for these companies</h1>
+
+{% for symbol in notifyResult.symbols() %}
+<div class="company">
+    {% set companyName = notifyResult.companyForSymbol(symbol).info('name') %}
+    <h3>{{ companyName }} <small>{{ symbol }}</small></h3>
+
+    <ul class="policies">
+    {% for policy in notifyResult.policiesForSymbol(symbol) %}
+        <li>{{ policy }}</li>
+    {% endfor %}
+    </ul>
+</div>
+{% endfor %}

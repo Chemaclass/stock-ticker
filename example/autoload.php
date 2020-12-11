@@ -5,12 +5,18 @@ declare(strict_types=1);
 use Chemaclass\FinanceYahoo\Domain\Crawler\CrawlResult;
 use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor;
 use Chemaclass\FinanceYahoo\Domain\Crawler\RootAppJsonCrawler;
+use Chemaclass\FinanceYahoo\Domain\Notifier\Channel\EmailChannel;
+use Chemaclass\FinanceYahoo\Domain\Notifier\Channel\TwigTemplateGenerator;
 use Chemaclass\FinanceYahoo\Domain\Notifier\ChannelInterface;
 use Chemaclass\FinanceYahoo\Domain\Notifier\NotifyResult;
 use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\NotifierPolicy;
 use Chemaclass\FinanceYahoo\FinanceYahooFacade;
 use Chemaclass\FinanceYahoo\FinanceYahooFactory;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\Mailer\Bridge\Google\Transport\GmailSmtpTransport;
+use Symfony\Component\Mailer\Mailer;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -44,4 +50,19 @@ function crawlStock(FinanceYahooFacade $facade, array $tickerSymbols): CrawlResu
     ]);
 
     return $facade->crawlStock([$siteCrawler], $tickerSymbols);
+}
+
+function createEmailChannel(): EmailChannel
+{
+    return new EmailChannel(
+        $_ENV['TO_ADDRESS'],
+        new Mailer(new GmailSmtpTransport(
+            $_ENV['MAILER_USERNAME'],
+            $_ENV['MAILER_PASSWORD']
+        )),
+        new TwigTemplateGenerator(
+            new Environment(new FilesystemLoader(__DIR__ . '/templates')),
+            'email-template.twig'
+        )
+    );
 }
