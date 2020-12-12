@@ -8,7 +8,7 @@ require_once __DIR__ . '/autoload.php';
 $facade = createFacade();
 
 print 'Crawling stock...' . PHP_EOL;
-$result = crawlStock($facade, ['AMZN'], $maxNewsToFetch = 5);
+$crawlResult = crawlStock($facade, ['AMZN'], $maxNewsToFetch = 5);
 print 'Done.' . PHP_EOL;
 
-dump($result);
+printCrawResult($crawlResult);

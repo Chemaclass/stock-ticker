@@ -41,4 +41,9 @@ final class Company
     {
         return $this->info[$key];
     }
+
+    public function allInfo(): array
+    {
+        return $this->info;
+    }
 }

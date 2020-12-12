@@ -85,3 +85,48 @@ function createSlackChannel(string $templateName = 'slack.twig'): SlackChannel
         )
     );
 }
+
+function printCrawResult(CrawlResult $crawlResult): void
+{
+    println('~~~~~~~~~~~~~~~~~~~~~~~~~~');
+    println('~~~~~~ Crawl result ~~~~~~');
+    println('~~~~~~~~~~~~~~~~~~~~~~~~~~');
+
+    foreach ($crawlResult->getCompaniesGroupedBySymbol() as $symbol => $company) {
+        println($symbol);
+
+        foreach ($company->allInfo() as $key => $value) {
+            printfln('# %s => %s', $key, json_encode($value->get()));
+        }
+        println();
+    }
+    println();
+}
+
+function printNotifyResult(NotifyResult $notifyResult): void
+{
+    println('===========================');
+    println('====== Notify result ======');
+    println('===========================');
+
+    foreach ($notifyResult->conditionNamesGroupBySymbol() as $symbol => $conditionNames) {
+        println($symbol);
+        println('Conditions:');
+
+        foreach ($conditionNames as $conditionName) {
+            printfln('  - %s', $conditionName);
+        }
+        println();
+    }
+    println();
+}
+
+function printfln(string $fmt = '', ...$args): void
+{
+    println(sprintf($fmt, ...$args));
+}
+
+function println(string $str = ''): void
+{
+    print $str . PHP_EOL;
+}

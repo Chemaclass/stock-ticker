@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Chemaclass\FinanceYahoo\Domain\Crawler;
 
+use function assert;
 use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor\JsonExtractorInterface;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\Site;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\Ticker;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Webmozart\Assert\Assert;
 
 /**
  * @see "data/RootAppMainJsonExample.json" to see the structure of the `root.App.main` json.
@@ -25,7 +25,10 @@ final class RootJsonSiteCrawler implements SiteCrawlerInterface
 
     public function __construct(array $jsonExtractors)
     {
-        Assert::allIsInstanceOf($jsonExtractors, JsonExtractorInterface::class);
+        foreach ($jsonExtractors as $extractor) {
+            assert($extractor instanceof JsonExtractorInterface);
+        }
+
         $this->jsonExtractors = $jsonExtractors;
     }
 

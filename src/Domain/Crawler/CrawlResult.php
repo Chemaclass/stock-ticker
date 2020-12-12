@@ -9,18 +9,20 @@ use Chemaclass\FinanceYahoo\Domain\ReadModel\Company;
 final class CrawlResult
 {
     /** @var array<string,Company> */
-    private array $companiesGroupBySymbol;
+    private array $companiesGroupedBySymbol;
 
-    /**
-     * @param array<string,Company> $companiesGroupBySymbol
-     */
-    public function __construct(array $companiesGroupBySymbol)
+    public function __construct(array $companiesGroupedBySymbol)
     {
-        $this->companiesGroupBySymbol = $companiesGroupBySymbol;
+        $this->companiesGroupedBySymbol = $companiesGroupedBySymbol;
     }
 
-    public function get(string $symbol): Company
+    public function getCompany(string $symbol): Company
     {
-        return $this->companiesGroupBySymbol[$symbol] ?? Company::empty();
+        return $this->companiesGroupedBySymbol[$symbol] ?? Company::empty();
+    }
+
+    public function getCompaniesGroupedBySymbol(): array
+    {
+        return $this->companiesGroupedBySymbol;
     }
 }

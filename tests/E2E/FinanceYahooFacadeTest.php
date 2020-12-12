@@ -30,7 +30,7 @@ final class FinanceYahooFacadeTest extends TestCase
         ]);
 
         $result = $facade->crawlStock([$siteCrawler], ['AMZN']);
-        $amazon = $result->get('AMZN');
+        $amazon = $result->getCompany('AMZN');
 
         self::assertEquals(Ticker::withSymbol('AMZN'), $amazon->ticker());
         self::assertEquals('Amazon.com, Inc.', $amazon->info('name'));

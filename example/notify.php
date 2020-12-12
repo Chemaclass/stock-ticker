@@ -35,4 +35,4 @@ $result = sendNotifications($facade, [
 
 print 'Done.' . PHP_EOL;
 
-dump($result->conditionNamesGroupBySymbol());
+printNotifyResult($result);

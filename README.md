@@ -10,7 +10,7 @@ This is an API to get a report/notification (via email and/or slack) of the late
 to the Tinker (Stock Symbol) that you are interested in based on a personal lookup that you can define yourself
 independently of each Tinker.
 
-## Example
+### Example
 
 See a full & working example for
 
@@ -18,7 +18,7 @@ See a full & working example for
 - Crawling + [Notifying](example/notify.php)
 - Crawling + Notifying [in a loop](example/loop-notify.php)
 
-### Real use case
+#### Real use case
 
 What about getting a notification everytime there are news that are new for you?
 
@@ -39,7 +39,8 @@ while (true) {
     sleep(60);
 }
 ```
-### Working with the example scripts
+
+#### Working with the example scripts
 
 In order to make the example scripts work, you need to create a `.env` file as:
 
@@ -48,7 +49,7 @@ In order to make the example scripts work, you need to create a `.env` file as:
 
 More info about it in the example's [readme](example/README.md).
 
-## Set up the project
+### Set up the project
 
 Set up the container and install the composer dependencies:
 
@@ -67,7 +68,7 @@ You can go even go inside the docker container:
 docker exec -ti -u dev finance_yahoo bash
 ```
 
-### Some composer scripts
+#### Some composer scripts
 
 ```bash
 composer test-all     # run test-quality and test-unit
@@ -76,12 +77,12 @@ composer test-unit    # run phpunit
 composer psalm        # run Psalm coverage
 ```
 
-## Substantial changes
+### Substantial changes
 
 Substantial changes are architecture decisions, documentation restructuring, breaking changes, etc. Not Bug Reports, Bug
 Fixes, Tests, etc.
 
-### How to contribute a substantial change
+#### How to contribute a substantial change
 
 In order to make a substantial change it is a good practice to discuss the idea before implementing it.
 
@@ -89,6 +90,53 @@ In order to make a substantial change it is a good practice to discuss the idea 
 - The issue is the place to discuss everything.
 - The result of the issue can be an ADR file (under the [adrs](./adrs) directory), but also just as CS Fixer rule to
   check then during CI.
+
+## Install it as a composer dependency
+
+1st) Create a `composer.json` file with these dependencies:
+
+- `mkdir ~/example-use-case-finance-yahoo`
+- `cd ~/example-use-case-finance-yahoo`
+
+```bash
+{
+    "name": "chemaclass/example-use-case-finance-yahoo",
+    "require": {
+        "php": ">=7.4",
+        "chemaclass/finance-yahoo": "dev-master",
+        "symfony/google-mailer": "^5.2",
+        "vlucas/phpdotenv": "^5.2"
+    },
+    "minimum-stability": "dev"
+}
+```
+
+Copy the existing example into your project root directory:
+
+- `cp -r ./vendor/chemaclass/finance-yahoo/example .`
+
+In order to make the example scripts work, you need to create a `.env` file as:
+
+- `cp example/.env.dist example/.env` (You need to define these ENV values!)
+
+2nd) Copy the docker-compose image in your root directory:
+
+- `cp -r ./vendor/chemaclass/finance-yahoo/devops .`
+- `cp -r ./vendor/chemaclass/finance-yahoo/docker-copose.yml .`
+
+Build the image using docker:
+
+- `docker-compose up --build -d`
+
+Now is when you can install the composer dependencies and run the example scripts:
+
+```
+docker-compose exec finance_yahoo composer install
+
+docker-compose exec finance_yahoo example/crawl.php
+docker-compose exec finance_yahoo example/notify.php
+docker-compose exec finance_yahoo example/loop-notify.php
+```
 
 ----------
 
