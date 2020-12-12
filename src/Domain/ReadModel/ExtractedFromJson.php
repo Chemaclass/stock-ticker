@@ -11,11 +11,25 @@ final class ExtractedFromJson
 {
     private array $data;
 
+    /**
+     * @psalm-pure
+     */
+    public static function empty(): self
+    {
+        return new self([]);
+    }
+
+    /**
+     * @psalm-pure
+     */
     public static function fromArray(array $data): self
     {
         return new self($data);
     }
 
+    /**
+     * @psalm-pure
+     */
     public static function fromString(string $string): self
     {
         return new self([$string]);

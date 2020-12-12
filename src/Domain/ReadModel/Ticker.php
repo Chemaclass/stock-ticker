@@ -11,11 +11,17 @@ final class Ticker
 {
     private string $symbol;
 
+    /**
+     * @psalm-pure
+     */
     public static function withSymbol(string $symbol): self
     {
         return new self($symbol);
     }
 
+    /**
+     * @psalm-pure
+     */
     public static function empty(): self
     {
         return new self('');

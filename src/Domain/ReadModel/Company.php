@@ -16,6 +16,9 @@ final class Company
      */
     private array $info;
 
+    /**
+     * @psalm-pure
+     */
     public static function empty(): self
     {
         return new self(Ticker::empty(), []);
@@ -39,7 +42,7 @@ final class Company
 
     public function info(string $key): ExtractedFromJson
     {
-        return $this->info[$key];
+        return $this->info[$key] ?? ExtractedFromJson::empty();
     }
 
     public function allInfo(): array

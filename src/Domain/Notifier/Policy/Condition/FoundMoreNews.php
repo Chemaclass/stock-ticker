@@ -13,7 +13,7 @@ final class FoundMoreNews implements PolicyConditionInterface
      * @var array<string,string>
      * For example ['TickerSymbol' => 'fmtPubtime']
      */
-    private static $cacheOldestDateTimeBySymbol = [];
+    private static array $cacheOldestDateTimeBySymbol = [];
 
     public function __construct()
     {
