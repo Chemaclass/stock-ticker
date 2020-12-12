@@ -14,8 +14,6 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-zip": "*",
-        "symfony/css-selector": "^5.2",
-        "symfony/dom-crawler": "^5.2",
         "symfony/http-client": "^5.2",
         "symfony/mailer": "^5.2",
         "twig/twig": "^3.1"
