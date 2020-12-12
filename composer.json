@@ -1,4 +1,5 @@
 {
+    "name": "chemaclass/finance-yahoo",
     "description": "A simple API for the Finance Yahoo Website",
     "type": "project",
     "license": "MIT",
