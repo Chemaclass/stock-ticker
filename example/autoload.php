@@ -42,7 +42,7 @@ function sendNotifications(FinanceYahooFacade $facade, array $policyGroupedBySym
     return $facade->notify($policy, crawlStock($facade, $tickerSymbols));
 }
 
-function crawlStock(FinanceYahooFacade $facade, array $tickerSymbols): CrawlResult
+function crawlStock(FinanceYahooFacade $facade, array $tickerSymbols, int $maxNewsToFetch = 3): CrawlResult
 {
     $siteCrawler = new RootJsonSiteCrawler([
         'name' => new JsonExtractor\QuoteSummaryStore\CompanyName(),
@@ -50,7 +50,7 @@ function crawlStock(FinanceYahooFacade $facade, array $tickerSymbols): CrawlResu
         'change' => new JsonExtractor\QuoteSummaryStore\RegularMarketChange(),
         'changePercent' => new JsonExtractor\QuoteSummaryStore\RegularMarketChangePercent(),
         'trend' => new JsonExtractor\QuoteSummaryStore\RecommendationTrend(),
-        'news' => new JsonExtractor\StreamStore\News(new DateTimeZone('Europe/Berlin'), 3),
+        'news' => new JsonExtractor\StreamStore\News(new DateTimeZone('Europe/Berlin'), $maxNewsToFetch),
     ]);
 
     return $facade->crawlStock([$siteCrawler], $tickerSymbols);

@@ -29,10 +29,10 @@ final class Notifier
 
         foreach ($this->policy->groupedBySymbol() as $symbol => $policyGroup) {
             $company = $crawlResult->get($symbol);
-            $policyNames = $this->matchPolicy($policyGroup, $company);
+            $conditionNames = $this->matchConditions($policyGroup, $company);
 
-            if (!empty($policyNames)) {
-                $result->add($company, $policyNames);
+            if (!empty($conditionNames)) {
+                $result->add($company, $conditionNames);
             }
         }
 
@@ -41,14 +41,11 @@ final class Notifier
         return $result;
     }
 
-    /**
-     * If any of the policies are true, then it can notify.
-     */
-    private function matchPolicy(PolicyGroup $policyGroup, Company $company): array
+    private function matchConditions(PolicyGroup $policyGroup, Company $company): array
     {
         $policyNames = [];
 
-        foreach ($policyGroup->policies() as $policyName => $callablePolicy) {
+        foreach ($policyGroup->conditions() as $policyName => $callablePolicy) {
             if ($callablePolicy($company)) {
                 $policyNames[] = $policyName;
             }

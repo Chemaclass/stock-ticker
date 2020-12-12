@@ -8,17 +8,17 @@ use Chemaclass\FinanceYahoo\Domain\ReadModel\Company;
 
 final class NotifyResult
 {
-    /** @psalm-var array<string, array{company: Company, policies: string[]}> */
+    /** @psalm-var array<string, array{company: Company, conditionNames: string[]}> */
     private array $result = [];
 
     /**
-     * @param string[] $policyNames
+     * @param string[] $conditionNames
      */
-    public function add(Company $company, array $policyNames): void
+    public function add(Company $company, array $conditionNames): void
     {
         $this->result[$company->ticker()->symbol()] = [
             'company' => $company,
-            'policies' => $policyNames,
+            'conditionNames' => $conditionNames,
         ];
     }
 
@@ -33,24 +33,24 @@ final class NotifyResult
     /**
      * @return string[]
      */
-    public function policiesForSymbol(string $symbol): array
+    public function conditionNamesForSymbol(string $symbol): array
     {
-        return $this->result[$symbol]['policies'];
+        return $this->result[$symbol]['conditionNames'];
     }
 
-    public function policiesGroupBySymbol(): array
+    public function conditionNamesGroupBySymbol(): array
     {
-        $policiesBySymbol = [];
+        $conditionNamesBySymbol = [];
 
         foreach ($this->symbols() as $symbol) {
-            $policiesBySymbol[$symbol] = $this->policiesForSymbol($symbol);
+            $conditionNamesBySymbol[$symbol] = $this->conditionNamesForSymbol($symbol);
         }
 
-        return $policiesBySymbol;
+        return $conditionNamesBySymbol;
     }
 
     public function companyForSymbol(string $symbol): Company
     {
-        return $this->result[$symbol]['company'];
+        return $this->result[$symbol]['company'] ?? Company::empty();
     }
 }

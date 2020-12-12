@@ -27,7 +27,7 @@ $result = sendNotifications($facade, [
     // As a function or a callable class
     'AMZN' => new PolicyGroup([
         'high trend to buy' => fn (Company $c): bool => $c->info('trend')->get('0')['buy'] > 25,
-        'buy higher than sell' => new BuyHigherThanSell(),
+        'buy higher than sell' => new BuyIsHigherThanSell(),
     ]),
     // And combine them however you want
     'GOOG' => new PolicyGroup([

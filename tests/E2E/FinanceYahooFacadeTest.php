@@ -65,7 +65,7 @@ final class FinanceYahooFacadeTest extends TestCase
 
         self::assertSame(['AMZN'], $notifyResult->symbols());
         self::assertSame($amazon, $notifyResult->companyForSymbol('AMZN'));
-        self::assertSame(['high trend to sell'], $notifyResult->policiesForSymbol('AMZN'));
+        self::assertSame(['high trend to sell'], $notifyResult->conditionNamesForSymbol('AMZN'));
     }
 
     private function createFinanceYahooFacade(InvocationOrder $channelSendExpected): FinanceYahooFacade

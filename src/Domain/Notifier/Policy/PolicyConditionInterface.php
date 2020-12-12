@@ -6,7 +6,7 @@ namespace Chemaclass\FinanceYahoo\Domain\Notifier\Policy;
 
 use Chemaclass\FinanceYahoo\Domain\ReadModel\Company;
 
-interface PolicyInterface
+interface PolicyConditionInterface
 {
     public function __invoke(Company $company): bool;
 }

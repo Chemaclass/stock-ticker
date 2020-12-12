@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahoo\Domain\Notifier\Policy;
+namespace Chemaclass\FinanceYahoo\Domain\Notifier\Policy\Condition;
 
+use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\PolicyConditionInterface;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\Company;
 
-final class BuyHigherThanSell implements PolicyInterface
+final class IsBuyHigherThanSell implements PolicyConditionInterface
 {
     public function __invoke(Company $company): bool
     {

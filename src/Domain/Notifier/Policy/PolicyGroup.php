@@ -10,18 +10,18 @@ namespace Chemaclass\FinanceYahoo\Domain\Notifier\Policy;
 final class PolicyGroup
 {
     /** @var array<string,callable> */
-    private array $policies;
+    private array $conditions;
 
-    public function __construct(array $policies)
+    public function __construct(array $conditions)
     {
-        $this->policies = $policies;
+        $this->conditions = $conditions;
     }
 
     /**
      * @return array<string,callable>
      */
-    public function policies(): array
+    public function conditions(): array
     {
-        return $this->policies;
+        return $this->conditions;
     }
 }

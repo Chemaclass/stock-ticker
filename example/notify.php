@@ -3,7 +3,7 @@
 
 declare(strict_types=1);
 
-use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\BuyHigherThanSell;
+use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\Condition\IsBuyHigherThanSell;
 use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\PolicyGroup;
 use Chemaclass\FinanceYahoo\Domain\ReadModel\Company;
 
@@ -17,15 +17,14 @@ $facade = createFacade(
 );
 
 $result = sendNotifications($facade, [
-    // You can define multiple policies for the same Ticker
-    // As a function or a callable class
+    // You can define multiple policy conditions for the same Ticker.
+    // As a function or a callable class, and combine them however you want.
     'AMZN' => new PolicyGroup([
-        'high trend to buy' => static fn (Company $c): bool => $c->info('trend')->get('0')['buy'] > 25,
-        'buy higher than sell' => new BuyHigherThanSell(),
+        'High trend to buy' => static fn (Company $c): bool => $c->info('trend')->get('0')['buy'] > 25,
+        'Buy is higher than sell' => new IsBuyHigherThanSell(),
     ]),
-    // And combine them however you want
     'GOOG' => new PolicyGroup([
-        'strongBuy higher than strongSell' => static function (Company $c): bool {
+        'strongBuy is higher than strongSell' => static function (Company $c): bool {
             $strongBuy = $c->info('trend')->get('0')['strongBuy'];
             $strongSell = $c->info('trend')->get('0')['strongSell'];
 
@@ -34,6 +33,6 @@ $result = sendNotifications($facade, [
     ]),
 ]);
 
-dump($result->policiesGroupBySymbol());
+dump($result->conditionNamesGroupBySymbol());
 
 print 'Done.' . PHP_EOL;
