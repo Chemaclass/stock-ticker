@@ -53,4 +53,9 @@ final class NotifyResult
     {
         return $this->result[$symbol]['company'] ?? Company::empty();
     }
+
+    public function isEmpty(): bool
+    {
+        return empty($this->result);
+    }
 }

@@ -36,22 +36,30 @@ final class Notifier
             }
         }
 
-        $this->sendNotification($result);
+        if (!$result->isEmpty()) {
+            $this->sendNotification($result);
+        }
 
         return $result;
     }
 
     private function matchConditions(PolicyGroup $policyGroup, Company $company): array
     {
-        $policyNames = [];
+        $conditionNames = [];
 
-        foreach ($policyGroup->conditions() as $policyName => $callablePolicy) {
-            if ($callablePolicy($company)) {
-                $policyNames[] = $policyName;
+        foreach ($policyGroup->conditions() as $conditionName => $callablePolicy) {
+            if (!$callablePolicy($company)) {
+                continue;
             }
+
+            if (is_int($conditionName)) {
+                $conditionName = get_class($callablePolicy);
+            }
+
+            $conditionNames[] = $conditionName;
         }
 
-        return $policyNames;
+        return $conditionNames;
     }
 
     private function sendNotification(NotifyResult $result): void

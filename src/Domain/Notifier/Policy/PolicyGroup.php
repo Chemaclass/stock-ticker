@@ -9,7 +9,7 @@ namespace Chemaclass\FinanceYahoo\Domain\Notifier\Policy;
  */
 final class PolicyGroup
 {
-    /** @var array<string,callable> */
+    /** @var array<int|string,PolicyConditionInterface> */
     private array $conditions;
 
     public function __construct(array $conditions)
@@ -18,7 +18,7 @@ final class PolicyGroup
     }
 
     /**
-     * @return array<string,callable>
+     * @return array<int|string,PolicyConditionInterface>
      */
     public function conditions(): array
     {
