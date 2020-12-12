@@ -24,7 +24,7 @@ while (true) {
         'FB' => new PolicyGroup([new FoundMoreNews()]),
     ]);
 
-    dump($result->conditionNamesGroupBySymbol());
+    printNotifyResult($result);
 
     sleep(60);
 }
