@@ -12,9 +12,17 @@ independently of each Tinker.
 
 ## Example
 
-See a full & working example for 
+See a full & working example for
+
 - Just [Crawling](example/crawl.php)
 - Crawling + [Notifying](example/notify.php)
+- Crawling + Notifying [in a loop](example/loop-notify.php)
+
+### Real use case
+
+What about getting a notification everytime there are news that are new for you?
+
+Easy. Create an infinite loop and use `FoundMoreNews` as Policy Condition for a particular Stock:
 
 ```php
 $facade = createFacade(
@@ -22,35 +30,23 @@ $facade = createFacade(
     createSlackChannel(),
 );
 
-$result = sendNotifications($facade, [
-    // You can define multiple policies for the same Ticker
-    // As a function or a callable class
-    'AMZN' => new PolicyGroup([
-        'high trend to buy' => fn (Company $c): bool => $c->info('trend')->get('0')['buy'] > 25,
-        'buy higher than sell' => new BuyIsHigherThanSell(),
-    ]),
-    // And combine them however you want
-    'GOOG' => new PolicyGroup([
-        'strongBuy higher than strongSell' => function (Company $c): bool {
-            $strongBuy = $c->info('trend')->get('0')['strongBuy'];
-            $strongSell = $c->info('trend')->get('0')['strongSell'];
-
-            return $strongBuy > $strongSell;
-        },
-    ]),
-]);
-//[
-//  "AMZN" => [
-//    0 => "high trend to buy"
-//    1 => "buy higher than sell"
-//  ]
-//  "GOOG" => [
-//    0 => "strongBuy higher than strongSell"
-//  ]
-//]
-
-
+while (true) {
+    $result = sendNotifications($facade, [
+        'AMZN' => new PolicyGroup([new FoundMoreNews()]),
+        'GOOG' => new PolicyGroup([new FoundMoreNews()]),
+        // ...
+    ]);
+    sleep(60);
+}
 ```
+### Working with the example scripts
+
+In order to make the example scripts work, you need to create a `.env` file as:
+
+- `cd example`
+- `cp .env.dist .env`
+
+More info about it in the example's [readme](example/README.md).
 
 ## Set up the project
 
@@ -59,7 +55,10 @@ Set up the container and install the composer dependencies:
 ```bash
 docker-compose up -d
 docker-compose exec finance_yahoo composer install
+
 docker-compose exec finance_yahoo example/crawl.php
+docker-compose exec finance_yahoo example/notify.php
+docker-compose exec finance_yahoo example/loop-notify.php
 ```
 
 You can go even go inside the docker container:
@@ -74,8 +73,7 @@ docker exec -ti -u dev finance_yahoo bash
 composer test-all     # run test-quality and test-unit
 composer test-quality # run psalm
 composer test-unit    # run phpunit
-
-composer psalm  # run Psalm coverage
+composer psalm        # run Psalm coverage
 ```
 
 ## Substantial changes
