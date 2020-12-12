@@ -12,7 +12,7 @@ use Symfony\Component\Mime\Email;
 
 final class EmailChannel implements ChannelInterface
 {
-    private const NOREPLY_EMAIL = 'finance.yahoo.api@noreply.com';
+    private const NO_REPLY_EMAIL = 'finance.yahoo.api@noreply.com';
 
     private string $toAddress;
 
@@ -34,7 +34,7 @@ final class EmailChannel implements ChannelInterface
     {
         $email = (new Email())
             ->to($this->toAddress)
-            ->from(self::NOREPLY_EMAIL)
+            ->from(self::NO_REPLY_EMAIL)
             ->subject($this->generateSubject($notifyResult))
             ->html($this->templateGenerator->generateHtml($notifyResult));
 
@@ -45,6 +45,6 @@ final class EmailChannel implements ChannelInterface
     {
         $symbols = implode(', ', array_values($notifyResult->symbols()));
 
-        return "FinanceYahoo alert for {$symbols}";
+        return "FinanceYahoo NEWS for {$symbols}";
     }
 }

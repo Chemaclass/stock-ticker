@@ -51,6 +51,7 @@ function crawlStock(FinanceYahooFacade $facade, array $tickerSymbols, int $maxNe
         'changePercent' => new JsonExtractor\QuoteSummaryStore\RegularMarketChangePercent(),
         'trend' => new JsonExtractor\QuoteSummaryStore\RecommendationTrend(),
         'news' => new JsonExtractor\StreamStore\News(new DateTimeZone('Europe/Berlin'), $maxNewsToFetch),
+        'url' => new JsonExtractor\RouteStore\ExternalUrl(),
     ]);
 
     return $facade->crawlStock([$siteCrawler], $tickerSymbols);

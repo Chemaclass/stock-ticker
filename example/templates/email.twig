@@ -1,41 +1,46 @@
-<h1>Policy threshold reached for these companies</h1>
+<h1>Conditions lookup reached for these companies</h1>
 
 <div class="companies">
     {% for symbol in notifyResult.symbols() %}
-        <div id="s-{{ symbol }}"
-             class="company {{ symbol }}"
-             style="border:1px solid gray; margin-bottom: 8px; padding: 16px"
+        <div class="company {{ symbol }}"
+             style="border:1px solid gray;
+                    margin-bottom: 8px;
+                    padding: 16px"
         >
             {% set company = notifyResult.companyForSymbol(symbol) %}
             <h2>
                 {{ company.info('name') }}
                 <small class="symbol"
                        style="font-weight: bold">
-                    ({{ symbol }})
+                    (<a href="{{ company.info('url') }}">{{ symbol }}</a>)
                 </small>
             </h2>
 
-            <ul class="policies"
-                style="border:1px solid aliceblue; border-radius: 5px; padding: 10px"
+            <ul class="policy-conditions"
+                style="border-radius: 5px;
+                       padding: 6px"
             >
-                {% for policy in notifyResult.policiesForSymbol(symbol) %}
-                    <li>{{ policy }}</li>
+                {% for condition in notifyResult.conditionNamesForSymbol(symbol) %}
+                    <li>{{ condition }}</li>
                 {% endfor %}
             </ul>
 
-            <h3>LATEST NEWS</h3>
+            <h3>Latest News</h3>
             <div class="all-news"
-                 style="border:1px solid lightgray; padding: 5px"
+                 style="padding: 4px"
             >
                 {% for news in company.info('news').get() %}
                     <div class="news"
-                         style="border-bottom:1px solid lightgray; margin: 10px;"
+                         style="border-bottom:1px solid lightgray;
+                                border-top:1px solid lightgray;
+                                margin: 10px;"
                     >
-                        <h4>
-                            <a href="{{ news.url }}">{{ news.title | raw }}</a>
-                            <small>{{ news.pubtime }}</small>
-                        </h4>
-                        <p>{{ news.summary | raw }}</p>
+                        <h5>{{ news.fmtPubtime }} <small>{{ news.timezone }}</small></h5>
+                        <h4>{{ news.title | raw }}</h4>
+                        <p>
+                            {{ news.summary | raw }}
+                            <a href="{{ news.url }}">Read more</a>
+                        </p>
                     </div>
                 {% endfor %}
             </div>

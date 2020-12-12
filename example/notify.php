@@ -24,7 +24,7 @@ $result = sendNotifications($facade, [
         'Buy is higher than sell' => new IsBuyHigherThanSell(),
     ]),
     'GOOG' => new PolicyGroup([
-        'strongBuy is higher than strongSell' => static function (Company $c): bool {
+        'StrongBuy is higher than StrongSell' => static function (Company $c): bool {
             $strongBuy = $c->info('trend')->get('0')['strongBuy'];
             $strongSell = $c->info('trend')->get('0')['strongSell'];
 

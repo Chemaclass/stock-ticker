@@ -1,16 +1,16 @@
-Policy threshold reached for these companies:
+Conditions lookup reached for these companies:
 
 {% for symbol in notifyResult.symbols() %}
     {% set company = notifyResult.companyForSymbol(symbol) %}
 *`{{ company.info('name') }}` ({{ symbol }})*
-    {% for policy in notifyResult.policiesForSymbol(symbol) %}
-- {{ policy }}
+    {% for condition in notifyResult.conditionNamesForSymbol(symbol) %}
+- {{ condition }}
     {% endfor %}
 
 *LATEST NEWS*
     {% for news in company.info('news').get() %}
-<{{ news.url }}|{{ news.title | raw }}> `{{ news.pubtime }}`
-> {{ news.summary | raw }}
+*{{ news.title | raw }} `{{ news.fmtPubtime }}`*
+> {{ news.summary | raw }} <{{ news.url }}|Read more>
 
     {% endfor %}
 --------------------------------------------------

@@ -11,16 +11,24 @@ use DateTimeZone;
 
 final class News implements JsonExtractorInterface
 {
-    private const MAX_TEXT_LENGTH_CHARS = 200;
+    private const DEFAULT_MAX_TEXT_LENGTH_CHARS = 180;
+
+    private const DATETIME_FORMAT = 'Y-m-d H:i:s';
 
     private DateTimeZone $dateTimeZone;
 
     private ?int $maxNewsToFetch;
 
-    public function __construct(DateTimeZone $dateTimeZone, ?int $maxNewsToFetch = null)
-    {
+    private int $maxTextLengthChars;
+
+    public function __construct(
+        DateTimeZone $dateTimeZone,
+        ?int $maxNewsToFetch = null,
+        int $maxTextLengthChars = self::DEFAULT_MAX_TEXT_LENGTH_CHARS
+    ) {
         $this->dateTimeZone = $dateTimeZone;
         $this->maxNewsToFetch = $maxNewsToFetch;
+        $this->maxTextLengthChars = $maxTextLengthChars;
     }
 
     public function extractFromJson(array $json): ExtractedFromJson
@@ -28,42 +36,46 @@ final class News implements JsonExtractorInterface
         $streams = $json['context']['dispatcher']['stores']['StreamStore']['streams'];
         $first = reset($streams);
         $streamItems = $first['data']['stream_items'];
-        $items = $this->filterAdds($streamItems);
-        $info = $this->sortByPubtime($this->extractInfo($items));
-        $limited = $this->limitByMaxToFetch($info);
+
+        $articles = $this->filterOnlyArticles($streamItems);
+        $sorted = $this->sortNewestFirst($this->extractInfo($articles));
+        $limited = $this->limitByMaxToFetch($sorted);
 
         return ExtractedFromJson::fromArray($limited);
     }
 
-    private function filterAdds(array $items): array
+    private function filterOnlyArticles(array $items): array
     {
-        return array_filter($items, static fn (array $i): bool => 'ad' !== $i['type']);
+        return array_filter(
+            $items,
+            static fn (array $i): bool => 'article' === $i['type']
+        );
     }
 
-    private function extractInfo(array $items): array
+    private function sortNewestFirst(array $extractInfo): array
+    {
+        usort(
+            $extractInfo,
+            static fn (array $a, array $b) => $b['fmtPubtime'] <=> $a['fmtPubtime']
+        );
+
+        return $extractInfo;
+    }
+
+    private function extractInfo(array $articles): array
     {
         $map = array_map(
-            function (array $i): array {
-                return [
-                    'pubtime' => $this->normalizeDateTimeFromUnix($i['pubtime']),
-                    'url' => $i['url'],
-                    'title' => $this->normalizeText($i['title']),
-                    'summary' => $this->normalizeText($i['summary']),
-                ];
-            },
-            $items
+            fn (array $i): array => [
+                'fmtPubtime' => $this->normalizeDateTimeFromUnix($i['pubtime']),
+                'timezone' => $this->dateTimeZone->getName(),
+                'url' => $i['url'],
+                'title' => $this->normalizeText($i['title']),
+                'summary' => $this->normalizeText($i['summary']),
+            ],
+            $articles
         );
 
         return array_values($map);
-    }
-
-    private function normalizeText(string $text): string
-    {
-        if (mb_strlen($text) < self::MAX_TEXT_LENGTH_CHARS) {
-            return $text;
-        }
-
-        return mb_substr($text, 0, self::MAX_TEXT_LENGTH_CHARS) . '...';
     }
 
     private function normalizeDateTimeFromUnix(int $pubtime): string
@@ -73,17 +85,16 @@ final class News implements JsonExtractorInterface
         $dt = new DateTimeImmutable("@$unixTime");
         $dt->setTimeZone($this->dateTimeZone);
 
-        return $dt->format('Y-m-d H:i:s');
+        return $dt->format(self::DATETIME_FORMAT);
     }
 
-    private function sortByPubtime(array $extractInfo): array
+    private function normalizeText(string $text): string
     {
-        usort(
-            $extractInfo,
-            fn (array $a, array $b) => $b['pubtime'] <=> $a['pubtime']
-        );
+        if (mb_strlen($text) < $this->maxTextLengthChars) {
+            return $text;
+        }
 
-        return $extractInfo;
+        return mb_substr($text, 0, $this->maxTextLengthChars) . '...';
     }
 
     private function limitByMaxToFetch(array $info): array
