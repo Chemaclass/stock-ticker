@@ -27,7 +27,7 @@ final class CompanyCrawler
     public function crawlStock(string ...$tickerSymbols): CrawlResult
     {
         $result = [];
-        $tickers = $this->mapTickersFromSymbols($tickerSymbols);
+        $tickers = $this->mapTickersFromSymbols(...$tickerSymbols);
 
         foreach ($tickers as $ticker) {
             $sites = $this->crawlAllSitesForTicker($ticker);
@@ -42,15 +42,13 @@ final class CompanyCrawler
     }
 
     /**
-     * @param string[] $tickerSymbos
-     *
      * @return Ticker[]
      */
-    private function mapTickersFromSymbols(array $tickerSymbos): array
+    private function mapTickersFromSymbols(string ...$tickerSymbols): array
     {
         return array_map(
             static fn (string $symbol) => Ticker::withSymbol($symbol),
-            $tickerSymbos
+            $tickerSymbols
         );
     }
 
@@ -65,9 +63,12 @@ final class CompanyCrawler
         );
     }
 
+    /**
+     * Combine all sites keys values, merging the values from the shared keys in the same array.
+     */
     private function flat(Site ...$sites): array
     {
-        return array_merge(...$this->normalizeSites(...$sites));
+        return array_merge_recursive(...$this->normalizeSites(...$sites));
     }
 
     /**

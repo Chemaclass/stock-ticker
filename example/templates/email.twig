@@ -9,10 +9,10 @@
         >
             {% set company = notifyResult.companyForSymbol(symbol) %}
             <h2>
-                {{ company.info('name') }}
+                {{ company.info('name') | first }}
                 <small class="symbol"
                        style="font-weight: bold">
-                    (<a href="{{ company.info('url') }}">{{ symbol }}</a>)
+                    (<a href="{{ company.info('url') | first }}">{{ symbol }}</a>)
                 </small>
             </h2>
 
@@ -29,13 +29,13 @@
             <div class="all-news"
                  style="padding: 4px"
             >
-                {% for news in company.info('news').get() %}
+                {% for news in company.info('news') %}
                     <div class="news"
                          style="border-bottom:1px solid lightgray;
                                 border-top:1px solid lightgray;
                                 margin: 10px;"
                     >
-                        <h5>{{ news.fmtPubtime }} <small>{{ news.timezone }}</small></h5>
+                        <h5>{{ news.publicationDateTime }} <small>{{ news.timezone }}</small></h5>
                         <h4>{{ news.title | raw }}</h4>
                         <p>
                             {{ news.summary | raw }}

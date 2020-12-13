@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use Chemaclass\TickerNews\Domain\Crawler\CrawlResult;
+use Chemaclass\TickerNews\Domain\Crawler\Site\Barrons\BarronsSiteCrawler;
+use Chemaclass\TickerNews\Domain\Crawler\Site\Barrons\HtmlCrawler;
 use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\FinanceYahooSiteCrawler;
 use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractor;
 use Chemaclass\TickerNews\Domain\Notifier\Channel\Email\EmailChannel;
@@ -42,11 +44,11 @@ function sendNotifications(TickerNewsFacade $facade, array $policyGroupedBySymbo
     return $facade->notify($policy, crawlStock($facade, $tickerSymbols));
 }
 
-function crawlStock(TickerNewsFacade $facade, array $tickerSymbols, int $maxNewsToFetch = 3): CrawlResult
+function crawlStock(TickerNewsFacade $facade, array $tickerSymbols, int $maxNewsToFetch = 2): CrawlResult
 {
     return $facade->crawlStock([
         createFinanceYahooSiteCrawler($maxNewsToFetch),
-        // createAnotherSiteCrawler($maxNewsToFetch),
+        createBarronsSiteCrawler($maxNewsToFetch),
     ], $tickerSymbols);
 }
 
@@ -60,6 +62,13 @@ function createFinanceYahooSiteCrawler(int $maxNewsToFetch = 3): FinanceYahooSit
         'trend' => new JsonExtractor\QuoteSummaryStore\RecommendationTrend(),
         'news' => new JsonExtractor\StreamStore\News(new DateTimeZone('Europe/Berlin'), $maxNewsToFetch),
         'url' => new JsonExtractor\RouteStore\ExternalUrl(),
+    ]);
+}
+
+function createBarronsSiteCrawler(int $maxNewsToFetch = 3): BarronsSiteCrawler
+{
+    return new BarronsSiteCrawler([
+        'news' => new HtmlCrawler\News(new DateTimeZone('Europe/Berlin'), $maxNewsToFetch),
     ]);
 }
 
@@ -108,7 +117,7 @@ function printCrawResult(CrawlResult $crawlResult): void
         println($symbol);
 
         foreach ($company->allInfo() as $key => $value) {
-            printfln('# %s => %s', $key, json_encode($value->get()));
+            printfln('# %s => %s', $key, json_encode($value));
         }
         println();
     }
@@ -147,4 +156,16 @@ function printfln(string $fmt = '', ...$args): void
 function println(string $str = ''): void
 {
     print $str . PHP_EOL;
+}
+
+function sleepWithPrompt(int $sec): void
+{
+    println("Sleeping {$sec} seconds...");
+
+    for ($i = $sec; $i > 0; $i--) {
+        print sprintf("%04d\r", $i);
+        sleep(1);
+    }
+
+    println('Awake again!');
 }

@@ -9,6 +9,7 @@ namespace Chemaclass\TickerNews\Domain\ReadModel;
  */
 final class Site
 {
+    /** @var array<string,mixed> */
     private array $crawled;
 
     public function __construct(array $crawled)

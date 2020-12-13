@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractor\StreamStore;
 
 use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractorInterface;
-use Chemaclass\TickerNews\Domain\ReadModel\ExtractedFromJson;
 use DateTimeImmutable;
 use DateTimeZone;
 
@@ -31,7 +30,7 @@ final class News implements JsonExtractorInterface
         $this->maxTextLengthChars = $maxTextLengthChars;
     }
 
-    public function extractFromJson(array $json): ExtractedFromJson
+    public function extractFromJson(array $json): array
     {
         $streams = $json['context']['dispatcher']['stores']['StreamStore']['streams'];
         $first = reset($streams);
@@ -39,9 +38,8 @@ final class News implements JsonExtractorInterface
 
         $articles = $this->filterOnlyArticles($streamItems);
         $sorted = $this->sortNewestFirst($this->extractInfo($articles));
-        $limited = $this->limitByMaxToFetch($sorted);
 
-        return ExtractedFromJson::fromArray($limited);
+        return $this->limitByMaxToFetch($sorted);
     }
 
     private function filterOnlyArticles(array $items): array
@@ -56,7 +54,7 @@ final class News implements JsonExtractorInterface
     {
         usort(
             $extractInfo,
-            static fn (array $a, array $b) => $b['fmtPubtime'] <=> $a['fmtPubtime']
+            static fn (array $a, array $b) => $b['publicationDateTime'] <=> $a['publicationDateTime']
         );
 
         return $extractInfo;
@@ -66,7 +64,7 @@ final class News implements JsonExtractorInterface
     {
         $map = array_map(
             fn (array $i): array => [
-                'fmtPubtime' => $this->normalizeDateTimeFromUnix($i['pubtime']),
+                'publicationDateTime' => $this->normalizeDateTimeFromUnix($i['pubtime']),
                 'timezone' => $this->dateTimeZone->getName(),
                 'url' => $i['url'],
                 'title' => $this->normalizeText($i['title']),

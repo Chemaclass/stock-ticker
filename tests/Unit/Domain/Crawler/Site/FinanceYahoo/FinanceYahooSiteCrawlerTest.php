@@ -6,7 +6,6 @@ namespace Chemaclass\TickerNewsTests\Unit\Domain\Crawler\Site\FinanceYahoo;
 
 use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\FinanceYahooSiteCrawler;
 use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractorInterface;
-use Chemaclass\TickerNews\Domain\ReadModel\ExtractedFromJson;
 use Chemaclass\TickerNews\Domain\ReadModel\Site;
 use Chemaclass\TickerNews\Domain\ReadModel\Ticker;
 use Chemaclass\TickerNewsTests\WithFakeHttpClient;
@@ -34,7 +33,7 @@ BODY;
         );
 
         self::assertEquals(new Site([
-            'extractor name' => 'example expected value',
+            'extractor name' => ['example expected value'],
         ]), $actual);
     }
 
@@ -49,16 +48,18 @@ BODY;
         );
 
         self::assertEquals(new Site([
-            get_class($jsonExtractor) => 'example expected value',
+            get_class($jsonExtractor) => ['example expected value'],
         ]), $actual);
     }
 
     private function stubJsonExtractor(): JsonExtractorInterface
     {
         return new class() implements JsonExtractorInterface {
-            public function extractFromJson(array $json): ExtractedFromJson
+            public function extractFromJson(array $json): array
             {
-                return ExtractedFromJson::fromString($json['key']['sub-key']);
+                return [
+                    $json['key']['sub-key'],
+                ];
             }
         };
     }

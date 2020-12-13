@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Chemaclass\TickerNewsTests\Unit\Domain\Crawler\Site\FinanceYahoo\JsonExtractor\StreamStore;
 
 use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractor\StreamStore\News;
-use Chemaclass\TickerNews\Domain\ReadModel\ExtractedFromJson;
 use DateTimeZone;
 use Generator;
 use PHPUnit\Framework\TestCase;
@@ -27,7 +26,7 @@ final class NewsTest extends TestCase
         $news = new News(new DateTimeZone(self::EXAMPLE_TIMEZONE));
 
         self::assertEquals(
-            ExtractedFromJson::fromArray($expected),
+            $expected,
             $news->extractFromJson($json)
         );
     }
@@ -73,7 +72,7 @@ final class NewsTest extends TestCase
             'expected' => [
                 [
                     'title' => 'The title',
-                    'fmtPubtime' => self::EXAMPLE_FORMATTED_DATETIME,
+                    'publicationDateTime' => self::EXAMPLE_FORMATTED_DATETIME,
                     'url' => 'url.com',
                     'summary' => 'A summary',
                     'timezone' => self::EXAMPLE_TIMEZONE,
@@ -122,14 +121,14 @@ final class NewsTest extends TestCase
             'expected' => [
                 [
                     'title' => 'The first title',
-                    'fmtPubtime' => self::EXAMPLE_FORMATTED_DATETIME,
+                    'publicationDateTime' => self::EXAMPLE_FORMATTED_DATETIME,
                     'url' => 'url.1.com',
                     'summary' => 'First summary',
                     'timezone' => self::EXAMPLE_TIMEZONE,
                 ],
                 [
                     'title' => 'The second title',
-                    'fmtPubtime' => self::EXAMPLE_FORMATTED_DATETIME,
+                    'publicationDateTime' => self::EXAMPLE_FORMATTED_DATETIME,
                     'url' => 'url.2.com',
                     'summary' => 'Second summary',
                     'timezone' => self::EXAMPLE_TIMEZONE,
