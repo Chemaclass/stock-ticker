@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use Chemaclass\TickerNews\Domain\Crawler\CrawlResult;
-use Chemaclass\TickerNews\Domain\Crawler\FinanceYahooSiteCrawler;
-use Chemaclass\TickerNews\Domain\Crawler\JsonExtractor;
+use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\FinanceYahooSiteCrawler;
+use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractor;
 use Chemaclass\TickerNews\Domain\Notifier\Channel\Email\EmailChannel;
 use Chemaclass\TickerNews\Domain\Notifier\Channel\Slack\SlackChannel;
 use Chemaclass\TickerNews\Domain\Notifier\Channel\Slack\SlackHttpClient;
@@ -44,7 +44,15 @@ function sendNotifications(TickerNewsFacade $facade, array $policyGroupedBySymbo
 
 function crawlStock(TickerNewsFacade $facade, array $tickerSymbols, int $maxNewsToFetch = 3): CrawlResult
 {
-    $siteCrawler = new FinanceYahooSiteCrawler([
+    return $facade->crawlStock([
+        createFinanceYahooSiteCrawler($maxNewsToFetch),
+        // createAnotherSiteCrawler($maxNewsToFetch),
+    ], $tickerSymbols);
+}
+
+function createFinanceYahooSiteCrawler(int $maxNewsToFetch = 3): FinanceYahooSiteCrawler
+{
+    return new FinanceYahooSiteCrawler([
         'name' => new JsonExtractor\QuoteSummaryStore\CompanyName(),
         'price' => new JsonExtractor\QuoteSummaryStore\RegularMarketPrice(),
         'change' => new JsonExtractor\QuoteSummaryStore\RegularMarketChange(),
@@ -53,8 +61,6 @@ function crawlStock(TickerNewsFacade $facade, array $tickerSymbols, int $maxNews
         'news' => new JsonExtractor\StreamStore\News(new DateTimeZone('Europe/Berlin'), $maxNewsToFetch),
         'url' => new JsonExtractor\RouteStore\ExternalUrl(),
     ]);
-
-    return $facade->crawlStock([$siteCrawler], $tickerSymbols);
 }
 
 function createEmailChannel(string $templateName = 'email.twig'): EmailChannel

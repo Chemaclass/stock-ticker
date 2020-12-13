@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNewsTests\Unit\Domain\Crawler\JsonExtractor\StreamStore;
+namespace Chemaclass\TickerNewsTests\Unit\Domain\Crawler\Site\FinanceYahoo\JsonExtractor\StreamStore;
 
-use Chemaclass\TickerNews\Domain\Crawler\JsonExtractor\StreamStore\News;
+use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractor\StreamStore\News;
 use Chemaclass\TickerNews\Domain\ReadModel\ExtractedFromJson;
 use DateTimeZone;
 use Generator;

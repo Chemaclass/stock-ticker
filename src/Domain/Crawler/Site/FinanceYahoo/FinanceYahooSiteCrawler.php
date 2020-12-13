@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNews\Domain\Crawler;
+namespace Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo;
 
 use function assert;
-use Chemaclass\TickerNews\Domain\Crawler\JsonExtractor\JsonExtractorInterface;
+use Chemaclass\TickerNews\Domain\Crawler\SiteCrawlerInterface;
 use Chemaclass\TickerNews\Domain\ReadModel\Site;
 use Chemaclass\TickerNews\Domain\ReadModel\Ticker;
 use Symfony\Contracts\HttpClient\HttpClientInterface;

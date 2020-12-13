@@ -14,7 +14,7 @@ $facade = createFacade(
     createSlackChannel(),
 );
 
-print 'Sending notifications...' . PHP_EOL;
+println('Sending notifications...');
 
 $result = sendNotifications($facade, [
     // You can define multiple policy conditions for the same Ticker.
@@ -33,6 +33,6 @@ $result = sendNotifications($facade, [
     ]),
 ]);
 
-print 'Done.' . PHP_EOL;
+println('Done.');
 
 printNotifyResult($result);

@@ -13,7 +13,7 @@ $facade = createFacade(
 );
 
 while (true) {
-    print 'Looking for news...' . PHP_EOL;
+    println('Looking for news...');
 
     $result = sendNotifications($facade, [
         'AMZN' => new PolicyGroup([new FoundMoreNews()]),
@@ -26,5 +26,7 @@ while (true) {
 
     printNotifyResult($result);
 
+    println('Sleeping...');
     sleep(60);
+    println('Awake again!');
 }

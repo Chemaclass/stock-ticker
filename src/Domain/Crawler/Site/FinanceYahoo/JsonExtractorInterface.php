@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNews\Domain\Crawler\JsonExtractor;
+namespace Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo;
 
 use Chemaclass\TickerNews\Domain\ReadModel\ExtractedFromJson;
 

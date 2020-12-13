@@ -2,22 +2,23 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNewsTests\E2E;
+namespace Chemaclass\TickerNewsTests\Unit;
 
 use Chemaclass\TickerNews\Domain\Crawler\CrawlResult;
-use Chemaclass\TickerNews\Domain\Crawler\FinanceYahooSiteCrawler;
-use Chemaclass\TickerNews\Domain\Crawler\JsonExtractor\QuoteSummaryStore\CompanyName;
+use Chemaclass\TickerNews\Domain\Crawler\SiteCrawlerInterface;
 use Chemaclass\TickerNews\Domain\Notifier\ChannelInterface;
 use Chemaclass\TickerNews\Domain\Notifier\NotifierPolicy;
 use Chemaclass\TickerNews\Domain\Notifier\Policy\PolicyGroup;
 use Chemaclass\TickerNews\Domain\ReadModel\Company;
 use Chemaclass\TickerNews\Domain\ReadModel\ExtractedFromJson;
+use Chemaclass\TickerNews\Domain\ReadModel\Site;
 use Chemaclass\TickerNews\Domain\ReadModel\Ticker;
 use Chemaclass\TickerNews\TickerNewsFacade;
 use Chemaclass\TickerNews\TickerNewsFactory;
 use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class TickerNewsFacadeTest extends TestCase
 {
@@ -25,9 +26,14 @@ final class TickerNewsFacadeTest extends TestCase
     {
         $facade = $this->createTickerNewsFacade(self::never());
 
-        $siteCrawler = new FinanceYahooSiteCrawler([
-            'name' => new CompanyName(),
-        ]);
+        $siteCrawler = new class() implements SiteCrawlerInterface {
+            public function crawl(HttpClientInterface $httpClient, Ticker $ticker): Site
+            {
+                return new Site([
+                    'name' => ExtractedFromJson::fromString('Amazon.com, Inc.'),
+                ]);
+            }
+        };
 
         $result = $facade->crawlStock([$siteCrawler], ['AMZN']);
         $amazon = $result->getCompany('AMZN');

@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNewsTests\Unit\Domain\Crawler;
+namespace Chemaclass\TickerNewsTests\Unit\Domain\Crawler\Site\FinanceYahoo;
 
-use Chemaclass\TickerNews\Domain\Crawler\FinanceYahooSiteCrawler;
-use Chemaclass\TickerNews\Domain\Crawler\JsonExtractor\JsonExtractorInterface;
+use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\FinanceYahooSiteCrawler;
+use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractorInterface;
 use Chemaclass\TickerNews\Domain\ReadModel\ExtractedFromJson;
 use Chemaclass\TickerNews\Domain\ReadModel\Site;
 use Chemaclass\TickerNews\Domain\ReadModel\Ticker;
 use Chemaclass\TickerNewsTests\WithFakeHttpClient;
 use PHPUnit\Framework\TestCase;
 
-final class RootAppJsonCrawlerTest extends TestCase
+final class FinanceYahooSiteCrawlerTest extends TestCase
 {
     use WithFakeHttpClient;
 
