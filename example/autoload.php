@@ -44,7 +44,7 @@ function sendNotifications(TickerNewsFacade $facade, array $policyGroupedBySymbo
     return $facade->notify($policy, crawlStock($facade, $tickerSymbols));
 }
 
-function crawlStock(TickerNewsFacade $facade, array $tickerSymbols, int $maxNewsToFetch = 3): CrawlResult
+function crawlStock(TickerNewsFacade $facade, array $tickerSymbols, int $maxNewsToFetch = 2): CrawlResult
 {
     return $facade->crawlStock([
         createFinanceYahooSiteCrawler($maxNewsToFetch),
@@ -68,9 +68,8 @@ function createFinanceYahooSiteCrawler(int $maxNewsToFetch = 3): FinanceYahooSit
 function createBarronsSiteCrawler(int $maxNewsToFetch = 3): BarronsSiteCrawler
 {
     return new BarronsSiteCrawler([
-        //        'name' => new HtmlExtractor\CompanyName(),
+        // 'name' => new HtmlExtractor\CompanyName(),
         'news' => new HtmlCrawler\News(new DateTimeZone('Europe/Berlin'), $maxNewsToFetch),
-        //        'url' => new HtmlExtractor\ExternalUrl(),
     ]);
 }
 

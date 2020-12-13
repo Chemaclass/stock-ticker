@@ -72,7 +72,7 @@ final class NewsTest extends TestCase
             'expected' => [
                 [
                     'title' => 'The title',
-                    'fmtPubtime' => self::EXAMPLE_FORMATTED_DATETIME,
+                    'publicationDateTime' => self::EXAMPLE_FORMATTED_DATETIME,
                     'url' => 'url.com',
                     'summary' => 'A summary',
                     'timezone' => self::EXAMPLE_TIMEZONE,
@@ -121,14 +121,14 @@ final class NewsTest extends TestCase
             'expected' => [
                 [
                     'title' => 'The first title',
-                    'fmtPubtime' => self::EXAMPLE_FORMATTED_DATETIME,
+                    'publicationDateTime' => self::EXAMPLE_FORMATTED_DATETIME,
                     'url' => 'url.1.com',
                     'summary' => 'First summary',
                     'timezone' => self::EXAMPLE_TIMEZONE,
                 ],
                 [
                     'title' => 'The second title',
-                    'fmtPubtime' => self::EXAMPLE_FORMATTED_DATETIME,
+                    'publicationDateTime' => self::EXAMPLE_FORMATTED_DATETIME,
                     'url' => 'url.2.com',
                     'summary' => 'Second summary',
                     'timezone' => self::EXAMPLE_TIMEZONE,

@@ -65,9 +65,12 @@ final class CompanyCrawler
         );
     }
 
+    /**
+     * Combine all sites keys values, merging the values from the shared keys in the same array.
+     */
     private function flat(Site ...$sites): array
     {
-        return array_merge(...$this->normalizeSites(...$sites));
+        return array_merge_recursive(...$this->normalizeSites(...$sites));
     }
 
     /**

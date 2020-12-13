@@ -54,7 +54,7 @@ final class News implements JsonExtractorInterface
     {
         usort(
             $extractInfo,
-            static fn (array $a, array $b) => $b['fmtPubtime'] <=> $a['fmtPubtime']
+            static fn (array $a, array $b) => $b['publicationDateTime'] <=> $a['publicationDateTime']
         );
 
         return $extractInfo;
@@ -64,7 +64,7 @@ final class News implements JsonExtractorInterface
     {
         $map = array_map(
             fn (array $i): array => [
-                'fmtPubtime' => $this->normalizeDateTimeFromUnix($i['pubtime']),
+                'publicationDateTime' => $this->normalizeDateTimeFromUnix($i['pubtime']),
                 'timezone' => $this->dateTimeZone->getName(),
                 'url' => $i['url'],
                 'title' => $this->normalizeText($i['title']),

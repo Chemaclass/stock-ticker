@@ -5,15 +5,24 @@ declare(strict_types=1);
 namespace Chemaclass\TickerNews\Domain\Crawler\Site\Barrons\HtmlCrawler;
 
 use Chemaclass\TickerNews\Domain\Crawler\Site\Barrons\HtmlCrawlerInterface;
+use DateTimeImmutable;
 use DateTimeZone;
 use DOMNode;
+use Exception;
 use Symfony\Component\DomCrawler\Crawler;
 
 final class News implements HtmlCrawlerInterface
 {
     private const DEFAULT_MAX_TEXT_LENGTH_CHARS = 180;
 
-    private const DATETIME_FORMAT = 'Y-m-d H:i:s';
+    private const NORMALIZED_DATETIME_FORMAT = 'Y-m-d H:i:s';
+
+    private const DIFF_INCOMING_FORMATS = [
+        11 => 'M d, Y', // 'Dec 9, 2020'
+        12 => 'M d, Y', // 'Dec 13, 2020'
+        18 => 'M d, Y H:i', // Dec 9, 2020 8:00
+        17 => 'M d, Y H:i', // Dec 13, 2020 8:00
+    ];
 
     private DateTimeZone $dateTimeZone;
 
@@ -42,37 +51,78 @@ final class News implements HtmlCrawlerInterface
             $news[] = $this->extractInfo($node);
         }
 
-        return $news;
+        return $this->limitByMaxToFetch($news);
     }
 
     private function extractInfo(DOMNode $node): array
     {
-        $html = $this->getInnerHtml($node);
-
         preg_match(
             '/^<span class="date">(?<date>.+)<\/span><a href="(?<url>.+)">(?<title>.+)<\/a>/',
-            $html,
+            $this->innerHtml($node),
             $matches
         );
 
         return [
-            'date' => $matches['date'],
+            'publicationDateTime' => $this->normalizeDateTime($matches['date']),
+            'timezone' => $this->dateTimeZone->getName(),
             'url' => $matches['url'],
-            'title' => $matches['title'],
+            'title' => $this->normalizeText($matches['title']),
+            'summary' => '',
         ];
     }
 
-    private function getInnerHtml(DOMNode $node): string
+    private function innerHtml(DOMNode $node): string
     {
-        $innerHTML = '';
-        $children = $node->childNodes;
+        $innerHtml = '';
 
-        foreach ($children as $child) {
+        foreach ($node->childNodes as $child) {
             if (null !== $child->ownerDocument) {
-                $innerHTML .= $child->ownerDocument->saveXML($child);
+                $innerHtml .= $child->ownerDocument->saveXML($child);
             }
         }
 
-        return htmlspecialchars_decode($innerHTML);
+        return htmlspecialchars_decode($innerHtml);
+    }
+
+    private function normalizeDateTime(string $incomingDate): string
+    {
+        $len = mb_strlen($incomingDate);
+        $incomingFormat = self::DIFF_INCOMING_FORMATS[$len] ?? null;
+
+        if (null === $incomingFormat) {
+            throw new Exception(sprintf('Format not found for the incomingDate: %s', $incomingDate));
+        }
+
+        $dt = DateTimeImmutable::createFromFormat($incomingFormat, $incomingDate);
+
+        if (false === $dt) {
+            throw new Exception(sprintf(
+                'Could not create a dateTime for incomingDate: "%s" to this format: "%s"',
+                $incomingDate,
+                $incomingDate
+            ));
+        }
+
+        $dt->setTimeZone($this->dateTimeZone);
+
+        return $dt->format(self::NORMALIZED_DATETIME_FORMAT);
+    }
+
+    private function normalizeText(string $text): string
+    {
+        if (mb_strlen($text) < $this->maxTextLengthChars) {
+            return $text;
+        }
+
+        return mb_substr($text, 0, $this->maxTextLengthChars) . '...';
+    }
+
+    private function limitByMaxToFetch(array $info): array
+    {
+        if (null === $this->maxNewsToFetch) {
+            return $info;
+        }
+
+        return array_slice($info, 0, $this->maxNewsToFetch);
     }
 }
