@@ -12,7 +12,7 @@ final class Company
     private Ticker $ticker;
 
     /**
-     * @var array<string, ExtractedFromJson>
+     * @var array<string, ?mixed>
      */
     private array $info;
 
@@ -40,9 +40,12 @@ final class Company
         return $this->ticker;
     }
 
-    public function info(string $key): ExtractedFromJson
+    /**
+     * @return mixed|null
+     */
+    public function info(string $key)
     {
-        return $this->info[$key] ?? ExtractedFromJson::empty();
+        return $this->info[$key] ?? null;
     }
 
     public function allInfo(): array

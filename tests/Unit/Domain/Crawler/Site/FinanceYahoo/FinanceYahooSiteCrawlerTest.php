@@ -6,7 +6,6 @@ namespace Chemaclass\TickerNewsTests\Unit\Domain\Crawler\Site\FinanceYahoo;
 
 use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\FinanceYahooSiteCrawler;
 use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractorInterface;
-use Chemaclass\TickerNews\Domain\ReadModel\ExtractedFromJson;
 use Chemaclass\TickerNews\Domain\ReadModel\Site;
 use Chemaclass\TickerNews\Domain\ReadModel\Ticker;
 use Chemaclass\TickerNewsTests\WithFakeHttpClient;
@@ -56,9 +55,9 @@ BODY;
     private function stubJsonExtractor(): JsonExtractorInterface
     {
         return new class() implements JsonExtractorInterface {
-            public function extractFromJson(array $json): ExtractedFromJson
+            public function extractFromJson(array $json)
             {
-                return ExtractedFromJson::fromString($json['key']['sub-key']);
+                return $json['key']['sub-key'];
             }
         };
     }

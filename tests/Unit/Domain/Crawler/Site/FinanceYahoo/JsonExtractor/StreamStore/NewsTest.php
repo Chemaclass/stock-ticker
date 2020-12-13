@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Chemaclass\TickerNewsTests\Unit\Domain\Crawler\Site\FinanceYahoo\JsonExtractor\StreamStore;
 
 use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractor\StreamStore\News;
-use Chemaclass\TickerNews\Domain\ReadModel\ExtractedFromJson;
 use DateTimeZone;
 use Generator;
 use PHPUnit\Framework\TestCase;
@@ -27,7 +26,7 @@ final class NewsTest extends TestCase
         $news = new News(new DateTimeZone(self::EXAMPLE_TIMEZONE));
 
         self::assertEquals(
-            ExtractedFromJson::fromArray($expected),
+            $expected,
             $news->extractFromJson($json)
         );
     }

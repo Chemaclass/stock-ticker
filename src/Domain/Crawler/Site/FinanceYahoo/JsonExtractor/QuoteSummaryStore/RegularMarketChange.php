@@ -5,16 +5,13 @@ declare(strict_types=1);
 namespace Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractor\QuoteSummaryStore;
 
 use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractorInterface;
-use Chemaclass\TickerNews\Domain\ReadModel\ExtractedFromJson;
 
 final class RegularMarketChange implements JsonExtractorInterface
 {
-    public function extractFromJson(array $json): ExtractedFromJson
+    public function extractFromJson(array $json): string
     {
         $quoteSummaryStore = $json['context']['dispatcher']['stores']['QuoteSummaryStore'];
 
-        return ExtractedFromJson::fromString(
-            (string) $quoteSummaryStore['price']['regularMarketChange']['raw']
-        );
+        return(string) $quoteSummaryStore['price']['regularMarketChange']['raw'];
     }
 }

@@ -10,7 +10,6 @@ use Chemaclass\TickerNews\Domain\Notifier\ChannelInterface;
 use Chemaclass\TickerNews\Domain\Notifier\NotifierPolicy;
 use Chemaclass\TickerNews\Domain\Notifier\Policy\PolicyGroup;
 use Chemaclass\TickerNews\Domain\ReadModel\Company;
-use Chemaclass\TickerNews\Domain\ReadModel\ExtractedFromJson;
 use Chemaclass\TickerNews\Domain\ReadModel\Site;
 use Chemaclass\TickerNews\Domain\ReadModel\Ticker;
 use Chemaclass\TickerNews\TickerNewsFacade;
@@ -30,7 +29,7 @@ final class TickerNewsFacadeTest extends TestCase
             public function crawl(HttpClientInterface $httpClient, Ticker $ticker): Site
             {
                 return new Site([
-                    'name' => ExtractedFromJson::fromString('Amazon.com, Inc.'),
+                    'name' => 'Amazon.com, Inc.',
                 ]);
             }
         };
@@ -46,18 +45,18 @@ final class TickerNewsFacadeTest extends TestCase
     {
         $amazon = new Company(
             Ticker::withSymbol('AMZN'),
-            ['trend' => ExtractedFromJson::fromArray(['buy' => 0, 'sell' => 10])],
+            ['trend' => ['buy' => 0, 'sell' => 10]],
         );
 
         $google = new Company(
             Ticker::withSymbol('GOOG'),
-            ['trend' => ExtractedFromJson::fromArray(['buy' => 10, 'sell' => 0])],
+            ['trend' => ['buy' => 10, 'sell' => 0]],
         );
 
         $policy = new NotifierPolicy([
             $amazon->ticker()->symbol() => new PolicyGroup([
-                'high trend to buy' => static fn (Company $c) => $c->info('trend')->get('buy') > 5,
-                'high trend to sell' => static fn (Company $c) => $c->info('trend')->get('sell') > 5,
+                'high trend to buy' => static fn (Company $c) => $c->info('trend')['buy'] > 5,
+                'high trend to sell' => static fn (Company $c) => $c->info('trend')['sell'] > 5,
             ]),
             'UNKNOWN' => new PolicyGroup([]),
         ]);

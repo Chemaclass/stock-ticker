@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractor\StreamStore;
 
 use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractorInterface;
-use Chemaclass\TickerNews\Domain\ReadModel\ExtractedFromJson;
 use DateTimeImmutable;
 use DateTimeZone;
 
@@ -31,7 +30,7 @@ final class News implements JsonExtractorInterface
         $this->maxTextLengthChars = $maxTextLengthChars;
     }
 
-    public function extractFromJson(array $json): ExtractedFromJson
+    public function extractFromJson(array $json)
     {
         $streams = $json['context']['dispatcher']['stores']['StreamStore']['streams'];
         $first = reset($streams);
@@ -39,9 +38,8 @@ final class News implements JsonExtractorInterface
 
         $articles = $this->filterOnlyArticles($streamItems);
         $sorted = $this->sortNewestFirst($this->extractInfo($articles));
-        $limited = $this->limitByMaxToFetch($sorted);
 
-        return ExtractedFromJson::fromArray($limited);
+        return $this->limitByMaxToFetch($sorted);
     }
 
     private function filterOnlyArticles(array $items): array

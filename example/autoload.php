@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use Chemaclass\TickerNews\Domain\Crawler\CrawlResult;
+use Chemaclass\TickerNews\Domain\Crawler\Site\Barrons\BarronsSiteCrawler;
+use Chemaclass\TickerNews\Domain\Crawler\Site\Barrons\HtmlExtractor;
 use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\FinanceYahooSiteCrawler;
 use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractor;
 use Chemaclass\TickerNews\Domain\Notifier\Channel\Email\EmailChannel;
@@ -46,7 +48,7 @@ function crawlStock(TickerNewsFacade $facade, array $tickerSymbols, int $maxNews
 {
     return $facade->crawlStock([
         createFinanceYahooSiteCrawler($maxNewsToFetch),
-        // createAnotherSiteCrawler($maxNewsToFetch),
+        createBarronsSiteCrawler($maxNewsToFetch),
     ], $tickerSymbols);
 }
 
@@ -60,6 +62,15 @@ function createFinanceYahooSiteCrawler(int $maxNewsToFetch = 3): FinanceYahooSit
         'trend' => new JsonExtractor\QuoteSummaryStore\RecommendationTrend(),
         'news' => new JsonExtractor\StreamStore\News(new DateTimeZone('Europe/Berlin'), $maxNewsToFetch),
         'url' => new JsonExtractor\RouteStore\ExternalUrl(),
+    ]);
+}
+
+function createBarronsSiteCrawler(int $maxNewsToFetch = 3): BarronsSiteCrawler
+{
+    return new BarronsSiteCrawler([
+//        'name' => new HtmlExtractor\CompanyName(),
+        'news' => new HtmlExtractor\News(new DateTimeZone('Europe/Berlin'), $maxNewsToFetch),
+//        'url' => new HtmlExtractor\ExternalUrl(),
     ]);
 }
 
@@ -108,7 +119,7 @@ function printCrawResult(CrawlResult $crawlResult): void
         println($symbol);
 
         foreach ($company->allInfo() as $key => $value) {
-            printfln('# %s => %s', $key, json_encode($value->get()));
+            printfln('# %s => %s', $key, json_encode($value));
         }
         println();
     }
