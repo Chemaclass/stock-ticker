@@ -2,22 +2,22 @@
 
 ## Motivation
 
-I want to settle-up some threshold/policy conditions based on the crawled data, and send some custom notifications
-according to these conditions.
+I want to set up a personal lookup (policy conditions) based on the crawled data, and send custom notifications
+according to them.
 
 ## Decision
 
-Create a new Module called `Notifier` which will be responsible for
+Created a new Module called `Notifier` which will be responsible for:
 
-- Defining some already prepared channels (such as Email or Slack)
-- Create a `PolicyGroup` logic in which you are able to define a group of policy conditions per Ticker
+- Defining some already prepared channels (such as Email and Slack)
+- Create a `PolicyGroup` logic in which you are able to define a group of conditions per Ticker
 
 See the [example/notify.php](../example/notify.php) file to see a fully working example.
 
 ```php
 $policy = new NotifierPolicy([
     'AMZN' => new PolicyGroup([
-        'high trend to buy' => fn (Company $c): bool => $c->info('trend')->get('buy') > 25,
+        'high trend to buy' => fn (Company $c): bool => $c->info('trend')['buy'] > 25,
     ])
 ]);
 
@@ -26,7 +26,7 @@ $facade = new TickerNewsFacade(
         HttpClient::create(),
         new EmailChannel(/**/),
         new SlackChannel(/**/),
-        // ... Actually any list of ChannelInterface
+        // ... Any list of ChannelInterface
     )
 );
 
@@ -37,4 +37,4 @@ $notifyResult = $facade->notify($policy, $crawlResult);
 
 ## Consequences
 
-You can define multiple policies for the same Ticker
+You can define multiple policy conditions for the same Ticker Symbol in order to trigger a notification.
