@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use Chemaclass\TickerNews\Domain\Crawler\CrawlResult;
+use Chemaclass\TickerNews\Domain\Crawler\FinanceYahooSiteCrawler;
 use Chemaclass\TickerNews\Domain\Crawler\JsonExtractor;
-use Chemaclass\TickerNews\Domain\Crawler\RootJsonSiteCrawler;
 use Chemaclass\TickerNews\Domain\Notifier\Channel\Email\EmailChannel;
 use Chemaclass\TickerNews\Domain\Notifier\Channel\Slack\SlackChannel;
 use Chemaclass\TickerNews\Domain\Notifier\Channel\Slack\SlackHttpClient;
@@ -44,7 +44,7 @@ function sendNotifications(TickerNewsFacade $facade, array $policyGroupedBySymbo
 
 function crawlStock(TickerNewsFacade $facade, array $tickerSymbols, int $maxNewsToFetch = 3): CrawlResult
 {
-    $siteCrawler = new RootJsonSiteCrawler([
+    $siteCrawler = new FinanceYahooSiteCrawler([
         'name' => new JsonExtractor\QuoteSummaryStore\CompanyName(),
         'price' => new JsonExtractor\QuoteSummaryStore\RegularMarketPrice(),
         'change' => new JsonExtractor\QuoteSummaryStore\RegularMarketChange(),

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Chemaclass\TickerNewsTests\Unit\Domain\Crawler;
 
+use Chemaclass\TickerNews\Domain\Crawler\FinanceYahooSiteCrawler;
 use Chemaclass\TickerNews\Domain\Crawler\JsonExtractor\JsonExtractorInterface;
-use Chemaclass\TickerNews\Domain\Crawler\RootJsonSiteCrawler;
 use Chemaclass\TickerNews\Domain\ReadModel\ExtractedFromJson;
 use Chemaclass\TickerNews\Domain\ReadModel\Site;
 use Chemaclass\TickerNews\Domain\ReadModel\Ticker;
@@ -24,7 +24,7 @@ BODY;
 
     public function testCrawlUsingNamedExtractor(): void
     {
-        $crawler = new RootJsonSiteCrawler([
+        $crawler = new FinanceYahooSiteCrawler([
             'extractor name' => $this->stubJsonExtractor(),
         ]);
 
@@ -41,7 +41,7 @@ BODY;
     public function testCrawlUsingExtractorWithoutName(): void
     {
         $jsonExtractor = $this->stubJsonExtractor();
-        $crawler = new RootJsonSiteCrawler([$jsonExtractor]);
+        $crawler = new FinanceYahooSiteCrawler([$jsonExtractor]);
 
         $actual = $crawler->crawl(
             $this->mockHttpClient(self::RESPONSE_BODY),

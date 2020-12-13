@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Chemaclass\TickerNewsTests\E2E;
 
 use Chemaclass\TickerNews\Domain\Crawler\CrawlResult;
+use Chemaclass\TickerNews\Domain\Crawler\FinanceYahooSiteCrawler;
 use Chemaclass\TickerNews\Domain\Crawler\JsonExtractor\QuoteSummaryStore\CompanyName;
-use Chemaclass\TickerNews\Domain\Crawler\RootJsonSiteCrawler;
 use Chemaclass\TickerNews\Domain\Notifier\ChannelInterface;
 use Chemaclass\TickerNews\Domain\Notifier\NotifierPolicy;
 use Chemaclass\TickerNews\Domain\Notifier\Policy\PolicyGroup;
@@ -25,7 +25,7 @@ final class TickerNewsFacadeTest extends TestCase
     {
         $facade = $this->createTickerNewsFacade(self::never());
 
-        $siteCrawler = new RootJsonSiteCrawler([
+        $siteCrawler = new FinanceYahooSiteCrawler([
             'name' => new CompanyName(),
         ]);
 

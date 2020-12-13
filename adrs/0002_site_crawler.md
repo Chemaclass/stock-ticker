@@ -6,7 +6,7 @@ We want to be able to retrieve any value from the json with all info from the he
 
 ## Decision
 
-The `RootJsonSiteCrawler`: which receives a list of `JsonExtractorInterfaces` from which you can retrieve any data that
+The `FinanceYahooSiteCrawler`: which receives a list of `JsonExtractorInterfaces` from which you can retrieve any data that
 you might be interested in from the `root.App.main`. You can see the structure of that json in this
 example [snapshot](../data/RootAppMainJsonExample.json), or even in live viewing the source html code from any quote,
 for example: view-source:https://finance.yahoo.com/quote/AMZN
@@ -22,7 +22,7 @@ easily the exact location from a specific value.
 See the [example/crawl.php](../example/crawl.php) file to see a fully working example.
 
 ```php
-$siteCrawler = new RootJsonSiteCrawler([
+$siteCrawler = new FinanceYahooSiteCrawler([
     'name' => new CompanyName(),
     'price' => new RegularMarketPrice(),
     'change' => new RegularMarketChange(),

@@ -14,7 +14,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  * @see "data/RootAppMainJsonExample.json" to see the structure of the `root.App.main` json.
  * @see https://jsoneditoronline.org/ to visualize and find what you are interested in.
  */
-final class RootJsonSiteCrawler implements SiteCrawlerInterface
+final class FinanceYahooSiteCrawler implements SiteCrawlerInterface
 {
     private const REQUEST_METHOD = 'GET';
 
