@@ -14,9 +14,7 @@ $facade = createFacade(
     createSlackChannel(),
 );
 
-println('Sending notifications...');
-
-$result = sendNotifications($facade, [
+$policyGroupedBySymbols = [
     // You can define multiple policy conditions for the same Ticker.
     // As a function or a callable class, and combine them however you want.
     'AMZN' => new PolicyGroup([
@@ -31,7 +29,11 @@ $result = sendNotifications($facade, [
             return $strongBuy > $strongSell;
         },
     ]),
-]);
+];
 
-println('Done.');
+$symbols = implode(', ', array_keys($policyGroupedBySymbols));
+printfln('Looking for news in %s ...', $symbols);
+
+$result = sendNotifications($facade, $policyGroupedBySymbols);
+
 printNotifyResult($result);

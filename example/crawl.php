@@ -5,9 +5,9 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/autoload.php';
 
-$facade = createFacade();
+$symbols = ['AMZN', 'GOOG'];
+printfln('Crawling stock %s...', implode(', ', $symbols));
 
-println('Crawling stock...');
-$crawlResult = crawlStock($facade, ['AMZN'], $maxNewsToFetch = 3);
-println('Done.');
+$crawlResult = crawlStock(createFacade(), $symbols, $maxNewsToFetch = 3);
+
 printCrawResult($crawlResult);

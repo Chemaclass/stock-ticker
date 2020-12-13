@@ -15,6 +15,8 @@ final class BarronsSiteCrawler implements SiteCrawlerInterface
 
     private const REQUEST_URL = 'https://www.barrons.com/quote/stock/%s';
 
+    private const EXAMPLE_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36';
+
     /** @var HtmlCrawlerInterface[] */
     private array $crawlers;
 
@@ -26,15 +28,10 @@ final class BarronsSiteCrawler implements SiteCrawlerInterface
     public function crawl(HttpClientInterface $httpClient, Ticker $ticker): Site
     {
         $symbol = mb_strtolower($ticker->symbol());
-
         $url = sprintf(self::REQUEST_URL, $symbol);
 
         $html = $httpClient
-            ->request(self::REQUEST_METHOD, $url, [
-                'headers' => [
-                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36',
-                ],
-            ])
+            ->request(self::REQUEST_METHOD, $url, $this->buildRequestHeaders())
             ->getContent();
 
         $crawled = [];
@@ -44,5 +41,14 @@ final class BarronsSiteCrawler implements SiteCrawlerInterface
         }
 
         return new Site($crawled);
+    }
+
+    private function buildRequestHeaders(): array
+    {
+        return [
+            'headers' => [
+                'User-Agent' => self::EXAMPLE_USER_AGENT,
+            ],
+        ];
     }
 }

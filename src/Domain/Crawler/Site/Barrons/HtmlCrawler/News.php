@@ -17,9 +17,16 @@ final class News implements HtmlCrawlerInterface
 
     private const NORMALIZED_DATETIME_FORMAT = 'Y-m-d H:i:s';
 
+    /**
+     * TODO: Refactor this logic to use regex instead... Something like this:
+     * (?<month>\w{3}) (?<day>\d{1,2}), (?<year>\d{4}) ?(?<time>)
+     *
+     * @var array<int, string> the key is the length of the incoming date,
+     *                         the value is the mask-format that we can apply to it.
+     */
     private const DIFF_INCOMING_FORMATS = [
-        11 => 'M d, Y', // 'Dec 9, 2020'
-        12 => 'M d, Y', // 'Dec 13, 2020'
+        11 => 'M d, Y',     // Dec 9, 2020
+        12 => 'M d, Y',     // Dec 13, 2020
         17 => 'M d, Y H:i', // Dec 9, 2020 8:00
         18 => 'M d, Y H:i', // Dec 13, 2020 8:00
     ];
@@ -86,11 +93,20 @@ final class News implements HtmlCrawlerInterface
 
     private function normalizeDateTime(string $incomingDate): string
     {
+        $incomingDate = trim($incomingDate);
+
+        if (mb_strlen($incomingDate) >= 25) {
+            $incomingDate = mb_substr($incomingDate, 0, -8);
+        }
+
         $len = mb_strlen($incomingDate);
         $incomingFormat = self::DIFF_INCOMING_FORMATS[$len] ?? null;
 
         if (null === $incomingFormat) {
-            throw new RuntimeException(sprintf('Format not found for the incomingDate: %s', $incomingDate));
+            throw new RuntimeException(sprintf(
+                'Format not found for the incomingDate: "%s"',
+                $incomingDate
+            ));
         }
 
         $dt = DateTimeImmutable::createFromFormat($incomingFormat, $incomingDate);
@@ -99,7 +115,7 @@ final class News implements HtmlCrawlerInterface
             throw new RuntimeException(sprintf(
                 'Could not create a dateTime for incomingDate: "%s" to this format: "%s"',
                 $incomingDate,
-                $incomingDate
+                $incomingFormat
             ));
         }
 

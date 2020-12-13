@@ -157,3 +157,15 @@ function println(string $str = ''): void
 {
     print $str . PHP_EOL;
 }
+
+function sleepWithPrompt(int $sec): void
+{
+    println("Sleeping {$sec} seconds...");
+
+    for ($i = $sec; $i > 0; $i--) {
+        print sprintf("%04d\r", $i);
+        sleep(1);
+    }
+
+    println('Awake again!');
+}

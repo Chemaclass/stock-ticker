@@ -12,21 +12,24 @@ $facade = createFacade(
     createEmailChannel(),
 );
 
-while (true) {
-    println('Looking for news...');
+$sleepingTimeInSeconds = 15;
+$foundMoreNewsPolicy = new PolicyGroup([new FoundMoreNews()]);
 
-    $result = sendNotifications($facade, [
-        'AMZN' => new PolicyGroup([new FoundMoreNews()]),
-        'GOOG' => new PolicyGroup([new FoundMoreNews()]),
-        'TSLA' => new PolicyGroup([new FoundMoreNews()]),
-        'NFLX' => new PolicyGroup([new FoundMoreNews()]),
-        'AAPL' => new PolicyGroup([new FoundMoreNews()]),
-        'FB' => new PolicyGroup([new FoundMoreNews()]),
-    ]);
+$policyGroupedBySymbols = [
+    'AMZN' => $foundMoreNewsPolicy,
+    'GOOG' => $foundMoreNewsPolicy,
+    'TSLA' => $foundMoreNewsPolicy,
+    'NFLX' => $foundMoreNewsPolicy,
+    'AAPL' => $foundMoreNewsPolicy,
+    'FB' => $foundMoreNewsPolicy,
+];
+
+while (true) {
+    $symbols = implode(', ', array_keys($policyGroupedBySymbols));
+    printfln('Looking for news in %s ...', $symbols);
+
+    $result = sendNotifications($facade, $policyGroupedBySymbols);
 
     printNotifyResult($result);
-
-    println('Sleeping...');
-    sleep(60);
-    println('Awake again!');
+    sleepWithPrompt($sleepingTimeInSeconds);
 }
