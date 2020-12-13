@@ -8,10 +8,12 @@ use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractorInterfac
 
 final class CompanyName implements JsonExtractorInterface
 {
-    public function extractFromJson(array $json): string
+    public function extractFromJson(array $json): array
     {
         $quoteSummaryStore = $json['context']['dispatcher']['stores']['QuoteSummaryStore'];
 
-        return (string)$quoteSummaryStore['price']['longName'];
+        return [
+            $quoteSummaryStore['price']['longName'],
+        ];
     }
 }

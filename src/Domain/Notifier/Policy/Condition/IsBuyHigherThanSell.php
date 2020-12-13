@@ -11,7 +11,7 @@ final class IsBuyHigherThanSell implements PolicyConditionInterface
 {
     public function __invoke(Company $company): bool
     {
-        $trend = (array) $company->info('trend')->get();
+        $trend = (array) $company->info('trend');
 
         $strongBuys = $this->mapValues($trend, 'strongBuy');
         $buys = $this->mapValues($trend, 'buy');

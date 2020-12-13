@@ -8,10 +8,12 @@ use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractorInterfac
 
 final class ExternalUrl implements JsonExtractorInterface
 {
-    public function extractFromJson(array $json): string
+    public function extractFromJson(array $json): array
     {
         $routeStore = $json['context']['dispatcher']['stores']['RouteStore'];
 
-        return  (string) $routeStore['currentNavigate']['externalUrl'];
+        return [
+            $routeStore['currentNavigate']['externalUrl'],
+        ];
     }
 }

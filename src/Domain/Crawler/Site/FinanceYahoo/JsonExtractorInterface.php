@@ -6,8 +6,5 @@ namespace Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo;
 
 interface JsonExtractorInterface
 {
-    /**
-     * @return mixed
-     */
-    public function extractFromJson(array $json);
+    public function extractFromJson(array $json): array;
 }

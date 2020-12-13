@@ -33,7 +33,7 @@ BODY;
         );
 
         self::assertEquals(new Site([
-            'extractor name' => 'example expected value',
+            'extractor name' => ['example expected value'],
         ]), $actual);
     }
 
@@ -48,16 +48,18 @@ BODY;
         );
 
         self::assertEquals(new Site([
-            get_class($jsonExtractor) => 'example expected value',
+            get_class($jsonExtractor) => ['example expected value'],
         ]), $actual);
     }
 
     private function stubJsonExtractor(): JsonExtractorInterface
     {
         return new class() implements JsonExtractorInterface {
-            public function extractFromJson(array $json)
+            public function extractFromJson(array $json): array
             {
-                return $json['key']['sub-key'];
+                return [
+                    $json['key']['sub-key'],
+                ];
             }
         };
     }

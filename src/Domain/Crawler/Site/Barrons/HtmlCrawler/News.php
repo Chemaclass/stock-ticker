@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-
-namespace Chemaclass\TickerNews\Domain\Crawler\Site\Barrons\HtmlExtractor;
-
+namespace Chemaclass\TickerNews\Domain\Crawler\Site\Barrons\HtmlCrawler;
 
 use Chemaclass\TickerNews\Domain\Crawler\Site\Barrons\HtmlCrawlerInterface;
 use DateTimeZone;
@@ -68,8 +66,11 @@ final class News implements HtmlCrawlerInterface
     {
         $innerHTML = '';
         $children = $node->childNodes;
+
         foreach ($children as $child) {
-            $innerHTML .= $child->ownerDocument->saveXML($child);
+            if (null !== $child->ownerDocument) {
+                $innerHTML .= $child->ownerDocument->saveXML($child);
+            }
         }
 
         return htmlspecialchars_decode($innerHTML);

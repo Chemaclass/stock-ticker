@@ -6,8 +6,5 @@ namespace Chemaclass\TickerNews\Domain\Crawler\Site\Barrons;
 
 interface HtmlCrawlerInterface
 {
-    /**
-     * @return mixed
-     */
-    public function crawlHtml(string $html);
+    public function crawlHtml(string $html): array;
 }

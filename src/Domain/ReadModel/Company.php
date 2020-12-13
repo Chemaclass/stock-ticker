@@ -41,7 +41,7 @@ final class Company
     }
 
     /**
-     * @return mixed|null
+     * @return null|mixed
      */
     public function info(string $key)
     {

@@ -30,7 +30,7 @@ final class News implements JsonExtractorInterface
         $this->maxTextLengthChars = $maxTextLengthChars;
     }
 
-    public function extractFromJson(array $json)
+    public function extractFromJson(array $json): array
     {
         $streams = $json['context']['dispatcher']['stores']['StreamStore']['streams'];
         $first = reset($streams);

@@ -8,10 +8,10 @@ use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractorInterfac
 
 final class RegularMarketChangePercent implements JsonExtractorInterface
 {
-    public function extractFromJson(array $json): string
+    public function extractFromJson(array $json): array
     {
         $quoteSummaryStore = $json['context']['dispatcher']['stores']['QuoteSummaryStore'];
 
-        return  (string) $quoteSummaryStore['price']['regularMarketChangePercent']['raw'];
+        return $quoteSummaryStore['price']['regularMarketChangePercent'];
     }
 }

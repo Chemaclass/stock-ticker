@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Chemaclass\TickerNews\Domain\Crawler\CrawlResult;
 use Chemaclass\TickerNews\Domain\Crawler\Site\Barrons\BarronsSiteCrawler;
-use Chemaclass\TickerNews\Domain\Crawler\Site\Barrons\HtmlExtractor;
+use Chemaclass\TickerNews\Domain\Crawler\Site\Barrons\HtmlCrawler;
 use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\FinanceYahooSiteCrawler;
 use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractor;
 use Chemaclass\TickerNews\Domain\Notifier\Channel\Email\EmailChannel;
@@ -68,9 +68,9 @@ function createFinanceYahooSiteCrawler(int $maxNewsToFetch = 3): FinanceYahooSit
 function createBarronsSiteCrawler(int $maxNewsToFetch = 3): BarronsSiteCrawler
 {
     return new BarronsSiteCrawler([
-//        'name' => new HtmlExtractor\CompanyName(),
-        'news' => new HtmlExtractor\News(new DateTimeZone('Europe/Berlin'), $maxNewsToFetch),
-//        'url' => new HtmlExtractor\ExternalUrl(),
+        //        'name' => new HtmlExtractor\CompanyName(),
+        'news' => new HtmlCrawler\News(new DateTimeZone('Europe/Berlin'), $maxNewsToFetch),
+        //        'url' => new HtmlExtractor\ExternalUrl(),
     ]);
 }
 

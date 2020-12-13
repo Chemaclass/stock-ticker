@@ -8,7 +8,7 @@ use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractorInterfac
 
 final class RecommendationTrend implements JsonExtractorInterface
 {
-    public function extractFromJson(array $json)
+    public function extractFromJson(array $json): array
     {
         $quoteSummaryStore = $json['context']['dispatcher']['stores']['QuoteSummaryStore'];
 
