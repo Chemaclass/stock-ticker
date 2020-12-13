@@ -12,7 +12,7 @@ final class Company
     private Ticker $ticker;
 
     /**
-     * @var array<string, ?mixed>
+     * @var array<string, array>
      */
     private array $info;
 
@@ -40,10 +40,7 @@ final class Company
         return $this->ticker;
     }
 
-    /**
-     * @return null|mixed
-     */
-    public function info(string $key)
+    public function info(string $key): ?array
     {
         return $this->info[$key] ?? null;
     }

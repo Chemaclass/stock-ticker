@@ -8,7 +8,7 @@ use Chemaclass\TickerNews\Domain\Crawler\Site\Barrons\HtmlCrawlerInterface;
 use DateTimeImmutable;
 use DateTimeZone;
 use DOMNode;
-use Exception;
+use RuntimeException;
 use Symfony\Component\DomCrawler\Crawler;
 
 final class News implements HtmlCrawlerInterface
@@ -20,8 +20,8 @@ final class News implements HtmlCrawlerInterface
     private const DIFF_INCOMING_FORMATS = [
         11 => 'M d, Y', // 'Dec 9, 2020'
         12 => 'M d, Y', // 'Dec 13, 2020'
-        18 => 'M d, Y H:i', // Dec 9, 2020 8:00
-        17 => 'M d, Y H:i', // Dec 13, 2020 8:00
+        17 => 'M d, Y H:i', // Dec 9, 2020 8:00
+        18 => 'M d, Y H:i', // Dec 13, 2020 8:00
     ];
 
     private DateTimeZone $dateTimeZone;
@@ -90,13 +90,13 @@ final class News implements HtmlCrawlerInterface
         $incomingFormat = self::DIFF_INCOMING_FORMATS[$len] ?? null;
 
         if (null === $incomingFormat) {
-            throw new Exception(sprintf('Format not found for the incomingDate: %s', $incomingDate));
+            throw new RuntimeException(sprintf('Format not found for the incomingDate: %s', $incomingDate));
         }
 
         $dt = DateTimeImmutable::createFromFormat($incomingFormat, $incomingDate);
 
         if (false === $dt) {
-            throw new Exception(sprintf(
+            throw new RuntimeException(sprintf(
                 'Could not create a dateTime for incomingDate: "%s" to this format: "%s"',
                 $incomingDate,
                 $incomingDate

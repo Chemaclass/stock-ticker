@@ -29,7 +29,7 @@ final class TickerNewsFacadeTest extends TestCase
             public function crawl(HttpClientInterface $httpClient, Ticker $ticker): Site
             {
                 return new Site([
-                    'name' => 'Amazon.com, Inc.',
+                    'name' => ['Amazon.com, Inc.'],
                 ]);
             }
         };
@@ -38,7 +38,7 @@ final class TickerNewsFacadeTest extends TestCase
         $amazon = $result->getCompany('AMZN');
 
         self::assertEquals(Ticker::withSymbol('AMZN'), $amazon->ticker());
-        self::assertEquals('Amazon.com, Inc.', $amazon->info('name'));
+        self::assertSame(['Amazon.com, Inc.'], $amazon->info('name'));
     }
 
     public function testNotify(): void

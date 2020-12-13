@@ -68,7 +68,6 @@ function createFinanceYahooSiteCrawler(int $maxNewsToFetch = 3): FinanceYahooSit
 function createBarronsSiteCrawler(int $maxNewsToFetch = 3): BarronsSiteCrawler
 {
     return new BarronsSiteCrawler([
-        // 'name' => new HtmlExtractor\CompanyName(),
         'news' => new HtmlCrawler\News(new DateTimeZone('Europe/Berlin'), $maxNewsToFetch),
     ]);
 }

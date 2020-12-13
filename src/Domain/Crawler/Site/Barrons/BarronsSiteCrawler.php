@@ -27,7 +27,7 @@ final class BarronsSiteCrawler implements SiteCrawlerInterface
     {
         $symbol = mb_strtolower($ticker->symbol());
 
-        $url = sprintf(self::REQUEST_URL, mb_strtolower($symbol));
+        $url = sprintf(self::REQUEST_URL, $symbol);
 
         $html = $httpClient
             ->request(self::REQUEST_METHOD, $url, [
