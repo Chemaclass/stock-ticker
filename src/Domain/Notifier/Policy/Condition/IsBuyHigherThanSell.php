@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahoo\Domain\Notifier\Policy\Condition;
+namespace Chemaclass\TickerNews\Domain\Notifier\Policy\Condition;
 
-use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\PolicyConditionInterface;
-use Chemaclass\FinanceYahoo\Domain\ReadModel\Company;
+use Chemaclass\TickerNews\Domain\Notifier\Policy\PolicyConditionInterface;
+use Chemaclass\TickerNews\Domain\ReadModel\Company;
 
 final class IsBuyHigherThanSell implements PolicyConditionInterface
 {

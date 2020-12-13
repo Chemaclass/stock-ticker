@@ -2,28 +2,28 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahooTests\E2E;
+namespace Chemaclass\TickerNewsTests\E2E;
 
-use Chemaclass\FinanceYahoo\Domain\Crawler\CrawlResult;
-use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor\QuoteSummaryStore\CompanyName;
-use Chemaclass\FinanceYahoo\Domain\Crawler\RootJsonSiteCrawler;
-use Chemaclass\FinanceYahoo\Domain\Notifier\ChannelInterface;
-use Chemaclass\FinanceYahoo\Domain\Notifier\NotifierPolicy;
-use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\PolicyGroup;
-use Chemaclass\FinanceYahoo\Domain\ReadModel\Company;
-use Chemaclass\FinanceYahoo\Domain\ReadModel\ExtractedFromJson;
-use Chemaclass\FinanceYahoo\Domain\ReadModel\Ticker;
-use Chemaclass\FinanceYahoo\FinanceYahooFacade;
-use Chemaclass\FinanceYahoo\FinanceYahooFactory;
+use Chemaclass\TickerNews\Domain\Crawler\CrawlResult;
+use Chemaclass\TickerNews\Domain\Crawler\JsonExtractor\QuoteSummaryStore\CompanyName;
+use Chemaclass\TickerNews\Domain\Crawler\RootJsonSiteCrawler;
+use Chemaclass\TickerNews\Domain\Notifier\ChannelInterface;
+use Chemaclass\TickerNews\Domain\Notifier\NotifierPolicy;
+use Chemaclass\TickerNews\Domain\Notifier\Policy\PolicyGroup;
+use Chemaclass\TickerNews\Domain\ReadModel\Company;
+use Chemaclass\TickerNews\Domain\ReadModel\ExtractedFromJson;
+use Chemaclass\TickerNews\Domain\ReadModel\Ticker;
+use Chemaclass\TickerNews\TickerNewsFacade;
+use Chemaclass\TickerNews\TickerNewsFactory;
 use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\HttpClient;
 
-final class FinanceYahooFacadeTest extends TestCase
+final class TickerNewsFacadeTest extends TestCase
 {
     public function testCrawlStock(): void
     {
-        $facade = $this->createFinanceYahooFacade(self::never());
+        $facade = $this->createTickerNewsFacade(self::never());
 
         $siteCrawler = new RootJsonSiteCrawler([
             'name' => new CompanyName(),
@@ -56,7 +56,7 @@ final class FinanceYahooFacadeTest extends TestCase
             'UNKNOWN' => new PolicyGroup([]),
         ]);
 
-        $facade = $this->createFinanceYahooFacade(self::once());
+        $facade = $this->createTickerNewsFacade(self::once());
 
         $notifyResult = $facade->notify($policy, new CrawlResult([
             $amazon->ticker()->symbol() => $amazon,
@@ -68,13 +68,13 @@ final class FinanceYahooFacadeTest extends TestCase
         self::assertSame(['high trend to sell'], $notifyResult->conditionNamesForSymbol('AMZN'));
     }
 
-    private function createFinanceYahooFacade(InvocationOrder $channelSendExpected): FinanceYahooFacade
+    private function createTickerNewsFacade(InvocationOrder $channelSendExpected): TickerNewsFacade
     {
         $channel = $this->createMock(ChannelInterface::class);
         $channel->expects($channelSendExpected)->method('send');
 
-        return new FinanceYahooFacade(
-            new FinanceYahooFactory(
+        return new TickerNewsFacade(
+            new TickerNewsFactory(
                 HttpClient::create(),
                 $channel
             )

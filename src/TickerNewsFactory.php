@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahoo;
+namespace Chemaclass\TickerNews;
 
-use Chemaclass\FinanceYahoo\Domain\Crawler\CompanyCrawler;
-use Chemaclass\FinanceYahoo\Domain\Crawler\SiteCrawlerInterface;
-use Chemaclass\FinanceYahoo\Domain\Notifier\ChannelInterface;
-use Chemaclass\FinanceYahoo\Domain\Notifier\Notifier;
-use Chemaclass\FinanceYahoo\Domain\Notifier\NotifierPolicy;
+use Chemaclass\TickerNews\Domain\Crawler\CompanyCrawler;
+use Chemaclass\TickerNews\Domain\Crawler\SiteCrawlerInterface;
+use Chemaclass\TickerNews\Domain\Notifier\ChannelInterface;
+use Chemaclass\TickerNews\Domain\Notifier\Notifier;
+use Chemaclass\TickerNews\Domain\Notifier\NotifierPolicy;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-final class FinanceYahooFactory implements FinanceYahooFactoryInterface
+final class TickerNewsFactory implements TickerNewsFactoryInterface
 {
     private HttpClientInterface $httpClient;
 

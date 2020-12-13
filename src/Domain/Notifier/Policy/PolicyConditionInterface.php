@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahoo\Domain\Notifier\Policy;
+namespace Chemaclass\TickerNews\Domain\Notifier\Policy;
 
-use Chemaclass\FinanceYahoo\Domain\ReadModel\Company;
+use Chemaclass\TickerNews\Domain\ReadModel\Company;
 
 interface PolicyConditionInterface
 {

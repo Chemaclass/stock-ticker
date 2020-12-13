@@ -3,9 +3,9 @@
 
 declare(strict_types=1);
 
-use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\Condition\IsBuyHigherThanSell;
-use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\PolicyGroup;
-use Chemaclass\FinanceYahoo\Domain\ReadModel\Company;
+use Chemaclass\TickerNews\Domain\Notifier\Policy\Condition\IsBuyHigherThanSell;
+use Chemaclass\TickerNews\Domain\Notifier\Policy\PolicyGroup;
+use Chemaclass\TickerNews\Domain\ReadModel\Company;
 
 require_once __DIR__ . '/autoload.php';
 

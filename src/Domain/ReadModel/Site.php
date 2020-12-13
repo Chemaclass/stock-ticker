@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahoo\Domain\ReadModel;
+namespace Chemaclass\TickerNews\Domain\ReadModel;
 
 /**
  * @psalm-immutable

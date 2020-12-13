@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahooTests\Unit\Domain\Crawler;
+namespace Chemaclass\TickerNewsTests\Unit\Domain\Crawler;
 
-use Chemaclass\FinanceYahoo\Domain\Crawler\CompanyCrawler;
-use Chemaclass\FinanceYahoo\Domain\Crawler\CrawlResult;
-use Chemaclass\FinanceYahoo\Domain\Crawler\SiteCrawlerInterface;
-use Chemaclass\FinanceYahoo\Domain\ReadModel\Company;
-use Chemaclass\FinanceYahoo\Domain\ReadModel\Site;
-use Chemaclass\FinanceYahoo\Domain\ReadModel\Ticker;
-use Chemaclass\FinanceYahooTests\WithFakeHttpClient;
+use Chemaclass\TickerNews\Domain\Crawler\CompanyCrawler;
+use Chemaclass\TickerNews\Domain\Crawler\CrawlResult;
+use Chemaclass\TickerNews\Domain\Crawler\SiteCrawlerInterface;
+use Chemaclass\TickerNews\Domain\ReadModel\Company;
+use Chemaclass\TickerNews\Domain\ReadModel\Site;
+use Chemaclass\TickerNews\Domain\ReadModel\Ticker;
+use Chemaclass\TickerNewsTests\WithFakeHttpClient;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 

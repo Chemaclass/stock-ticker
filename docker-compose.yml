@@ -1,11 +1,11 @@
 version: "3.8"
 
 services:
-  finance_yahoo:
+  ticker_news:
     build:
       context: .
       dockerfile: devops/dev/php.dockerfile
-    container_name: finance_yahoo
+    container_name: ticker_news
     hostname: php
     volumes:
-      - .:/srv/FinanceYahoo:delegated
+      - .:/srv/TickerNews:delegated

@@ -1,9 +1,11 @@
 {
-    "name": "chemaclass/finance-yahoo",
-    "description": "A simple API for the Finance Yahoo Website",
+    "name": "chemaclass/ticker-news",
+    "description": "A simple API to get the latest Ticker news",
     "type": "project",
     "license": "MIT",
     "keywords": [
+        "ticker",
+        "news",
         "finance",
         "yahoo",
         "crawler",
@@ -29,12 +31,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Chemaclass\\FinanceYahoo\\": "src/"
+            "Chemaclass\\TickerNews\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Chemaclass\\FinanceYahooTests\\": "tests/"
+            "Chemaclass\\TickerNewsTests\\": "tests/"
         }
     },
     "scripts": {

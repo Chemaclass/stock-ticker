@@ -12,4 +12,4 @@ RUN pecl install -o -f xdebug mbstring \
 RUN curl https://getcomposer.org/download/2.0.8/composer.phar > /usr/local/bin/composer
 RUN chmod 755 /usr/local/bin/composer
 RUN useradd -m dev
-WORKDIR /srv/FinanceYahoo
+WORKDIR /srv/TickerNews

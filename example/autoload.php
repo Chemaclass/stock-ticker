@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-use Chemaclass\FinanceYahoo\Domain\Crawler\CrawlResult;
-use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor;
-use Chemaclass\FinanceYahoo\Domain\Crawler\RootJsonSiteCrawler;
-use Chemaclass\FinanceYahoo\Domain\Notifier\Channel\Email\EmailChannel;
-use Chemaclass\FinanceYahoo\Domain\Notifier\Channel\Slack\SlackChannel;
-use Chemaclass\FinanceYahoo\Domain\Notifier\Channel\Slack\SlackHttpClient;
-use Chemaclass\FinanceYahoo\Domain\Notifier\Channel\TwigTemplateGenerator;
-use Chemaclass\FinanceYahoo\Domain\Notifier\ChannelInterface;
-use Chemaclass\FinanceYahoo\Domain\Notifier\NotifierPolicy;
-use Chemaclass\FinanceYahoo\Domain\Notifier\NotifyResult;
-use Chemaclass\FinanceYahoo\FinanceYahooFacade;
-use Chemaclass\FinanceYahoo\FinanceYahooFactory;
+use Chemaclass\TickerNews\Domain\Crawler\CrawlResult;
+use Chemaclass\TickerNews\Domain\Crawler\JsonExtractor;
+use Chemaclass\TickerNews\Domain\Crawler\RootJsonSiteCrawler;
+use Chemaclass\TickerNews\Domain\Notifier\Channel\Email\EmailChannel;
+use Chemaclass\TickerNews\Domain\Notifier\Channel\Slack\SlackChannel;
+use Chemaclass\TickerNews\Domain\Notifier\Channel\Slack\SlackHttpClient;
+use Chemaclass\TickerNews\Domain\Notifier\Channel\TwigTemplateGenerator;
+use Chemaclass\TickerNews\Domain\Notifier\ChannelInterface;
+use Chemaclass\TickerNews\Domain\Notifier\NotifierPolicy;
+use Chemaclass\TickerNews\Domain\Notifier\NotifyResult;
+use Chemaclass\TickerNews\TickerNewsFacade;
+use Chemaclass\TickerNews\TickerNewsFactory;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Mailer\Bridge\Google\Transport\GmailSmtpTransport;
 use Symfony\Component\Mailer\Mailer;
@@ -24,17 +24,17 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 Dotenv\Dotenv::createImmutable(__DIR__)->load();
 
-function createFacade(ChannelInterface ...$channels): FinanceYahooFacade
+function createFacade(ChannelInterface ...$channels): TickerNewsFacade
 {
-    return new FinanceYahooFacade(
-        new FinanceYahooFactory(
+    return new TickerNewsFacade(
+        new TickerNewsFactory(
             HttpClient::create(),
             ...$channels
         )
     );
 }
 
-function sendNotifications(FinanceYahooFacade $facade, array $policyGroupedBySymbol): NotifyResult
+function sendNotifications(TickerNewsFacade $facade, array $policyGroupedBySymbol): NotifyResult
 {
     $policy = new NotifierPolicy($policyGroupedBySymbol);
     $tickerSymbols = array_keys($policyGroupedBySymbol);
@@ -42,7 +42,7 @@ function sendNotifications(FinanceYahooFacade $facade, array $policyGroupedBySym
     return $facade->notify($policy, crawlStock($facade, $tickerSymbols));
 }
 
-function crawlStock(FinanceYahooFacade $facade, array $tickerSymbols, int $maxNewsToFetch = 3): CrawlResult
+function crawlStock(TickerNewsFacade $facade, array $tickerSymbols, int $maxNewsToFetch = 3): CrawlResult
 {
     $siteCrawler = new RootJsonSiteCrawler([
         'name' => new JsonExtractor\QuoteSummaryStore\CompanyName(),

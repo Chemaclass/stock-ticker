@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahoo\Domain\Crawler;
+namespace Chemaclass\TickerNews\Domain\Crawler;
 
-use Chemaclass\FinanceYahoo\Domain\ReadModel\Company;
+use Chemaclass\TickerNews\Domain\ReadModel\Company;
 
 final class CrawlResult
 {

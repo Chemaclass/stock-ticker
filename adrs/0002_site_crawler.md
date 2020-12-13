@@ -31,7 +31,7 @@ $siteCrawler = new RootJsonSiteCrawler([
     'news' => new News(new DateTimeZone('Europe/Berlin'), 3),
 ]);
 
-$crawlResult = $financeYahooFacade->crawl([$siteCrawler], ['AMZN','GOOG']); 
+$crawlResult = $TickerNewsFacade->crawl([$siteCrawler], ['AMZN','GOOG']); 
 ```
 
 ## Consequences

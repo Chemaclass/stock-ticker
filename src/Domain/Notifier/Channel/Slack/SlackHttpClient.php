@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahoo\Domain\Notifier\Channel\Slack;
+namespace Chemaclass\TickerNews\Domain\Notifier\Channel\Slack;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahoo\Domain\Notifier\Channel;
+namespace Chemaclass\TickerNews\Domain\Notifier\Channel;
 
-use Chemaclass\FinanceYahoo\Domain\Notifier\NotifyResult;
+use Chemaclass\TickerNews\Domain\Notifier\NotifyResult;
 
 interface TemplateGeneratorInterface
 {

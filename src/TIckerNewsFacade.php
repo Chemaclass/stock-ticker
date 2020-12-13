@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahoo;
+namespace Chemaclass\TickerNews;
 
-use Chemaclass\FinanceYahoo\Domain\Crawler\CrawlResult;
-use Chemaclass\FinanceYahoo\Domain\Crawler\SiteCrawlerInterface;
-use Chemaclass\FinanceYahoo\Domain\Notifier\NotifierPolicy;
-use Chemaclass\FinanceYahoo\Domain\Notifier\NotifyResult;
+use Chemaclass\TickerNews\Domain\Crawler\CrawlResult;
+use Chemaclass\TickerNews\Domain\Crawler\SiteCrawlerInterface;
+use Chemaclass\TickerNews\Domain\Notifier\NotifierPolicy;
+use Chemaclass\TickerNews\Domain\Notifier\NotifyResult;
 
-final class FinanceYahooFacade
+final class TickerNewsFacade
 {
-    private FinanceYahooFactoryInterface $factory;
+    private TickerNewsFactoryInterface $factory;
 
-    public function __construct(FinanceYahooFactoryInterface $factory)
+    public function __construct(TickerNewsFactoryInterface $factory)
     {
         $this->factory = $factory;
     }

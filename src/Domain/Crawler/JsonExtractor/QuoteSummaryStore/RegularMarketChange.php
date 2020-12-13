@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor\QuoteSummaryStore;
+namespace Chemaclass\TickerNews\Domain\Crawler\JsonExtractor\QuoteSummaryStore;
 
-use Chemaclass\FinanceYahoo\Domain\Crawler\JsonExtractor\JsonExtractorInterface;
-use Chemaclass\FinanceYahoo\Domain\ReadModel\ExtractedFromJson;
+use Chemaclass\TickerNews\Domain\Crawler\JsonExtractor\JsonExtractorInterface;
+use Chemaclass\TickerNews\Domain\ReadModel\ExtractedFromJson;
 
 final class RegularMarketChange implements JsonExtractorInterface
 {

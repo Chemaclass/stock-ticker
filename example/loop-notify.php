@@ -3,8 +3,8 @@
 
 declare(strict_types=1);
 
-use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\Condition\FoundMoreNews;
-use Chemaclass\FinanceYahoo\Domain\Notifier\Policy\PolicyGroup;
+use Chemaclass\TickerNews\Domain\Notifier\Policy\Condition\FoundMoreNews;
+use Chemaclass\TickerNews\Domain\Notifier\Policy\PolicyGroup;
 
 require_once __DIR__ . '/autoload.php';
 
