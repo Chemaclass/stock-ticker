@@ -25,4 +25,9 @@ final class CrawlResult
     {
         return $this->companiesGroupedBySymbol;
     }
+
+    public function isEmpty(): bool
+    {
+        return empty($this->companiesGroupedBySymbol);
+    }
 }

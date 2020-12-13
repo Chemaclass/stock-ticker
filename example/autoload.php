@@ -94,6 +94,12 @@ function createSlackChannel(string $templateName = 'slack.twig'): SlackChannel
 
 function printCrawResult(CrawlResult $crawlResult): void
 {
+    if ($crawlResult->isEmpty()) {
+        println('Nothing new here...');
+
+        return;
+    }
+
     println('~~~~~~~~~~~~~~~~~~~~~~~~~~');
     println('~~~~~~ Crawl result ~~~~~~');
     println('~~~~~~~~~~~~~~~~~~~~~~~~~~');
@@ -111,6 +117,12 @@ function printCrawResult(CrawlResult $crawlResult): void
 
 function printNotifyResult(NotifyResult $notifyResult): void
 {
+    if ($notifyResult->isEmpty()) {
+        println('Nothing new here...');
+
+        return;
+    }
+
     println('===========================');
     println('====== Notify result ======');
     println('===========================');

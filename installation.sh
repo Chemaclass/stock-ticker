@@ -1,7 +1,7 @@
 
 set -u
 
-echo 'Installing the Finance Yahoo use case example ...'
+echo 'Installing TickerNews use case example ...'
 
 composerJson='{
     "name": "your-username/ticker-news-use-case-example",
@@ -29,5 +29,4 @@ cp example/.env.dist example/.env
 
 # Executing the crawling script to ensure everything was fine
 docker-compose exec -u dev example_ticker_news example/crawl.php
-echo 'Installation successfully'
-echo 'Do not forget to fill the .env file!'
+echo 'Installation successfully. Do not forget to fill the .env file!'
