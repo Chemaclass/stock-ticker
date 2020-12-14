@@ -11,7 +11,7 @@ final class FoundMoreNews implements PolicyConditionInterface
 {
     /**
      * @var array<string,string>
-     * For example ['TickerSymbol' => 'publicationDateTime']
+     * For example ['TickerSymbol' => 'datetime']
      */
     private static array $cacheOldestDateTimeBySymbol = [];
 
@@ -39,12 +39,12 @@ final class FoundMoreNews implements PolicyConditionInterface
                     return $current;
                 }
 
-                return $carry['publicationDateTime'] > $current['publicationDateTime']
+                return $carry['datetime'] > $current['datetime']
                     ? $carry
                     : $current;
             }
         );
 
-        return $reduced['publicationDateTime'];
+        return $reduced['datetime'];
     }
 }

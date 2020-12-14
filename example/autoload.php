@@ -7,6 +7,7 @@ use Chemaclass\TickerNews\Domain\Crawler\Site\Barrons\BarronsSiteCrawler;
 use Chemaclass\TickerNews\Domain\Crawler\Site\Barrons\HtmlCrawler;
 use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\FinanceYahooSiteCrawler;
 use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractor;
+use Chemaclass\TickerNews\Domain\Crawler\Site\Shared\NewsNormalizer;
 use Chemaclass\TickerNews\Domain\Notifier\Channel\Email\EmailChannel;
 use Chemaclass\TickerNews\Domain\Notifier\Channel\Slack\SlackChannel;
 use Chemaclass\TickerNews\Domain\Notifier\Channel\Slack\SlackHttpClient;
@@ -25,6 +26,11 @@ use Twig\Loader\FilesystemLoader;
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 Dotenv\Dotenv::createImmutable(__DIR__)->load();
+
+/*
+ * These are a collection of global functions to help you running and understanding
+ * the examples from an abstract point of view.
+ */
 
 function createFacade(ChannelInterface ...$channels): TickerNewsFacade
 {
@@ -60,7 +66,7 @@ function createFinanceYahooSiteCrawler(int $maxNewsToFetch = 3): FinanceYahooSit
         'change' => new JsonExtractor\QuoteSummaryStore\RegularMarketChange(),
         'changePercent' => new JsonExtractor\QuoteSummaryStore\RegularMarketChangePercent(),
         'trend' => new JsonExtractor\QuoteSummaryStore\RecommendationTrend(),
-        'news' => new JsonExtractor\StreamStore\News(new DateTimeZone('Europe/Berlin'), $maxNewsToFetch),
+        'news' => new JsonExtractor\StreamStore\News(createNewsNormalizer($maxNewsToFetch)),
         'url' => new JsonExtractor\RouteStore\ExternalUrl(),
     ]);
 }
@@ -68,8 +74,13 @@ function createFinanceYahooSiteCrawler(int $maxNewsToFetch = 3): FinanceYahooSit
 function createBarronsSiteCrawler(int $maxNewsToFetch = 3): BarronsSiteCrawler
 {
     return new BarronsSiteCrawler([
-        'news' => new HtmlCrawler\News(new DateTimeZone('Europe/Berlin'), $maxNewsToFetch),
+        'news' => new HtmlCrawler\News(createNewsNormalizer($maxNewsToFetch)),
     ]);
+}
+
+function createNewsNormalizer(int $maxNewsToFetch = 3): NewsNormalizer
+{
+    return new NewsNormalizer(new DateTimeZone('Europe/Berlin'), $maxNewsToFetch);
 }
 
 function createEmailChannel(string $templateName = 'email.twig'): EmailChannel
@@ -161,9 +172,10 @@ function println(string $str = ''): void
 function sleepWithPrompt(int $sec): void
 {
     println("Sleeping {$sec} seconds...");
+    $len = mb_strlen((string) $sec);
 
     for ($i = $sec; $i > 0; $i--) {
-        print sprintf("%04d\r", $i);
+        print sprintf("%0{$len}d\r", $i);
         sleep(1);
     }
 

@@ -5,18 +5,14 @@ declare(strict_types=1);
 namespace Chemaclass\TickerNews\Domain\Crawler\Site\Barrons\HtmlCrawler;
 
 use Chemaclass\TickerNews\Domain\Crawler\Site\Barrons\HtmlCrawlerInterface;
+use Chemaclass\TickerNews\Domain\Crawler\Site\Shared\NewsNormalizer;
 use DateTimeImmutable;
-use DateTimeZone;
 use DOMNode;
 use RuntimeException;
 use Symfony\Component\DomCrawler\Crawler;
 
 final class News implements HtmlCrawlerInterface
 {
-    private const DEFAULT_MAX_TEXT_LENGTH_CHARS = 180;
-
-    private const NORMALIZED_DATETIME_FORMAT = 'Y-m-d H:i:s';
-
     /**
      * TODO: Refactor this logic to use regex instead... Something like this:
      * (?<month>\w{3}) (?<day>\d{1,2}), (?<year>\d{4}) ?(?<time>)
@@ -31,20 +27,11 @@ final class News implements HtmlCrawlerInterface
         18 => 'M d, Y H:i', // Dec 13, 2020 8:00
     ];
 
-    private DateTimeZone $dateTimeZone;
+    private NewsNormalizer $newsNormalizer;
 
-    private ?int $maxNewsToFetch;
-
-    private int $maxTextLengthChars;
-
-    public function __construct(
-        DateTimeZone $dateTimeZone,
-        ?int $maxNewsToFetch = null,
-        int $maxTextLengthChars = self::DEFAULT_MAX_TEXT_LENGTH_CHARS
-    ) {
-        $this->dateTimeZone = $dateTimeZone;
-        $this->maxNewsToFetch = $maxNewsToFetch;
-        $this->maxTextLengthChars = $maxTextLengthChars;
+    public function __construct(NewsNormalizer $newsNormalizer)
+    {
+        $this->newsNormalizer = $newsNormalizer;
     }
 
     public function crawlHtml(string $html): array
@@ -58,7 +45,7 @@ final class News implements HtmlCrawlerInterface
             $news[] = $this->extractInfo($node);
         }
 
-        return $this->limitByMaxToFetch($news);
+        return $this->newsNormalizer->limitByMaxToFetch($news);
     }
 
     private function extractInfo(DOMNode $node): array
@@ -70,10 +57,10 @@ final class News implements HtmlCrawlerInterface
         );
 
         return [
-            'publicationDateTime' => $this->normalizeDateTime($matches['date']),
-            'timezone' => $this->dateTimeZone->getName(),
+            'datetime' => $this->normalizeIncomingDate($matches['date']),
+            'timezone' => $this->newsNormalizer->getTimeZoneName(),
             'url' => $matches['url'],
-            'title' => $this->normalizeText($matches['title']),
+            'title' => $this->newsNormalizer->normalizeText($matches['title']),
             'summary' => '',
         ];
     }
@@ -91,7 +78,7 @@ final class News implements HtmlCrawlerInterface
         return htmlspecialchars_decode($innerHtml);
     }
 
-    private function normalizeDateTime(string $incomingDate): string
+    private function normalizeIncomingDate(string $incomingDate): string
     {
         $incomingDate = trim($incomingDate);
 
@@ -119,26 +106,6 @@ final class News implements HtmlCrawlerInterface
             ));
         }
 
-        $dt->setTimeZone($this->dateTimeZone);
-
-        return $dt->format(self::NORMALIZED_DATETIME_FORMAT);
-    }
-
-    private function normalizeText(string $text): string
-    {
-        if (mb_strlen($text) < $this->maxTextLengthChars) {
-            return $text;
-        }
-
-        return mb_substr($text, 0, $this->maxTextLengthChars) . '...';
-    }
-
-    private function limitByMaxToFetch(array $info): array
-    {
-        if (null === $this->maxNewsToFetch) {
-            return $info;
-        }
-
-        return array_slice($info, 0, $this->maxNewsToFetch);
+        return $this->newsNormalizer->normalizeDateTime($dt);
     }
 }
