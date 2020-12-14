@@ -25,15 +25,15 @@ What about getting a notification everytime there are news that are new for you?
 Easy. Create an infinite loop and use `FoundMoreNews` as Policy Condition for a particular Stock:
 
 ```php
-$channels = [
-    createEmailChannel(),
-    createSlackChannel(),
-];
-
 $groupedPolicy = [
     'AMZN' => new PolicyGroup([new FoundMoreNews()]),
     'GOOG' => new PolicyGroup([new FoundMoreNews()]),
     // ...
+];
+
+$channels = [
+    EmailChannel::class,
+    SlackChannel::class,
 ];
 
 while (true) {
@@ -45,7 +45,6 @@ while (true) {
     printNotifyResult($result);
     sleep(60);
 }
-
 
 ```
 

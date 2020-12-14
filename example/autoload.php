@@ -30,12 +30,9 @@ Dotenv\Dotenv::createImmutable(__DIR__)->load();
 
 /*
  * ======================================================
- * These classes has only static function intentionally.
- * They are basically grouping functions by their intention
- * and responsibility.
- *
- * This autoload.php and these classes are just for
- * the example usage.
+ * This `autoload.php` and these classes are just for
+ * the example usage. They are basically a grouping of
+ * functions by their intention and responsibility.
  * ======================================================
  */
 
@@ -47,29 +44,51 @@ Dotenv\Dotenv::createImmutable(__DIR__)->load();
  */
 final class TickerNews
 {
-    /**
-     * @param ChannelInterface[] $channels
-     * @param array<string, PolicyGroup> $groupedPolicies
-     */
-    public static function sendNotifications(array $channels, array $groupedPolicies): NotifyResult
-    {
-        $policy = new NotifierPolicy($groupedPolicies);
-        $tickerSymbols = array_keys($groupedPolicies);
+    private const DEFAULT_MAX_NEWS_TO_FETCH = 9;
 
-        return Factory::createTickerNewsFacade(...$channels)
-            ->notify($policy, self::crawlStock($tickerSymbols));
+    private Factory $factory;
+
+    public static function create(): self
+    {
+        return new self(new Factory($_ENV));
+    }
+
+    private function __construct(Factory $factory)
+    {
+        $this->factory = $factory;
     }
 
     /**
-     * @param string[] $tickerSymbols
-     * @param int $maxNewsToFetch The max number of news that might be crawl.
+     * @param string[] $channelNames
+     * @param array<string, PolicyGroup> $groupedPolicies
      */
-    public static function crawlStock(array $tickerSymbols, int $maxNewsToFetch = 2): CrawlResult
-    {
-        return Factory::createTickerNewsFacade()
+    public function sendNotifications(
+        array $channelNames,
+        array $groupedPolicies,
+        int $maxNewsToFetch = self::DEFAULT_MAX_NEWS_TO_FETCH
+    ): NotifyResult {
+        $policy = new NotifierPolicy($groupedPolicies);
+        $symbols = array_keys($groupedPolicies);
+
+        $channels = $this->factory->createChannelByNames($channelNames);
+
+        return $this->factory
+            ->createTickerNewsFacade(...$channels)
+            ->notify($policy, $this->crawlStock($symbols, $maxNewsToFetch));
+    }
+
+    /**
+     * @param string[] $symbols
+     */
+    public function crawlStock(
+        array $symbols,
+        int $maxNewsToFetch = self::DEFAULT_MAX_NEWS_TO_FETCH
+    ): CrawlResult {
+        return $this->factory
+            ->createTickerNewsFacade()
             ->crawlStock(
-                Factory::createAllSiteCrawlers($maxNewsToFetch),
-                $tickerSymbols
+                $this->factory->createAllSiteCrawlers($maxNewsToFetch),
+                $symbols
             );
     }
 }
@@ -82,7 +101,14 @@ final class TickerNews
  */
 final class Factory
 {
-    public static function createTickerNewsFacade(ChannelInterface ...$channels): TickerNewsFacade
+    private array $env;
+
+    public function __construct(array $env = [])
+    {
+        $this->env = $env;
+    }
+
+    public function createTickerNewsFacade(ChannelInterface ...$channels): TickerNewsFacade
     {
         return new TickerNewsFacade(
             new TickerNewsFactory(
@@ -92,13 +118,39 @@ final class Factory
         );
     }
 
-    public static function createEmailChannel(string $templateName = 'email.twig'): EmailChannel
+    public function createAllSiteCrawlers(int $maxNewsToFetch): array
+    {
+        return [
+            $this->createFinanceYahooSiteCrawler($maxNewsToFetch),
+            $this->createBarronsSiteCrawler($maxNewsToFetch),
+        ];
+    }
+
+    /**
+     * @return ChannelInterface[]
+     */
+    public function createChannelByNames(array $channelNames): array
+    {
+        $channels = [];
+
+        if (isset($channelNames[EmailChannel::class])) {
+            $channels[] = $this->createEmailChannel();
+        }
+
+        if (isset($channelNames[SlackChannel::class])) {
+            $channels[] = $this->createSlackChannel();
+        }
+
+        return $channels;
+    }
+
+    private function createEmailChannel(string $templateName = 'email.twig'): EmailChannel
     {
         return new EmailChannel(
-            $_ENV['TO_ADDRESS'],
+            $this->env['TO_ADDRESS'],
             new Mailer(new GmailSmtpTransport(
-                $_ENV['MAILER_USERNAME'],
-                $_ENV['MAILER_PASSWORD']
+                $this->env['MAILER_USERNAME'],
+                $this->env['MAILER_PASSWORD']
             )),
             new TwigTemplateGenerator(
                 new Environment(new FilesystemLoader(__DIR__ . '/templates')),
@@ -107,12 +159,12 @@ final class Factory
         );
     }
 
-    public static function createSlackChannel(string $templateName = 'slack.twig'): SlackChannel
+    private function createSlackChannel(string $templateName = 'slack.twig'): SlackChannel
     {
         return new SlackChannel(
-            $_ENV['SLACK_DESTINY_CHANNEL_ID'],
+            $this->env['SLACK_DESTINY_CHANNEL_ID'],
             new SlackHttpClient(HttpClient::create([
-                'auth_bearer' => $_ENV['SLACK_BOT_USER_OAUTH_ACCESS_TOKEN'],
+                'auth_bearer' => $this->env['SLACK_BOT_USER_OAUTH_ACCESS_TOKEN'],
             ])),
             new TwigTemplateGenerator(
                 new Environment(new FilesystemLoader(__DIR__ . '/templates')),
@@ -121,15 +173,7 @@ final class Factory
         );
     }
 
-    public static function createAllSiteCrawlers(int $maxNewsToFetch): array
-    {
-        return [
-            self::createFinanceYahooSiteCrawler($maxNewsToFetch),
-            self::createBarronsSiteCrawler($maxNewsToFetch),
-        ];
-    }
-
-    private static function createFinanceYahooSiteCrawler(int $maxNewsToFetch = 3): FinanceYahooSiteCrawler
+    private function createFinanceYahooSiteCrawler(int $maxNewsToFetch = 3): FinanceYahooSiteCrawler
     {
         return new FinanceYahooSiteCrawler([
             'name' => new JsonExtractor\QuoteSummaryStore\CompanyName(),
@@ -137,19 +181,19 @@ final class Factory
             'change' => new JsonExtractor\QuoteSummaryStore\RegularMarketChange(),
             'changePercent' => new JsonExtractor\QuoteSummaryStore\RegularMarketChangePercent(),
             'trend' => new JsonExtractor\QuoteSummaryStore\RecommendationTrend(),
-            'news' => new JsonExtractor\StreamStore\News(self::createNewsNormalizer($maxNewsToFetch)),
+            'news' => new JsonExtractor\StreamStore\News($this->createNewsNormalizer($maxNewsToFetch)),
             'url' => new JsonExtractor\RouteStore\ExternalUrl(),
         ]);
     }
 
-    private static function createBarronsSiteCrawler(int $maxNewsToFetch = 3): BarronsSiteCrawler
+    private function createBarronsSiteCrawler(int $maxNewsToFetch = 3): BarronsSiteCrawler
     {
         return new BarronsSiteCrawler([
-            'news' => new HtmlCrawler\News(self::createNewsNormalizer($maxNewsToFetch)),
+            'news' => new HtmlCrawler\News($this->createNewsNormalizer($maxNewsToFetch)),
         ]);
     }
 
-    private static function createNewsNormalizer(int $maxNewsToFetch = 3): NewsNormalizer
+    private function createNewsNormalizer(int $maxNewsToFetch = 3): NewsNormalizer
     {
         return new NewsNormalizer(new DateTimeZone('Europe/Berlin'), $maxNewsToFetch);
     }
@@ -162,86 +206,114 @@ final class IO
 {
     private const DEFAULT_SYMBOLS = ['AMZN', 'GOOG', 'TSLA'];
 
-    public static function printCrawResult(CrawlResult $crawlResult): void
+    private OutputInterface $output;
+
+    public static function create(): self
+    {
+        return new self(new PrinterOutput());
+    }
+
+    private function __construct(OutputInterface $output)
+    {
+        $this->output = $output;
+    }
+
+    public function printCrawResult(CrawlResult $crawlResult): void
     {
         if ($crawlResult->isEmpty()) {
-            self::println('Nothing new here...');
+            $this->output->writeln('Nothing new here...');
 
             return;
         }
 
-        self::println('~~~~~~~~~~~~~~~~~~~~~~~~~~');
-        self::println('~~~~~~ Crawl result ~~~~~~');
-        self::println('~~~~~~~~~~~~~~~~~~~~~~~~~~');
+        $this->output->writeln('~~~~~~~~~~~~~~~~~~~~~~~~~~');
+        $this->output->writeln('~~~~~~ Crawl result ~~~~~~');
+        $this->output->writeln('~~~~~~~~~~~~~~~~~~~~~~~~~~');
 
         foreach ($crawlResult->getCompaniesGroupedBySymbol() as $symbol => $company) {
-            self::println($symbol);
+            $this->output->writeln($symbol);
 
             foreach ($company->allInfo() as $key => $value) {
-                self::printfln('# %s => %s', $key, json_encode($value));
+                $this->printfln('# %s => %s', $key, json_encode($value));
             }
 
-            self::println();
+            $this->output->writeln();
         }
 
-        self::println();
+        $this->output->writeln();
+    }
+
+    public function printNotifyResult(NotifyResult $notifyResult): void
+    {
+        if ($notifyResult->isEmpty()) {
+            $this->output->writeln(' ~~~ Nothing new here...');
+
+            return;
+        }
+
+        $this->output->writeln('===========================');
+        $this->output->writeln('====== Notify result ======');
+        $this->output->writeln('===========================');
+
+        foreach ($notifyResult->conditionNamesGroupBySymbol() as $symbol => $conditionNames) {
+            $this->output->writeln($symbol);
+            $this->output->writeln('Conditions:');
+
+            foreach ($conditionNames as $conditionName) {
+                $this->printfln('  - %s', $conditionName);
+            }
+
+            $this->output->writeln();
+        }
+
+        $this->output->writeln();
+    }
+
+    public function sleepWithPrompt(int $sec): void
+    {
+        $this->output->writeln("Sleeping {$sec} seconds...");
+        $len = mb_strlen((string) $sec);
+
+        for ($i = $sec; $i > 0; $i--) {
+            $this->output->write(sprintf("%0{$len}d\r", $i));
+            sleep(1);
+        }
+
+        $this->output->writeln('Awake again!');
+    }
+
+    public function readSymbolsFromInput(array $argv): array
+    {
+        return count($argv) <= 1
+            ? self::DEFAULT_SYMBOLS
+            : array_slice($argv, 1);
     }
 
     /**
      * @psalm-suppress MissingParamType
      */
-    public static function printfln(string $fmt = '', ...$args): void
+    public function printfln(string $fmt = '', ...$args): void
     {
-        self::println(sprintf($fmt, ...$args));
+        $this->output->writeln(sprintf($fmt, ...$args));
+    }
+}
+
+interface OutputInterface
+{
+    public function write(string $str = ''): void;
+
+    public function writeln(string $str = ''): void;
+}
+
+final class PrinterOutput implements OutputInterface
+{
+    public function writeln(string $str = ''): void
+    {
+        $this->write($str . PHP_EOL);
     }
 
-    public static function printNotifyResult(NotifyResult $notifyResult): void
+    public function write(string $str = ''): void
     {
-        if ($notifyResult->isEmpty()) {
-            self::println('Nothing new here...');
-
-            return;
-        }
-
-        self::println('===========================');
-        self::println('====== Notify result ======');
-        self::println('===========================');
-
-        foreach ($notifyResult->conditionNamesGroupBySymbol() as $symbol => $conditionNames) {
-            self::println($symbol);
-            self::println('Conditions:');
-
-            foreach ($conditionNames as $conditionName) {
-                self::printfln('  - %s', $conditionName);
-            }
-
-            self::println();
-        }
-        self::println();
-    }
-
-    public static function sleepWithPrompt(int $sec): void
-    {
-        self::println("Sleeping {$sec} seconds...");
-        $len = mb_strlen((string)$sec);
-
-        for ($i = $sec; $i > 0; $i--) {
-            print sprintf("%0{$len}d\r", $i);
-            sleep(1);
-        }
-
-        self::println('Awake again!');
-    }
-
-    public static function println(string $str = ''): void
-    {
-        print $str . PHP_EOL;
-    }
-
-    public static function readSymbolsFromInput(array $argv): array
-    {
-        return count($argv) <= 1
-            ? self::DEFAULT_SYMBOLS
-            : array_slice($argv, 1);
+        print $str;
     }
 }

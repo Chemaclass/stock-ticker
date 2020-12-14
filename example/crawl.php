@@ -5,9 +5,12 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/autoload.php';
 
-$symbols = IO::readSymbolsFromInput($argv);
-IO::printfln('Crawling stock %s...', implode(', ', $symbols));
+$io = IO::create();
 
-$crawlResult = TickerNews::crawlStock($symbols, $maxNewsToFetch = 3);
+$symbols = $io->readSymbolsFromInput($argv);
+$io->printfln('Crawling stock %s...', implode(', ', $symbols));
 
-IO::printCrawResult($crawlResult);
+$crawlResult = TickerNews::create()
+    ->crawlStock($symbols, $maxNewsToFetch = 3);
+
+$io->printCrawResult($crawlResult);
