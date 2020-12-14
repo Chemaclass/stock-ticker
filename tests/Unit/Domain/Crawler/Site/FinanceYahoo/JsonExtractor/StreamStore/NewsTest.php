@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Chemaclass\TickerNewsTests\Unit\Domain\Crawler\Site\FinanceYahoo\JsonExtractor\StreamStore;
 
 use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractor\StreamStore\News;
+use Chemaclass\TickerNews\Domain\Crawler\Site\Shared\NewsNormalizer;
 use DateTimeZone;
 use Generator;
 use PHPUnit\Framework\TestCase;
@@ -23,7 +24,9 @@ final class NewsTest extends TestCase
     public function testExtractFromJson(array $allItems, array $expected): void
     {
         $json = $this->createJsonWithItems($allItems);
-        $news = new News(new DateTimeZone(self::EXAMPLE_TIMEZONE));
+        $news = new News(
+            new NewsNormalizer(new DateTimeZone(self::EXAMPLE_TIMEZONE))
+        );
 
         self::assertEquals(
             $expected,
@@ -72,7 +75,7 @@ final class NewsTest extends TestCase
             'expected' => [
                 [
                     'title' => 'The title',
-                    'publicationDateTime' => self::EXAMPLE_FORMATTED_DATETIME,
+                    'datetime' => self::EXAMPLE_FORMATTED_DATETIME,
                     'url' => 'url.com',
                     'summary' => 'A summary',
                     'timezone' => self::EXAMPLE_TIMEZONE,
@@ -121,14 +124,14 @@ final class NewsTest extends TestCase
             'expected' => [
                 [
                     'title' => 'The first title',
-                    'publicationDateTime' => self::EXAMPLE_FORMATTED_DATETIME,
+                    'datetime' => self::EXAMPLE_FORMATTED_DATETIME,
                     'url' => 'url.1.com',
                     'summary' => 'First summary',
                     'timezone' => self::EXAMPLE_TIMEZONE,
                 ],
                 [
                     'title' => 'The second title',
-                    'publicationDateTime' => self::EXAMPLE_FORMATTED_DATETIME,
+                    'datetime' => self::EXAMPLE_FORMATTED_DATETIME,
                     'url' => 'url.2.com',
                     'summary' => 'Second summary',
                     'timezone' => self::EXAMPLE_TIMEZONE,
