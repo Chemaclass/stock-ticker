@@ -15,6 +15,7 @@ use Chemaclass\TickerNews\Domain\Notifier\Channel\TwigTemplateGenerator;
 use Chemaclass\TickerNews\Domain\Notifier\ChannelInterface;
 use Chemaclass\TickerNews\Domain\Notifier\NotifierPolicy;
 use Chemaclass\TickerNews\Domain\Notifier\NotifyResult;
+use Chemaclass\TickerNews\Domain\Notifier\Policy\PolicyGroup;
 use Chemaclass\TickerNews\TickerNewsFacade;
 use Chemaclass\TickerNews\TickerNewsFactory;
 use Symfony\Component\HttpClient\HttpClient;
@@ -28,156 +29,219 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 Dotenv\Dotenv::createImmutable(__DIR__)->load();
 
 /*
- * These are a collection of global functions to help you running and understanding
- * the examples from an abstract point of view.
+ * ======================================================
+ * These classes has only static function intentionally.
+ * They are basically grouping functions by their intention
+ * and responsibility.
+ *
+ * This autoload.php and these classes are just for
+ * the example usage.
+ * ======================================================
  */
 
-function createFacade(ChannelInterface ...$channels): TickerNewsFacade
+/**
+ * The role of this class is to be the facade's example.
+ *
+ * A facade is an object that serves as a front-facing interface
+ * masking more complex underlying or structural code.
+ */
+final class TickerNews
 {
-    return new TickerNewsFacade(
-        new TickerNewsFactory(
-            HttpClient::create(),
-            ...$channels
-        )
-    );
-}
+    /**
+     * @param ChannelInterface[] $channels
+     * @param array<string, PolicyGroup> $groupedPolicies
+     */
+    public static function sendNotifications(array $channels, array $groupedPolicies): NotifyResult
+    {
+        $policy = new NotifierPolicy($groupedPolicies);
+        $tickerSymbols = array_keys($groupedPolicies);
 
-function sendNotifications(TickerNewsFacade $facade, array $policyGroupedBySymbol): NotifyResult
-{
-    $policy = new NotifierPolicy($policyGroupedBySymbol);
-    $tickerSymbols = array_keys($policyGroupedBySymbol);
-
-    return $facade->notify($policy, crawlStock($facade, $tickerSymbols));
-}
-
-function crawlStock(TickerNewsFacade $facade, array $tickerSymbols, int $maxNewsToFetch = 2): CrawlResult
-{
-    return $facade->crawlStock([
-        createFinanceYahooSiteCrawler($maxNewsToFetch),
-        createBarronsSiteCrawler($maxNewsToFetch),
-    ], $tickerSymbols);
-}
-
-function createFinanceYahooSiteCrawler(int $maxNewsToFetch = 3): FinanceYahooSiteCrawler
-{
-    return new FinanceYahooSiteCrawler([
-        'name' => new JsonExtractor\QuoteSummaryStore\CompanyName(),
-        'price' => new JsonExtractor\QuoteSummaryStore\RegularMarketPrice(),
-        'change' => new JsonExtractor\QuoteSummaryStore\RegularMarketChange(),
-        'changePercent' => new JsonExtractor\QuoteSummaryStore\RegularMarketChangePercent(),
-        'trend' => new JsonExtractor\QuoteSummaryStore\RecommendationTrend(),
-        'news' => new JsonExtractor\StreamStore\News(createNewsNormalizer($maxNewsToFetch)),
-        'url' => new JsonExtractor\RouteStore\ExternalUrl(),
-    ]);
-}
-
-function createBarronsSiteCrawler(int $maxNewsToFetch = 3): BarronsSiteCrawler
-{
-    return new BarronsSiteCrawler([
-        'news' => new HtmlCrawler\News(createNewsNormalizer($maxNewsToFetch)),
-    ]);
-}
-
-function createNewsNormalizer(int $maxNewsToFetch = 3): NewsNormalizer
-{
-    return new NewsNormalizer(new DateTimeZone('Europe/Berlin'), $maxNewsToFetch);
-}
-
-function createEmailChannel(string $templateName = 'email.twig'): EmailChannel
-{
-    return new EmailChannel(
-        $_ENV['TO_ADDRESS'],
-        new Mailer(new GmailSmtpTransport(
-            $_ENV['MAILER_USERNAME'],
-            $_ENV['MAILER_PASSWORD']
-        )),
-        new TwigTemplateGenerator(
-            new Environment(new FilesystemLoader(__DIR__ . '/templates')),
-            $templateName
-        )
-    );
-}
-
-function createSlackChannel(string $templateName = 'slack.twig'): SlackChannel
-{
-    return new SlackChannel(
-        $_ENV['SLACK_DESTINY_CHANNEL_ID'],
-        new SlackHttpClient(HttpClient::create([
-            'auth_bearer' => $_ENV['SLACK_BOT_USER_OAUTH_ACCESS_TOKEN'],
-        ])),
-        new TwigTemplateGenerator(
-            new Environment(new FilesystemLoader(__DIR__ . '/templates')),
-            $templateName
-        )
-    );
-}
-
-function printCrawResult(CrawlResult $crawlResult): void
-{
-    if ($crawlResult->isEmpty()) {
-        println('Nothing new here...');
-
-        return;
+        return Factory::createTickerNewsFacade(...$channels)
+            ->notify($policy, self::crawlStock($tickerSymbols));
     }
 
-    println('~~~~~~~~~~~~~~~~~~~~~~~~~~');
-    println('~~~~~~ Crawl result ~~~~~~');
-    println('~~~~~~~~~~~~~~~~~~~~~~~~~~');
+    /**
+     * @param string[] $tickerSymbols
+     * @param int $maxNewsToFetch The max number of news that might be crawl.
+     */
+    public static function crawlStock(array $tickerSymbols, int $maxNewsToFetch = 2): CrawlResult
+    {
+        return Factory::createTickerNewsFacade()
+            ->crawlStock(
+                Factory::createAllSiteCrawlers($maxNewsToFetch),
+                $tickerSymbols
+            );
+    }
+}
 
-    foreach ($crawlResult->getCompaniesGroupedBySymbol() as $symbol => $company) {
-        println($symbol);
+/**
+ * This one is where all creational function are.
+ *
+ * The factory method pattern is used to deal with the problem
+ * of creating different "somehow related" objects.
+ */
+final class Factory
+{
+    public static function createTickerNewsFacade(ChannelInterface ...$channels): TickerNewsFacade
+    {
+        return new TickerNewsFacade(
+            new TickerNewsFactory(
+                HttpClient::create(),
+                ...$channels
+            )
+        );
+    }
 
-        foreach ($company->allInfo() as $key => $value) {
-            printfln('# %s => %s', $key, json_encode($value));
+    public static function createEmailChannel(string $templateName = 'email.twig'): EmailChannel
+    {
+        return new EmailChannel(
+            $_ENV['TO_ADDRESS'],
+            new Mailer(new GmailSmtpTransport(
+                $_ENV['MAILER_USERNAME'],
+                $_ENV['MAILER_PASSWORD']
+            )),
+            new TwigTemplateGenerator(
+                new Environment(new FilesystemLoader(__DIR__ . '/templates')),
+                $templateName
+            )
+        );
+    }
+
+    public static function createSlackChannel(string $templateName = 'slack.twig'): SlackChannel
+    {
+        return new SlackChannel(
+            $_ENV['SLACK_DESTINY_CHANNEL_ID'],
+            new SlackHttpClient(HttpClient::create([
+                'auth_bearer' => $_ENV['SLACK_BOT_USER_OAUTH_ACCESS_TOKEN'],
+            ])),
+            new TwigTemplateGenerator(
+                new Environment(new FilesystemLoader(__DIR__ . '/templates')),
+                $templateName
+            )
+        );
+    }
+
+    public static function createAllSiteCrawlers(int $maxNewsToFetch): array
+    {
+        return [
+            self::createFinanceYahooSiteCrawler($maxNewsToFetch),
+            self::createBarronsSiteCrawler($maxNewsToFetch),
+        ];
+    }
+
+    private static function createFinanceYahooSiteCrawler(int $maxNewsToFetch = 3): FinanceYahooSiteCrawler
+    {
+        return new FinanceYahooSiteCrawler([
+            'name' => new JsonExtractor\QuoteSummaryStore\CompanyName(),
+            'price' => new JsonExtractor\QuoteSummaryStore\RegularMarketPrice(),
+            'change' => new JsonExtractor\QuoteSummaryStore\RegularMarketChange(),
+            'changePercent' => new JsonExtractor\QuoteSummaryStore\RegularMarketChangePercent(),
+            'trend' => new JsonExtractor\QuoteSummaryStore\RecommendationTrend(),
+            'news' => new JsonExtractor\StreamStore\News(self::createNewsNormalizer($maxNewsToFetch)),
+            'url' => new JsonExtractor\RouteStore\ExternalUrl(),
+        ]);
+    }
+
+    private static function createBarronsSiteCrawler(int $maxNewsToFetch = 3): BarronsSiteCrawler
+    {
+        return new BarronsSiteCrawler([
+            'news' => new HtmlCrawler\News(self::createNewsNormalizer($maxNewsToFetch)),
+        ]);
+    }
+
+    private static function createNewsNormalizer(int $maxNewsToFetch = 3): NewsNormalizer
+    {
+        return new NewsNormalizer(new DateTimeZone('Europe/Berlin'), $maxNewsToFetch);
+    }
+}
+
+/**
+ * This is the place for all I/O functions.
+ */
+final class IO
+{
+    private const DEFAULT_SYMBOLS = ['AMZN', 'GOOG', 'TSLA'];
+
+    public static function printCrawResult(CrawlResult $crawlResult): void
+    {
+        if ($crawlResult->isEmpty()) {
+            self::println('Nothing new here...');
+
+            return;
         }
-        println();
-    }
-    println();
-}
 
-function printNotifyResult(NotifyResult $notifyResult): void
-{
-    if ($notifyResult->isEmpty()) {
-        println('Nothing new here...');
+        self::println('~~~~~~~~~~~~~~~~~~~~~~~~~~');
+        self::println('~~~~~~ Crawl result ~~~~~~');
+        self::println('~~~~~~~~~~~~~~~~~~~~~~~~~~');
 
-        return;
-    }
+        foreach ($crawlResult->getCompaniesGroupedBySymbol() as $symbol => $company) {
+            self::println($symbol);
 
-    println('===========================');
-    println('====== Notify result ======');
-    println('===========================');
+            foreach ($company->allInfo() as $key => $value) {
+                self::printfln('# %s => %s', $key, json_encode($value));
+            }
 
-    foreach ($notifyResult->conditionNamesGroupBySymbol() as $symbol => $conditionNames) {
-        println($symbol);
-        println('Conditions:');
-
-        foreach ($conditionNames as $conditionName) {
-            printfln('  - %s', $conditionName);
+            self::println();
         }
-        println();
-    }
-    println();
-}
 
-function printfln(string $fmt = '', ...$args): void
-{
-    println(sprintf($fmt, ...$args));
-}
-
-function println(string $str = ''): void
-{
-    print $str . PHP_EOL;
-}
-
-function sleepWithPrompt(int $sec): void
-{
-    println("Sleeping {$sec} seconds...");
-    $len = mb_strlen((string) $sec);
-
-    for ($i = $sec; $i > 0; $i--) {
-        print sprintf("%0{$len}d\r", $i);
-        sleep(1);
+        self::println();
     }
 
-    println('Awake again!');
+    /**
+     * @psalm-suppress MissingParamType
+     */
+    public static function printfln(string $fmt = '', ...$args): void
+    {
+        self::println(sprintf($fmt, ...$args));
+    }
+
+    public static function printNotifyResult(NotifyResult $notifyResult): void
+    {
+        if ($notifyResult->isEmpty()) {
+            self::println('Nothing new here...');
+
+            return;
+        }
+
+        self::println('===========================');
+        self::println('====== Notify result ======');
+        self::println('===========================');
+
+        foreach ($notifyResult->conditionNamesGroupBySymbol() as $symbol => $conditionNames) {
+            self::println($symbol);
+            self::println('Conditions:');
+
+            foreach ($conditionNames as $conditionName) {
+                self::printfln('  - %s', $conditionName);
+            }
+
+            self::println();
+        }
+        self::println();
+    }
+
+    public static function sleepWithPrompt(int $sec): void
+    {
+        self::println("Sleeping {$sec} seconds...");
+        $len = mb_strlen((string)$sec);
+
+        for ($i = $sec; $i > 0; $i--) {
+            print sprintf("%0{$len}d\r", $i);
+            sleep(1);
+        }
+
+        self::println('Awake again!');
+    }
+
+    public static function println(string $str = ''): void
+    {
+        print $str . PHP_EOL;
+    }
+
+    public static function readSymbolsFromInput(array $argv): array
+    {
+        return count($argv) <= 1
+            ? self::DEFAULT_SYMBOLS
+            : array_slice($argv, 1);
+    }
 }

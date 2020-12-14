@@ -3,37 +3,30 @@
 
 declare(strict_types=1);
 
-use Chemaclass\TickerNews\Domain\Notifier\Policy\Condition\IsBuyHigherThanSell;
+use Chemaclass\TickerNews\Domain\Notifier\Policy\Condition\FoundMoreNews;
 use Chemaclass\TickerNews\Domain\Notifier\Policy\PolicyGroup;
-use Chemaclass\TickerNews\Domain\ReadModel\Company;
 
 require_once __DIR__ . '/autoload.php';
 
-$facade = createFacade(
-    createEmailChannel(),
-    createSlackChannel(),
-);
-
-$policyGroupedBySymbols = [
-    // You can define multiple policy conditions for the same Ticker.
-    // As a function or a callable class, and combine them however you want.
-    'AMZN' => new PolicyGroup([
-        'High trend to buy' => static fn (Company $c): bool => $c->info('trend')['0']['buy'] > 25,
-        new IsBuyHigherThanSell(),
-    ]),
-    'GOOG' => new PolicyGroup([
-        'StrongBuy is higher than StrongSell' => static function (Company $c): bool {
-            $strongBuy = $c->info('trend')['0']['strongBuy'];
-            $strongSell = $c->info('trend')['0']['strongSell'];
-
-            return $strongBuy > $strongSell;
-        },
-    ]),
+$channels = [
+    Factory::createEmailChannel(),
+    Factory::createSlackChannel(),
 ];
 
-$symbols = implode(', ', array_keys($policyGroupedBySymbols));
-printfln('Looking for news in %s ...', $symbols);
+$sleepingTimeInSeconds = 5;
+$symbols = IO::readSymbolsFromInput($argv);
 
-$result = sendNotifications($facade, $policyGroupedBySymbols);
+$groupedPolicy = array_fill_keys(
+    $symbols,
+    new PolicyGroup([new FoundMoreNews()])
+);
 
-printNotifyResult($result);
+while (true) {
+    $symbols = implode(', ', array_keys($groupedPolicy));
+    IO::printfln('Looking for news in %s ...', $symbols);
+
+    $result = TickerNews::sendNotifications($channels, $groupedPolicy);
+
+    IO::printNotifyResult($result);
+    IO::sleepWithPrompt($sleepingTimeInSeconds);
+}

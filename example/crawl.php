@@ -5,9 +5,9 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/autoload.php';
 
-$symbols = ['AMZN', 'GOOG'];
-printfln('Crawling stock %s...', implode(', ', $symbols));
+$symbols = IO::readSymbolsFromInput($argv);
+IO::printfln('Crawling stock %s...', implode(', ', $symbols));
 
-$crawlResult = crawlStock(createFacade(), $symbols, $maxNewsToFetch = 3);
+$crawlResult = TickerNews::crawlStock($symbols, $maxNewsToFetch = 3);
 
-printCrawResult($crawlResult);
+IO::printCrawResult($crawlResult);
