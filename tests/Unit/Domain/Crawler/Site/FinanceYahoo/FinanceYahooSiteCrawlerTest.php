@@ -7,7 +7,7 @@ namespace Chemaclass\TickerNewsTests\Unit\Domain\Crawler\Site\FinanceYahoo;
 use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\FinanceYahooSiteCrawler;
 use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractorInterface;
 use Chemaclass\TickerNews\Domain\ReadModel\Site;
-use Chemaclass\TickerNews\Domain\ReadModel\Ticker;
+use Chemaclass\TickerNews\Domain\ReadModel\Symbol;
 use Chemaclass\TickerNewsTests\WithFakeHttpClient;
 use PHPUnit\Framework\TestCase;
 
@@ -29,7 +29,7 @@ BODY;
 
         $actual = $crawler->crawl(
             $this->mockHttpClient(self::RESPONSE_BODY),
-            Ticker::withSymbol('EXAMPLE_TICKER')
+            Symbol::fromString('EXAMPLE_TICKER')
         );
 
         self::assertEquals(new Site([
@@ -44,7 +44,7 @@ BODY;
 
         $actual = $crawler->crawl(
             $this->mockHttpClient(self::RESPONSE_BODY),
-            Ticker::withSymbol('EXAMPLE_TICKER')
+            Symbol::fromString('EXAMPLE_TICKER')
         );
 
         self::assertEquals(new Site([

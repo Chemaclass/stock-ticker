@@ -7,14 +7,14 @@ namespace Chemaclass\TickerNews\Domain\ReadModel;
 /**
  * @psalm-immutable
  */
-final class Ticker
+final class Symbol
 {
     private string $symbol;
 
     /**
      * @psalm-pure
      */
-    public static function withSymbol(string $symbol): self
+    public static function fromString(string $symbol): self
     {
         return new self($symbol);
     }
@@ -32,7 +32,7 @@ final class Ticker
         $this->symbol = $symbol;
     }
 
-    public function symbol(): string
+    public function toString(): string
     {
         return $this->symbol;
     }

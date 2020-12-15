@@ -23,9 +23,9 @@ final class FoundMoreNews implements PolicyConditionInterface
     public function __invoke(Company $company): bool
     {
         $current = $this->findLatestPubtimeFromNews($company);
-        $previous = self::$cacheOldestDateTimeBySymbol[$company->ticker()->symbol()] ?? '';
+        $previous = self::$cacheOldestDateTimeBySymbol[$company->symbol()->toString()] ?? '';
 
-        self::$cacheOldestDateTimeBySymbol[$company->ticker()->symbol()] = $current;
+        self::$cacheOldestDateTimeBySymbol[$company->symbol()->toString()] = $current;
 
         return $current !== $previous;
     }

@@ -20,13 +20,13 @@ final class TickerNewsFacade
 
     /**
      * @param list<SiteCrawlerInterface> $siteCrawlers
-     * @param list<string> $tickerSymbols
+     * @param list<string> $symbols
      */
-    public function crawlStock(array $siteCrawlers, array $tickerSymbols): CrawlResult
+    public function crawlStock(array $siteCrawlers, array $symbols): CrawlResult
     {
         return $this->factory
             ->createCompanyCrawler(...$siteCrawlers)
-            ->crawlStock(...$tickerSymbols);
+            ->crawlStock(...$symbols);
     }
 
     public function notify(NotifierPolicy $policy, CrawlResult $companies): NotifyResult

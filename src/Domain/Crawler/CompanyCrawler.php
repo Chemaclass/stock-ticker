@@ -6,7 +6,7 @@ namespace Chemaclass\TickerNews\Domain\Crawler;
 
 use Chemaclass\TickerNews\Domain\ReadModel\Company;
 use Chemaclass\TickerNews\Domain\ReadModel\Site;
-use Chemaclass\TickerNews\Domain\ReadModel\Ticker;
+use Chemaclass\TickerNews\Domain\ReadModel\Symbol;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class CompanyCrawler
@@ -24,16 +24,16 @@ final class CompanyCrawler
         $this->siteCrawlers = $siteCrawlers;
     }
 
-    public function crawlStock(string ...$tickerSymbols): CrawlResult
+    public function crawlStock(string ...$symbolStrings): CrawlResult
     {
         $result = [];
-        $tickers = $this->mapTickersFromSymbols(...$tickerSymbols);
+        $symbols = $this->mapSymbols(...$symbolStrings);
 
-        foreach ($tickers as $ticker) {
-            $sites = $this->crawlAllSitesForTicker($ticker);
+        foreach ($symbols as $symbol) {
+            $sites = $this->crawlAllSitesForSymbol($symbol);
 
-            $result[$ticker->symbol()] = new Company(
-                $ticker,
+            $result[$symbol->toString()] = new Company(
+                $symbol,
                 $this->flat(...$sites)
             );
         }
@@ -42,23 +42,23 @@ final class CompanyCrawler
     }
 
     /**
-     * @return Ticker[]
+     * @return Symbol[]
      */
-    private function mapTickersFromSymbols(string ...$tickerSymbols): array
+    private function mapSymbols(string ...$symbolStrings): array
     {
         return array_map(
-            static fn (string $symbol) => Ticker::withSymbol($symbol),
-            $tickerSymbols
+            static fn (string $symbol) => Symbol::fromString($symbol),
+            $symbolStrings
         );
     }
 
     /**
      * @return Site[]
      */
-    private function crawlAllSitesForTicker(Ticker $ticker): array
+    private function crawlAllSitesForSymbol(Symbol $symbol): array
     {
         return array_map(
-            fn (SiteCrawlerInterface $crawler): Site => $crawler->crawl($this->httpClient, $ticker),
+            fn (SiteCrawlerInterface $crawler): Site => $crawler->crawl($this->httpClient, $symbol),
             $this->siteCrawlers
         );
     }

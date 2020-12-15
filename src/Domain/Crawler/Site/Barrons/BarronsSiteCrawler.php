@@ -6,7 +6,7 @@ namespace Chemaclass\TickerNews\Domain\Crawler\Site\Barrons;
 
 use Chemaclass\TickerNews\Domain\Crawler\SiteCrawlerInterface;
 use Chemaclass\TickerNews\Domain\ReadModel\Site;
-use Chemaclass\TickerNews\Domain\ReadModel\Ticker;
+use Chemaclass\TickerNews\Domain\ReadModel\Symbol;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class BarronsSiteCrawler implements SiteCrawlerInterface
@@ -25,9 +25,9 @@ final class BarronsSiteCrawler implements SiteCrawlerInterface
         $this->crawlers = $crawlers;
     }
 
-    public function crawl(HttpClientInterface $httpClient, Ticker $ticker): Site
+    public function crawl(HttpClientInterface $httpClient, Symbol $symbol): Site
     {
-        $symbol = mb_strtolower($ticker->symbol());
+        $symbol = mb_strtolower($symbol->toString());
         $url = sprintf(self::REQUEST_URL, $symbol);
 
         $html = $httpClient

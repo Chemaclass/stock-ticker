@@ -11,7 +11,7 @@ use Chemaclass\TickerNews\Domain\Notifier\NotifierPolicy;
 use Chemaclass\TickerNews\Domain\Notifier\Policy\PolicyGroup;
 use Chemaclass\TickerNews\Domain\ReadModel\Company;
 use Chemaclass\TickerNews\Domain\ReadModel\Site;
-use Chemaclass\TickerNews\Domain\ReadModel\Ticker;
+use Chemaclass\TickerNews\Domain\ReadModel\Symbol;
 use Chemaclass\TickerNews\TickerNewsFacade;
 use Chemaclass\TickerNews\TickerNewsFactory;
 use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
@@ -26,7 +26,7 @@ final class TickerNewsFacadeTest extends TestCase
         $facade = $this->createTickerNewsFacade(self::never());
 
         $siteCrawler = new class() implements SiteCrawlerInterface {
-            public function crawl(HttpClientInterface $httpClient, Ticker $ticker): Site
+            public function crawl(HttpClientInterface $httpClient, Symbol $symbol): Site
             {
                 return new Site([
                     'name' => ['Amazon.com, Inc.'],
@@ -37,24 +37,24 @@ final class TickerNewsFacadeTest extends TestCase
         $result = $facade->crawlStock([$siteCrawler], ['AMZN']);
         $amazon = $result->getCompany('AMZN');
 
-        self::assertEquals(Ticker::withSymbol('AMZN'), $amazon->ticker());
+        self::assertEquals(Symbol::fromString('AMZN'), $amazon->symbol());
         self::assertSame(['Amazon.com, Inc.'], $amazon->info('name'));
     }
 
     public function testNotify(): void
     {
         $amazon = new Company(
-            Ticker::withSymbol('AMZN'),
+            Symbol::fromString('AMZN'),
             ['trend' => ['buy' => 0, 'sell' => 10]],
         );
 
         $google = new Company(
-            Ticker::withSymbol('GOOG'),
+            Symbol::fromString('GOOG'),
             ['trend' => ['buy' => 10, 'sell' => 0]],
         );
 
         $policy = new NotifierPolicy([
-            $amazon->ticker()->symbol() => new PolicyGroup([
+            $amazon->symbol()->toString() => new PolicyGroup([
                 'high trend to buy' => static fn (Company $c) => $c->info('trend')['buy'] > 5,
                 'high trend to sell' => static fn (Company $c) => $c->info('trend')['sell'] > 5,
             ]),
@@ -64,8 +64,8 @@ final class TickerNewsFacadeTest extends TestCase
         $facade = $this->createTickerNewsFacade(self::once());
 
         $notifyResult = $facade->notify($policy, new CrawlResult([
-            $amazon->ticker()->symbol() => $amazon,
-            $google->ticker()->symbol() => $google,
+            $amazon->symbol()->toString() => $amazon,
+            $google->symbol()->toString() => $google,
         ]));
 
         self::assertSame(['AMZN'], $notifyResult->symbols());

@@ -7,7 +7,7 @@ namespace Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo;
 use function assert;
 use Chemaclass\TickerNews\Domain\Crawler\SiteCrawlerInterface;
 use Chemaclass\TickerNews\Domain\ReadModel\Site;
-use Chemaclass\TickerNews\Domain\ReadModel\Ticker;
+use Chemaclass\TickerNews\Domain\ReadModel\Symbol;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
@@ -32,9 +32,9 @@ final class FinanceYahooSiteCrawler implements SiteCrawlerInterface
         $this->jsonExtractors = $jsonExtractors;
     }
 
-    public function crawl(HttpClientInterface $httpClient, Ticker $ticker): Site
+    public function crawl(HttpClientInterface $httpClient, Symbol $symbol): Site
     {
-        $url = sprintf(self::REQUEST_URL, $ticker->symbol());
+        $url = sprintf(self::REQUEST_URL, $symbol->toString());
 
         $html = $httpClient
             ->request(self::REQUEST_METHOD, $url)

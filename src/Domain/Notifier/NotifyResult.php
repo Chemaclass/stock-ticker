@@ -16,7 +16,7 @@ final class NotifyResult
      */
     public function add(Company $company, array $conditionNames): void
     {
-        $this->result[$company->ticker()->symbol()] = [
+        $this->result[$company->symbol()->toString()] = [
             'company' => $company,
             'conditionNames' => $conditionNames,
         ];

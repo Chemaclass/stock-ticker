@@ -9,7 +9,7 @@ use Chemaclass\TickerNews\Domain\Crawler\CrawlResult;
 use Chemaclass\TickerNews\Domain\Crawler\SiteCrawlerInterface;
 use Chemaclass\TickerNews\Domain\ReadModel\Company;
 use Chemaclass\TickerNews\Domain\ReadModel\Site;
-use Chemaclass\TickerNews\Domain\ReadModel\Ticker;
+use Chemaclass\TickerNews\Domain\ReadModel\Symbol;
 use Chemaclass\TickerNewsTests\WithFakeHttpClient;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -40,7 +40,7 @@ final class CompanyCrawlerTest extends TestCase
 
         self::assertEquals(new CrawlResult([
             'SYMBOL' => new Company(
-                Ticker::withSymbol('SYMBOL'),
+                Symbol::fromString('SYMBOL'),
                 [
                     'key1' => 'value1',
                     'key2' => 'value2',
@@ -60,13 +60,13 @@ final class CompanyCrawlerTest extends TestCase
 
         self::assertEquals(new CrawlResult([
             'SYMBOL_1' => new Company(
-                Ticker::withSymbol('SYMBOL_1'),
+                Symbol::fromString('SYMBOL_1'),
                 [
                     'key1' => 'value1',
                 ]
             ),
             'SYMBOL_2' => new Company(
-                Ticker::withSymbol('SYMBOL_2'),
+                Symbol::fromString('SYMBOL_2'),
                 [
                     'key1' => 'value1',
                 ]
@@ -87,7 +87,7 @@ final class CompanyCrawlerTest extends TestCase
                 $this->extractedValue = $extractedValue;
             }
 
-            public function crawl(HttpClientInterface $httpClient, Ticker $ticker): Site
+            public function crawl(HttpClientInterface $httpClient, Symbol $symbol): Site
             {
                 return new Site([$this->crawlerKey => $this->extractedValue]);
             }

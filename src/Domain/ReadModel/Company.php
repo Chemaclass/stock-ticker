@@ -9,7 +9,7 @@ namespace Chemaclass\TickerNews\Domain\ReadModel;
  */
 final class Company
 {
-    private Ticker $ticker;
+    private Symbol $symbol;
 
     /**
      * @var array<string, array>
@@ -21,23 +21,23 @@ final class Company
      */
     public static function empty(): self
     {
-        return new self(Ticker::empty(), []);
+        return new self(Symbol::empty(), []);
     }
 
-    public function __construct(Ticker $ticker, array $info)
+    public function __construct(Symbol $symbol, array $info)
     {
-        $this->ticker = $ticker;
+        $this->symbol = $symbol;
         $this->info = $info;
     }
 
     public function __toString(): string
     {
-        return sprintf('Ticker: %s', $this->ticker->symbol());
+        return sprintf('Symbol: %s', $this->symbol->toString());
     }
 
-    public function ticker(): Ticker
+    public function symbol(): Symbol
     {
-        return $this->ticker;
+        return $this->symbol;
     }
 
     public function info(string $key): ?array
