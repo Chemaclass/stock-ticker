@@ -18,7 +18,6 @@ use Chemaclass\StockTicker\Domain\Notifier\NotifyResult;
 use Chemaclass\StockTicker\Domain\Notifier\Policy\PolicyGroup;
 use Chemaclass\StockTicker\StockTickerFacade;
 use Chemaclass\StockTicker\StockTickerFactory;
-use Chemaclass\StockTicker\StockTickerFactory;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Mailer\Bridge\Google\Transport\GmailSmtpTransport;
 use Symfony\Component\Mailer\Mailer;
@@ -134,11 +133,11 @@ final class Factory
     {
         $channels = [];
 
-        if (isset($channelNames[EmailChannel::class])) {
+        if (in_array(EmailChannel::class, $channelNames, true)) {
             $channels[] = $this->createEmailChannel();
         }
 
-        if (isset($channelNames[SlackChannel::class])) {
+        if (in_array(SlackChannel::class, $channelNames, true)) {
             $channels[] = $this->createSlackChannel();
         }
 
