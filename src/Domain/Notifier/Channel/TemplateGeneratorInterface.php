@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNews\Domain\Notifier\Channel;
+namespace Chemaclass\StockTicker\Domain\Notifier\Channel;
 
-use Chemaclass\TickerNews\Domain\Notifier\NotifyResult;
+use Chemaclass\StockTicker\Domain\Notifier\NotifyResult;
 
 interface TemplateGeneratorInterface
 {

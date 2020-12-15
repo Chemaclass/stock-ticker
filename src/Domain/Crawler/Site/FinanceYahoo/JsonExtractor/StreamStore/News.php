@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractor\StreamStore;
+namespace Chemaclass\StockTicker\Domain\Crawler\Site\FinanceYahoo\JsonExtractor\StreamStore;
 
-use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractorInterface;
-use Chemaclass\TickerNews\Domain\Crawler\Site\Shared\NewsNormalizer;
+use Chemaclass\StockTicker\Domain\Crawler\Site\FinanceYahoo\JsonExtractorInterface;
+use Chemaclass\StockTicker\Domain\Crawler\Site\Shared\NewsNormalizer;
 use DateTimeImmutable;
 
 final class News implements JsonExtractorInterface

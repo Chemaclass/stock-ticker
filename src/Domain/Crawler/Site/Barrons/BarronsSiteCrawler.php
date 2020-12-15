@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNews\Domain\Crawler\Site\Barrons;
+namespace Chemaclass\StockTicker\Domain\Crawler\Site\Barrons;
 
-use Chemaclass\TickerNews\Domain\Crawler\SiteCrawlerInterface;
-use Chemaclass\TickerNews\Domain\ReadModel\Site;
-use Chemaclass\TickerNews\Domain\ReadModel\Symbol;
+use Chemaclass\StockTicker\Domain\Crawler\SiteCrawlerInterface;
+use Chemaclass\StockTicker\Domain\ReadModel\Site;
+use Chemaclass\StockTicker\Domain\ReadModel\Symbol;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class BarronsSiteCrawler implements SiteCrawlerInterface

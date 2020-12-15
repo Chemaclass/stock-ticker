@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNews\Domain\Notifier\Channel\Email;
+namespace Chemaclass\StockTicker\Domain\Notifier\Channel\Email;
 
-use Chemaclass\TickerNews\Domain\Notifier\Channel\TemplateGeneratorInterface;
-use Chemaclass\TickerNews\Domain\Notifier\ChannelInterface;
-use Chemaclass\TickerNews\Domain\Notifier\NotifyResult;
+use Chemaclass\StockTicker\Domain\Notifier\Channel\TemplateGeneratorInterface;
+use Chemaclass\StockTicker\Domain\Notifier\ChannelInterface;
+use Chemaclass\StockTicker\Domain\Notifier\NotifyResult;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
@@ -45,6 +45,6 @@ final class EmailChannel implements ChannelInterface
     {
         $symbols = implode(', ', array_values($notifyResult->symbols()));
 
-        return "TickerNews NEWS for {$symbols}";
+        return "StockTicker NEWS for {$symbols}";
     }
 }

@@ -2,8 +2,8 @@
 
 set -e
 
-if docker ps | grep -q ticker_news; then
-    docker-compose exec -T ticker_news composer test-all
+if docker ps | grep -q stock_ticker; then
+    docker-compose exec -T stock_ticker composer test-all
 else
     echo "Are you sure Docker is running?"
 fi

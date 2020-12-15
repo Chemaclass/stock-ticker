@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNews;
+namespace Chemaclass\StockTicker;
 
-use Chemaclass\TickerNews\Domain\Crawler\CompanyCrawler;
-use Chemaclass\TickerNews\Domain\Crawler\SiteCrawlerInterface;
-use Chemaclass\TickerNews\Domain\Notifier\ChannelInterface;
-use Chemaclass\TickerNews\Domain\Notifier\Notifier;
-use Chemaclass\TickerNews\Domain\Notifier\NotifierPolicy;
+use Chemaclass\StockTicker\Domain\Crawler\CompanyCrawler;
+use Chemaclass\StockTicker\Domain\Crawler\SiteCrawlerInterface;
+use Chemaclass\StockTicker\Domain\Notifier\ChannelInterface;
+use Chemaclass\StockTicker\Domain\Notifier\Notifier;
+use Chemaclass\StockTicker\Domain\Notifier\NotifierPolicy;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-final class TickerNewsFactory implements TickerNewsFactoryInterface
+final class StockTickerFactory implements StockTickerFactoryInterface
 {
     private HttpClientInterface $httpClient;
 

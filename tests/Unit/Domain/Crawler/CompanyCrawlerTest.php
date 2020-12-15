@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNewsTests\Unit\Domain\Crawler;
+namespace Chemaclass\StockTickerTests\Unit\Domain\Crawler;
 
-use Chemaclass\TickerNews\Domain\Crawler\CompanyCrawler;
-use Chemaclass\TickerNews\Domain\Crawler\CrawlResult;
-use Chemaclass\TickerNews\Domain\Crawler\SiteCrawlerInterface;
-use Chemaclass\TickerNews\Domain\ReadModel\Company;
-use Chemaclass\TickerNews\Domain\ReadModel\Site;
-use Chemaclass\TickerNews\Domain\ReadModel\Symbol;
-use Chemaclass\TickerNewsTests\WithFakeHttpClient;
+use Chemaclass\StockTicker\Domain\Crawler\CompanyCrawler;
+use Chemaclass\StockTicker\Domain\Crawler\CrawlResult;
+use Chemaclass\StockTicker\Domain\Crawler\SiteCrawlerInterface;
+use Chemaclass\StockTicker\Domain\ReadModel\Company;
+use Chemaclass\StockTicker\Domain\ReadModel\Site;
+use Chemaclass\StockTicker\Domain\ReadModel\Symbol;
+use Chemaclass\StockTickerTests\WithFakeHttpClient;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 

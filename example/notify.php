@@ -3,10 +3,10 @@
 
 declare(strict_types=1);
 
-use Chemaclass\TickerNews\Domain\Notifier\Channel\Email\EmailChannel;
-use Chemaclass\TickerNews\Domain\Notifier\Channel\Slack\SlackChannel;
-use Chemaclass\TickerNews\Domain\Notifier\Policy\Condition\FoundMoreNews;
-use Chemaclass\TickerNews\Domain\Notifier\Policy\PolicyGroup;
+use Chemaclass\StockTicker\Domain\Notifier\Channel\Email\EmailChannel;
+use Chemaclass\StockTicker\Domain\Notifier\Channel\Slack\SlackChannel;
+use Chemaclass\StockTicker\Domain\Notifier\Policy\Condition\FoundMoreNews;
+use Chemaclass\StockTicker\Domain\Notifier\Policy\PolicyGroup;
 
 require_once __DIR__ . '/autoload.php';
 

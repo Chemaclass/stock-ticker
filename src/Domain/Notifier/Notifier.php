@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNews\Domain\Notifier;
+namespace Chemaclass\StockTicker\Domain\Notifier;
 
-use Chemaclass\TickerNews\Domain\Crawler\CrawlResult;
-use Chemaclass\TickerNews\Domain\Notifier\Policy\PolicyGroup;
-use Chemaclass\TickerNews\Domain\ReadModel\Company;
+use Chemaclass\StockTicker\Domain\Crawler\CrawlResult;
+use Chemaclass\StockTicker\Domain\Notifier\Policy\PolicyGroup;
+use Chemaclass\StockTicker\Domain\ReadModel\Company;
 
 final class Notifier
 {

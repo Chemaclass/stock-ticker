@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNews\Domain\Notifier\Policy;
+namespace Chemaclass\StockTicker\Domain\Notifier\Policy;
 
-use Chemaclass\TickerNews\Domain\ReadModel\Company;
+use Chemaclass\StockTicker\Domain\ReadModel\Company;
 
 interface PolicyConditionInterface
 {

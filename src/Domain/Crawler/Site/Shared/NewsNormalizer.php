@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNews\Domain\Crawler\Site\Shared;
+namespace Chemaclass\StockTicker\Domain\Crawler\Site\Shared;
 
 use DateTimeImmutable;
 use DateTimeZone;

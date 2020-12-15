@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNews\Domain\Crawler\Site\Barrons\HtmlCrawler;
+namespace Chemaclass\StockTicker\Domain\Crawler\Site\Barrons\HtmlCrawler;
 
-use Chemaclass\TickerNews\Domain\Crawler\Site\Barrons\HtmlCrawlerInterface;
-use Chemaclass\TickerNews\Domain\Crawler\Site\Shared\NewsNormalizer;
+use Chemaclass\StockTicker\Domain\Crawler\Site\Barrons\HtmlCrawlerInterface;
+use Chemaclass\StockTicker\Domain\Crawler\Site\Shared\NewsNormalizer;
 use DateTimeImmutable;
 use DOMNode;
 use RuntimeException;

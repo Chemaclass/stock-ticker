@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNewsTests\Unit\Domain\Crawler\Site\FinanceYahoo;
+namespace Chemaclass\StockTickerTests\Unit\Domain\Crawler\Site\FinanceYahoo;
 
-use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\FinanceYahooSiteCrawler;
-use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractorInterface;
-use Chemaclass\TickerNews\Domain\ReadModel\Site;
-use Chemaclass\TickerNews\Domain\ReadModel\Symbol;
-use Chemaclass\TickerNewsTests\WithFakeHttpClient;
+use Chemaclass\StockTicker\Domain\Crawler\Site\FinanceYahoo\FinanceYahooSiteCrawler;
+use Chemaclass\StockTicker\Domain\Crawler\Site\FinanceYahoo\JsonExtractorInterface;
+use Chemaclass\StockTicker\Domain\ReadModel\Site;
+use Chemaclass\StockTicker\Domain\ReadModel\Symbol;
+use Chemaclass\StockTickerTests\WithFakeHttpClient;
 use PHPUnit\Framework\TestCase;
 
 final class FinanceYahooSiteCrawlerTest extends TestCase

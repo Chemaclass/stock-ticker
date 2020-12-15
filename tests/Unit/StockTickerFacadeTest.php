@@ -2,28 +2,28 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNewsTests\Unit;
+namespace Chemaclass\StockTickerTests\Unit;
 
-use Chemaclass\TickerNews\Domain\Crawler\CrawlResult;
-use Chemaclass\TickerNews\Domain\Crawler\SiteCrawlerInterface;
-use Chemaclass\TickerNews\Domain\Notifier\ChannelInterface;
-use Chemaclass\TickerNews\Domain\Notifier\NotifierPolicy;
-use Chemaclass\TickerNews\Domain\Notifier\Policy\PolicyGroup;
-use Chemaclass\TickerNews\Domain\ReadModel\Company;
-use Chemaclass\TickerNews\Domain\ReadModel\Site;
-use Chemaclass\TickerNews\Domain\ReadModel\Symbol;
-use Chemaclass\TickerNews\TickerNewsFacade;
-use Chemaclass\TickerNews\TickerNewsFactory;
+use Chemaclass\StockTicker\Domain\Crawler\CrawlResult;
+use Chemaclass\StockTicker\Domain\Crawler\SiteCrawlerInterface;
+use Chemaclass\StockTicker\Domain\Notifier\ChannelInterface;
+use Chemaclass\StockTicker\Domain\Notifier\NotifierPolicy;
+use Chemaclass\StockTicker\Domain\Notifier\Policy\PolicyGroup;
+use Chemaclass\StockTicker\Domain\ReadModel\Company;
+use Chemaclass\StockTicker\Domain\ReadModel\Site;
+use Chemaclass\StockTicker\Domain\ReadModel\Symbol;
+use Chemaclass\StockTicker\StockTickerFacade;
+use Chemaclass\StockTicker\StockTickerFactory;
 use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-final class TickerNewsFacadeTest extends TestCase
+final class StockTickerFacadeTest extends TestCase
 {
     public function testCrawlStock(): void
     {
-        $facade = $this->createTickerNewsFacade(self::never());
+        $facade = $this->createStockTickerFacade(self::never());
 
         $siteCrawler = new class() implements SiteCrawlerInterface {
             public function crawl(HttpClientInterface $httpClient, Symbol $symbol): Site
@@ -61,7 +61,7 @@ final class TickerNewsFacadeTest extends TestCase
             'UNKNOWN' => new PolicyGroup([]),
         ]);
 
-        $facade = $this->createTickerNewsFacade(self::once());
+        $facade = $this->createStockTickerFacade(self::once());
 
         $notifyResult = $facade->notify($policy, new CrawlResult([
             $amazon->symbol()->toString() => $amazon,
@@ -73,13 +73,13 @@ final class TickerNewsFacadeTest extends TestCase
         self::assertSame(['high trend to sell'], $notifyResult->conditionNamesForSymbol('AMZN'));
     }
 
-    private function createTickerNewsFacade(InvocationOrder $channelSendExpected): TickerNewsFacade
+    private function createStockTickerFacade(InvocationOrder $channelSendExpected): StockTickerFacade
     {
         $channel = $this->createMock(ChannelInterface::class);
         $channel->expects($channelSendExpected)->method('send');
 
-        return new TickerNewsFacade(
-            new TickerNewsFactory(
+        return new StockTickerFacade(
+            new StockTickerFactory(
                 HttpClient::create(),
                 $channel
             )

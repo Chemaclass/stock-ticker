@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNews\Domain\Notifier\Channel\Slack;
+namespace Chemaclass\StockTicker\Domain\Notifier\Channel\Slack;
 
-use Chemaclass\TickerNews\Domain\Notifier\Channel\TemplateGeneratorInterface;
-use Chemaclass\TickerNews\Domain\Notifier\ChannelInterface;
-use Chemaclass\TickerNews\Domain\Notifier\NotifyResult;
+use Chemaclass\StockTicker\Domain\Notifier\Channel\TemplateGeneratorInterface;
+use Chemaclass\StockTicker\Domain\Notifier\ChannelInterface;
+use Chemaclass\StockTicker\Domain\Notifier\NotifyResult;
 
 final class SlackChannel implements ChannelInterface
 {

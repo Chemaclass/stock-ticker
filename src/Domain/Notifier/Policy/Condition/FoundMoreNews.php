@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNews\Domain\Notifier\Policy\Condition;
+namespace Chemaclass\StockTicker\Domain\Notifier\Policy\Condition;
 
-use Chemaclass\TickerNews\Domain\Notifier\Policy\PolicyConditionInterface;
-use Chemaclass\TickerNews\Domain\ReadModel\Company;
+use Chemaclass\StockTicker\Domain\Notifier\Policy\PolicyConditionInterface;
+use Chemaclass\StockTicker\Domain\ReadModel\Company;
 
 final class FoundMoreNews implements PolicyConditionInterface
 {

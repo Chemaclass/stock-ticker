@@ -14,7 +14,7 @@ the wanted information.
 
 In order to be able to crawl a new Website you just need to create a class which should implement
 the `SiteCrawlerInterface`
-and pass it to the `TickerNewsFacade::crawlStock()` method.
+and pass it to the `StockTickerFacade::crawlStock()` method.
 
 ### Example 1: FinanceYahooSiteCrawler
 

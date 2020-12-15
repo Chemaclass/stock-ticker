@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNews\Domain\Notifier;
+namespace Chemaclass\StockTicker\Domain\Notifier;
 
 interface ChannelInterface
 {

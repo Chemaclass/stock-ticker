@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNewsTests\Unit\Domain\Crawler\Site\FinanceYahoo\JsonExtractor\StreamStore;
+namespace Chemaclass\StockTickerTests\Unit\Domain\Crawler\Site\FinanceYahoo\JsonExtractor\StreamStore;
 
-use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractor\StreamStore\News;
-use Chemaclass\TickerNews\Domain\Crawler\Site\Shared\NewsNormalizer;
+use Chemaclass\StockTicker\Domain\Crawler\Site\FinanceYahoo\JsonExtractor\StreamStore\News;
+use Chemaclass\StockTicker\Domain\Crawler\Site\Shared\NewsNormalizer;
 use DateTimeZone;
 use Generator;
 use PHPUnit\Framework\TestCase;

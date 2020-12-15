@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNewsTests;
+namespace Chemaclass\StockTickerTests;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;

@@ -2,22 +2,23 @@
 
 declare(strict_types=1);
 
-use Chemaclass\TickerNews\Domain\Crawler\CrawlResult;
-use Chemaclass\TickerNews\Domain\Crawler\Site\Barrons\BarronsSiteCrawler;
-use Chemaclass\TickerNews\Domain\Crawler\Site\Barrons\HtmlCrawler;
-use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\FinanceYahooSiteCrawler;
-use Chemaclass\TickerNews\Domain\Crawler\Site\FinanceYahoo\JsonExtractor;
-use Chemaclass\TickerNews\Domain\Crawler\Site\Shared\NewsNormalizer;
-use Chemaclass\TickerNews\Domain\Notifier\Channel\Email\EmailChannel;
-use Chemaclass\TickerNews\Domain\Notifier\Channel\Slack\SlackChannel;
-use Chemaclass\TickerNews\Domain\Notifier\Channel\Slack\SlackHttpClient;
-use Chemaclass\TickerNews\Domain\Notifier\Channel\TwigTemplateGenerator;
-use Chemaclass\TickerNews\Domain\Notifier\ChannelInterface;
-use Chemaclass\TickerNews\Domain\Notifier\NotifierPolicy;
-use Chemaclass\TickerNews\Domain\Notifier\NotifyResult;
-use Chemaclass\TickerNews\Domain\Notifier\Policy\PolicyGroup;
-use Chemaclass\TickerNews\TickerNewsFacade;
-use Chemaclass\TickerNews\TickerNewsFactory;
+use Chemaclass\StockTicker\Domain\Crawler\CrawlResult;
+use Chemaclass\StockTicker\Domain\Crawler\Site\Barrons\BarronsSiteCrawler;
+use Chemaclass\StockTicker\Domain\Crawler\Site\Barrons\HtmlCrawler;
+use Chemaclass\StockTicker\Domain\Crawler\Site\FinanceYahoo\FinanceYahooSiteCrawler;
+use Chemaclass\StockTicker\Domain\Crawler\Site\FinanceYahoo\JsonExtractor;
+use Chemaclass\StockTicker\Domain\Crawler\Site\Shared\NewsNormalizer;
+use Chemaclass\StockTicker\Domain\Notifier\Channel\Email\EmailChannel;
+use Chemaclass\StockTicker\Domain\Notifier\Channel\Slack\SlackChannel;
+use Chemaclass\StockTicker\Domain\Notifier\Channel\Slack\SlackHttpClient;
+use Chemaclass\StockTicker\Domain\Notifier\Channel\TwigTemplateGenerator;
+use Chemaclass\StockTicker\Domain\Notifier\ChannelInterface;
+use Chemaclass\StockTicker\Domain\Notifier\NotifierPolicy;
+use Chemaclass\StockTicker\Domain\Notifier\NotifyResult;
+use Chemaclass\StockTicker\Domain\Notifier\Policy\PolicyGroup;
+use Chemaclass\StockTicker\StockTickerFacade;
+use Chemaclass\StockTicker\StockTickerFactory;
+use Chemaclass\StockTicker\StockTickerFactory;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Mailer\Bridge\Google\Transport\GmailSmtpTransport;
 use Symfony\Component\Mailer\Mailer;
@@ -108,10 +109,10 @@ final class Factory
         $this->env = $env;
     }
 
-    public function createTickerNewsFacade(ChannelInterface ...$channels): TickerNewsFacade
+    public function createTickerNewsFacade(ChannelInterface ...$channels): StockTickerFacade
     {
-        return new TickerNewsFacade(
-            new TickerNewsFactory(
+        return new StockTickerFacade(
+            new StockTickerFactory(
                 HttpClient::create(),
                 ...$channels
             )

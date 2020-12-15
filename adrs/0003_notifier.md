@@ -21,8 +21,8 @@ $policy = new NotifierPolicy([
     ])
 ]);
 
-$facade = new TickerNewsFacade(
-    new TickerNewsFactory(
+$facade = new StockTickerFacade(
+    new StockTickerFactory(
         HttpClient::create(),
         new EmailChannel(/**/),
         new SlackChannel(/**/),

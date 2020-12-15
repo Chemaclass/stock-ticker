@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNews\Domain\ReadModel;
+namespace Chemaclass\StockTicker\Domain\ReadModel;
 
 /**
  * @psalm-immutable

@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\TickerNews;
+namespace Chemaclass\StockTicker;
 
-use Chemaclass\TickerNews\Domain\Crawler\CrawlResult;
-use Chemaclass\TickerNews\Domain\Crawler\SiteCrawlerInterface;
-use Chemaclass\TickerNews\Domain\Notifier\NotifierPolicy;
-use Chemaclass\TickerNews\Domain\Notifier\NotifyResult;
+use Chemaclass\StockTicker\Domain\Crawler\CrawlResult;
+use Chemaclass\StockTicker\Domain\Crawler\SiteCrawlerInterface;
+use Chemaclass\StockTicker\Domain\Notifier\NotifierPolicy;
+use Chemaclass\StockTicker\Domain\Notifier\NotifyResult;
 
-final class TickerNewsFacade
+final class StockTickerFacade
 {
-    private TickerNewsFactoryInterface $factory;
+    private StockTickerFactoryInterface $factory;
 
-    public function __construct(TickerNewsFactoryInterface $factory)
+    public function __construct(StockTickerFactoryInterface $factory)
     {
         $this->factory = $factory;
     }

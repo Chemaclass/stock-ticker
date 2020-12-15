@@ -1,11 +1,11 @@
 version: "3.8"
 
 services:
-  ticker_news:
+  stock_ticker:
     build:
       context: .
       dockerfile: devops/dev/php.dockerfile
-    container_name: ticker_news
+    container_name: stock_ticker
     hostname: php
     volumes:
-      - .:/srv/TickerNews:delegated
+      - .:/srv/StockTicker:delegated

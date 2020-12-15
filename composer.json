@@ -1,6 +1,6 @@
 {
-    "name": "chemaclass/ticker-news",
-    "description": "A simple API to get the latest Ticker news",
+    "name": "chemaclass/stock-ticker",
+    "description": "An API to gather the latest info from your stocks",
     "type": "project",
     "license": "MIT",
     "keywords": [
@@ -34,12 +34,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Chemaclass\\TickerNews\\": "src/"
+            "Chemaclass\\StockTicker\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Chemaclass\\TickerNewsTests\\": "tests/"
+            "Chemaclass\\StockTickerTests\\": "tests/"
         }
     },
     "scripts": {
