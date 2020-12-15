@@ -17,16 +17,7 @@
                 </small>
             </h2>
 
-            <ul class="policy-conditions"
-                style="border-radius: 5px;
-                       padding: 6px"
-            >
-                {% for condition in notifyResult.conditionNamesForSymbol(symbol) %}
-                    <li>{{ condition }}</li>
-                {% endfor %}
-            </ul>
-
-            <div>
+            <h3>
                 <span class="price">
                     Current price:
                     <span class="formatted-price"
@@ -38,15 +29,26 @@
                         ({{ company.info('CURRENCY')['currency'] }})
                     </span>
                 </span>
-                <span class="change"
-                      style="border-radius: 5px;
+                    <span class="change"
+                          style="border-radius: 5px;
                              border:1px solid lightgray;
                              padding: 6px"
-                >
+                    >
                     {{ company.info('CHANGE')['fmt'] }}
                     ({{ company.info('CHANGE_PERCENT')['fmt'] }})
                 </span>
-            </div>
+            </h3>
+
+            <ul class="policy-conditions"
+                style="border-radius: 5px;
+                       padding: 6px"
+            >
+                {% for condition in notifyResult.conditionNamesForSymbol(symbol) %}
+                    <li>{{ condition }}</li>
+                {% endfor %}
+            </ul>
+
+
 
             <h3>Latest News</h3>
             <div class="all-news"

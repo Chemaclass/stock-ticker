@@ -14,7 +14,7 @@ final class Currency implements JsonExtractorInterface
 
         return [
             'currency' => $quoteSummaryStore['price']['currency'],
-            'symbol' => $quoteSummaryStore['price']['currencySymbol']
+            'symbol' => $quoteSummaryStore['price']['currencySymbol'],
         ];
     }
 }
