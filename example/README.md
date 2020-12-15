@@ -1,6 +1,6 @@
 # EXAMPLE
 
-In this directory you can find three different examples of how to use this api:
+In this directory you can find two different examples of how to use this package:
 
 ### Crawling
 
@@ -10,19 +10,15 @@ It just crawls the website, collect the data and renders into your output termin
 
 ### Notifying
 
-It crawls the data, and it sends a notification via two channels (slack + email).
-
-### Looping
-
 [See the working example](notify.php)
 
-It shows how can you combine these two (crawling + notifying) in an infinite loop.
+It crawls the data, and it sends a notification via some channels (slack, email, ...).
 
 ## Real use case
 
-What about getting a notification everytime there are news that are new for you?
+What about getting a notification every time there is news that you are interested in?
 
-Easy. Create an infinite loop and use `FoundMoreNews` as Policy Condition for a particular Stock:
+Easy. Create an infinite loop and use `FoundMoreNews` as condition for a particular Stock.
 
 ```php
 $groupedPolicy = [
@@ -53,5 +49,3 @@ while (true) {
 In order to make the example scripts work, you need to create a `.env` file as:
 
 - `cp example/.env.dist example/.env`
-
-More info about it in the example's [readme](example/README.md).

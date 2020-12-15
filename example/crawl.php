@@ -6,6 +6,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/autoload.php';
 
 $io = IO::create();
+
 $symbols = $io->readSymbolsFromInput($argv);
 $io->printfln('Crawling stock %s...', implode(', ', $symbols));
 

@@ -40,7 +40,6 @@ docker-compose exec stock_ticker composer install
 
 docker-compose exec stock_ticker example/crawl.php
 docker-compose exec stock_ticker example/notify.php
-docker-compose exec stock_ticker example/loop-notify.php
 ```
 
 You can go even go inside the docker container:
