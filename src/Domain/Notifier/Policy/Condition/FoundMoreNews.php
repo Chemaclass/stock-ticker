@@ -9,6 +9,8 @@ use Chemaclass\StockTicker\Domain\ReadModel\Company;
 
 final class FoundMoreNews implements PolicyConditionInterface
 {
+    public const NEWS = 'NEWS';
+
     /**
      * @var array<string,string>
      * For example ['TickerSymbol' => 'datetime']
@@ -33,7 +35,7 @@ final class FoundMoreNews implements PolicyConditionInterface
     private function findLatestPubtimeFromNews(Company $company): string
     {
         $reduced = array_reduce(
-            (array) $company->info('news'),
+            (array) $company->info(self::NEWS),
             static function (?array $carry, array $current): array {
                 if (null === $carry) {
                     return $current;

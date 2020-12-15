@@ -15,6 +15,7 @@ use Chemaclass\StockTicker\Domain\Notifier\Channel\TwigTemplateGenerator;
 use Chemaclass\StockTicker\Domain\Notifier\ChannelInterface;
 use Chemaclass\StockTicker\Domain\Notifier\NotifierPolicy;
 use Chemaclass\StockTicker\Domain\Notifier\NotifyResult;
+use Chemaclass\StockTicker\Domain\Notifier\Policy\Condition\FoundMoreNews;
 use Chemaclass\StockTicker\Domain\Notifier\Policy\PolicyGroup;
 use Chemaclass\StockTicker\StockTickerFacade;
 use Chemaclass\StockTicker\StockTickerFactory;
@@ -94,13 +95,22 @@ final class TickerNews
 }
 
 /**
- * This one is where all creational function are.
+ * This class is where all creational function are.
  *
  * The factory method pattern is used to deal with the problem
  * of creating different "somehow related" objects.
  */
 final class Factory
 {
+    private const NAME = 'NAME';
+    private const PRICE = 'PRICE';
+    private const CURRENCY = 'CURRENCY';
+    private const CHANGE = 'CHANGE';
+    private const CHANGE_PERCENT = 'CHANGE_PERCENT';
+    private const TREND = 'TREND';
+    private const NEWS = FoundMoreNews::NEWS;
+    private const URL = 'URL';
+
     private array $env;
 
     public function __construct(array $env = [])
@@ -131,13 +141,14 @@ final class Factory
      */
     public function createChannelByNames(array $channelNames): array
     {
+        $flipped = array_flip($channelNames);
         $channels = [];
 
-        if (in_array(EmailChannel::class, $channelNames, true)) {
+        if (isset($flipped[EmailChannel::class])) {
             $channels[] = $this->createEmailChannel();
         }
 
-        if (in_array(SlackChannel::class, $channelNames, true)) {
+        if (isset($flipped[SlackChannel::class])) {
             $channels[] = $this->createSlackChannel();
         }
 
@@ -176,20 +187,21 @@ final class Factory
     private function createFinanceYahooSiteCrawler(int $maxNewsToFetch = 3): FinanceYahooSiteCrawler
     {
         return new FinanceYahooSiteCrawler([
-            'name' => new JsonExtractor\QuoteSummaryStore\CompanyName(),
-            'price' => new JsonExtractor\QuoteSummaryStore\RegularMarketPrice(),
-            'change' => new JsonExtractor\QuoteSummaryStore\RegularMarketChange(),
-            'changePercent' => new JsonExtractor\QuoteSummaryStore\RegularMarketChangePercent(),
-            'trend' => new JsonExtractor\QuoteSummaryStore\RecommendationTrend(),
-            'news' => new JsonExtractor\StreamStore\News($this->createNewsNormalizer($maxNewsToFetch)),
-            'url' => new JsonExtractor\RouteStore\ExternalUrl(),
+            self::NAME => new JsonExtractor\QuoteSummaryStore\CompanyName(),
+            self::PRICE => new JsonExtractor\QuoteSummaryStore\RegularMarketPrice(),
+            self::CURRENCY => new JsonExtractor\QuoteSummaryStore\Currency(),
+            self::CHANGE => new JsonExtractor\QuoteSummaryStore\RegularMarketChange(),
+            self::CHANGE_PERCENT => new JsonExtractor\QuoteSummaryStore\RegularMarketChangePercent(),
+            self::TREND => new JsonExtractor\QuoteSummaryStore\RecommendationTrend(),
+            self::NEWS => new JsonExtractor\StreamStore\News($this->createNewsNormalizer($maxNewsToFetch)),
+            self::URL => new JsonExtractor\RouteStore\ExternalUrl(),
         ]);
     }
 
     private function createBarronsSiteCrawler(int $maxNewsToFetch = 3): BarronsSiteCrawler
     {
         return new BarronsSiteCrawler([
-            'news' => new HtmlCrawler\News($this->createNewsNormalizer($maxNewsToFetch)),
+            self::NEWS => new HtmlCrawler\News($this->createNewsNormalizer($maxNewsToFetch)),
         ]);
     }
 

@@ -2,14 +2,14 @@ Conditions lookup reached for these companies:
 
 {% for symbol in notifyResult.symbols() %}
     {% set company = notifyResult.companyForSymbol(symbol) %}
-*`{{ company.info('name') | first }}` ({{ symbol }})*
+*`{{ company.info('NAME') | first }}` ({{ symbol }})*
     {% for condition in notifyResult.conditionNamesForSymbol(symbol) %}
 - {{ condition }}
     {% endfor %}
 
 *LATEST NEWS*
-    {% for news in company.info('news') %}
-*{{ news.title | raw }} `{{ news.publicationDateTime }}`*
+    {% for news in company.info('NEWS') %}
+*{{ news.title | raw }} `{{ news.datetime }}`*
 > {{ news.summary | raw }} <{{ news.url }}|Read more>
 
     {% endfor %}

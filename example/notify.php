@@ -11,14 +11,12 @@ use Chemaclass\StockTicker\Domain\Notifier\Policy\PolicyGroup;
 require_once __DIR__ . '/autoload.php';
 
 $io = IO::create();
-
 $symbols = $io->readSymbolsFromInput($argv);
 $sleepingTimeInSeconds = 5;
 
-$groupedPolicy = array_fill_keys(
-    $symbols,
-    new PolicyGroup([new FoundMoreNews()])
-);
+$groupedPolicy = array_fill_keys($symbols, new PolicyGroup([
+    'News were found!' => new FoundMoreNews(),
+]));
 
 $channels = [
     EmailChannel::class,
