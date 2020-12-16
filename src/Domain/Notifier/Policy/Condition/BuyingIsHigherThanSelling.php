@@ -7,7 +7,7 @@ namespace Chemaclass\StockTicker\Domain\Notifier\Policy\Condition;
 use Chemaclass\StockTicker\Domain\Notifier\Policy\PolicyConditionInterface;
 use Chemaclass\StockTicker\Domain\ReadModel\Company;
 
-final class IsBuyHigherThanSell implements PolicyConditionInterface
+final class BuyingIsHigherThanSelling implements PolicyConditionInterface
 {
     private string $companyKey;
 

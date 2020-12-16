@@ -155,6 +155,32 @@ final class Factory
         return $channels;
     }
 
+    private function createFinanceYahooSiteCrawler(int $maxNewsToFetch): FinanceYahooSiteCrawler
+    {
+        return new FinanceYahooSiteCrawler([
+            self::NAME => new JsonExtractor\QuoteSummaryStore\CompanyName(),
+            self::PRICE => new JsonExtractor\QuoteSummaryStore\RegularMarketPrice(),
+            self::CURRENCY => new JsonExtractor\QuoteSummaryStore\Currency(),
+            self::CHANGE => new JsonExtractor\QuoteSummaryStore\RegularMarketChange(),
+            self::CHANGE_PERCENT => new JsonExtractor\QuoteSummaryStore\RegularMarketChangePercent(),
+            self::TREND => new JsonExtractor\QuoteSummaryStore\RecommendationTrend(),
+            self::NEWS => new JsonExtractor\StreamStore\News($this->createNewsNormalizer($maxNewsToFetch)),
+            self::URL => new JsonExtractor\RouteStore\ExternalUrl(),
+        ]);
+    }
+
+    private function createBarronsSiteCrawler(int $maxNewsToFetch): BarronsSiteCrawler
+    {
+        return new BarronsSiteCrawler([
+            self::NEWS => new HtmlCrawler\News($this->createNewsNormalizer($maxNewsToFetch)),
+        ]);
+    }
+
+    private function createNewsNormalizer(int $maxNewsToFetch): NewsNormalizer
+    {
+        return new NewsNormalizer(new DateTimeZone('Europe/Berlin'), $maxNewsToFetch);
+    }
+
     private function createEmailChannel(string $templateName = 'email.twig'): EmailChannel
     {
         return new EmailChannel(
@@ -182,32 +208,6 @@ final class Factory
                 $templateName
             )
         );
-    }
-
-    private function createFinanceYahooSiteCrawler(int $maxNewsToFetch): FinanceYahooSiteCrawler
-    {
-        return new FinanceYahooSiteCrawler([
-            self::NAME => new JsonExtractor\QuoteSummaryStore\CompanyName(),
-            self::PRICE => new JsonExtractor\QuoteSummaryStore\RegularMarketPrice(),
-            self::CURRENCY => new JsonExtractor\QuoteSummaryStore\Currency(),
-            self::CHANGE => new JsonExtractor\QuoteSummaryStore\RegularMarketChange(),
-            self::CHANGE_PERCENT => new JsonExtractor\QuoteSummaryStore\RegularMarketChangePercent(),
-            self::TREND => new JsonExtractor\QuoteSummaryStore\RecommendationTrend(),
-            self::NEWS => new JsonExtractor\StreamStore\News($this->createNewsNormalizer($maxNewsToFetch)),
-            self::URL => new JsonExtractor\RouteStore\ExternalUrl(),
-        ]);
-    }
-
-    private function createBarronsSiteCrawler(int $maxNewsToFetch): BarronsSiteCrawler
-    {
-        return new BarronsSiteCrawler([
-            self::NEWS => new HtmlCrawler\News($this->createNewsNormalizer($maxNewsToFetch)),
-        ]);
-    }
-
-    private function createNewsNormalizer(int $maxNewsToFetch = 3): NewsNormalizer
-    {
-        return new NewsNormalizer(new DateTimeZone('Europe/Berlin'), $maxNewsToFetch);
     }
 }
 

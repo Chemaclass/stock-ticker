@@ -7,7 +7,7 @@ namespace Chemaclass\StockTicker\Domain\Notifier\Policy\Condition;
 use Chemaclass\StockTicker\Domain\Notifier\Policy\PolicyConditionInterface;
 use Chemaclass\StockTicker\Domain\ReadModel\Company;
 
-final class FoundMoreNews implements PolicyConditionInterface
+final class MoreNewsWasFound implements PolicyConditionInterface
 {
     /**
      * @var array<string,string>

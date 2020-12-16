@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Chemaclass\StockTickerTests\Unit\Domain\Notifier\Policy\Condition;
 
-use Chemaclass\StockTicker\Domain\Notifier\Policy\Condition\IsBuyHigherThanSell;
+use Chemaclass\StockTicker\Domain\Notifier\Policy\Condition\BuyingIsHigherThanSelling;
 use Chemaclass\StockTicker\Domain\ReadModel\Company;
 use Chemaclass\StockTicker\Domain\ReadModel\Symbol;
 use PHPUnit\Framework\TestCase;
 
-final class IsBuyBiggerThanSellTest extends TestCase
+final class BuyingIsHigherThanSellingTest extends TestCase
 {
     private const TREND = 'the key for trend';
 
     public function testInvoke(): void
     {
-        $foundMoreNews = new IsBuyHigherThanSell(self::TREND);
+        $foundMoreNews = new BuyingIsHigherThanSelling(self::TREND);
 
         $company = $this->createCompanyWithNews([
             '0m' => [
