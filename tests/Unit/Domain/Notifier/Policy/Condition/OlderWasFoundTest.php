@@ -9,9 +9,9 @@ use Chemaclass\StockTicker\Domain\ReadModel\Company;
 use Chemaclass\StockTicker\Domain\ReadModel\Symbol;
 use PHPUnit\Framework\TestCase;
 
-final class FoundMoreNewsTest extends TestCase
+final class OlderWasFoundTest extends TestCase
 {
-    private const NEWS = 'the-key-for-news';
+    private const NEWS = 'the key where the news are';
 
     public function testInvoke(): void
     {

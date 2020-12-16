@@ -4,31 +4,35 @@ declare(strict_types=1);
 
 namespace Chemaclass\StockTickerTests\Unit\Domain\Notifier\Policy\Condition;
 
-use Chemaclass\StockTicker\Domain\Notifier\Policy\Condition\BuyingIsHigherThanSelling;
+use Chemaclass\StockTicker\Domain\Notifier\Policy\Condition\ComparingTwoGroups;
 use Chemaclass\StockTicker\Domain\ReadModel\Company;
 use Chemaclass\StockTicker\Domain\ReadModel\Symbol;
 use PHPUnit\Framework\TestCase;
 
-final class BuyingIsHigherThanSellingTest extends TestCase
+final class ComparingTwoGroupsTest extends TestCase
 {
-    private const TREND = 'the key for trend';
+    private const KEY = 'the key where the groups are';
 
     public function testInvoke(): void
     {
-        $foundMoreNews = new BuyingIsHigherThanSelling(self::TREND);
+        $foundMoreNews = new ComparingTwoGroups(
+            self::KEY,
+            ['a', 'b'],
+            ['c', 'd'],
+        );
 
         $company = $this->createCompanyWithNews([
             '0m' => [
-                'strongBuy' => '1',
-                'buy' => '2',
-                'sell' => '3',
-                'strongSell' => '4',
+                'a' => '1',
+                'b' => '2',
+                'c' => '3',
+                'd' => '4',
             ],
             '-1m' => [
-                'strongBuy' => '1',
-                'buy' => '2',
-                'sell' => '3',
-                'strongSell' => '4',
+                'a' => '1',
+                'b' => '2',
+                'c' => '3',
+                'd' => '4',
             ],
         ]);
         // ((1 + 2) * 2) > ((3 + 4) * 2)
@@ -40,7 +44,7 @@ final class BuyingIsHigherThanSellingTest extends TestCase
         return new Company(
             Symbol::fromString('SYMBOL'),
             [
-                self::TREND => $trend,
+                self::KEY => $trend,
             ]
         );
     }
