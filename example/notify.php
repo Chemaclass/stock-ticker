@@ -17,7 +17,7 @@ $io = IO::create();
 $symbols = $io->readSymbolsFromInput($argv);
 
 $conditions = array_fill_keys($symbols, new PolicyGroup([
-    'News were found!' => new FoundMoreNews(),
+    'News were found!' => new FoundMoreNews(Factory::NEWS),
 ]));
 
 $channels = [

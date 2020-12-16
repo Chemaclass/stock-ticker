@@ -11,9 +11,11 @@ use PHPUnit\Framework\TestCase;
 
 final class IsBuyBiggerThanSellTest extends TestCase
 {
+    private const TREND = 'the key for trend';
+
     public function testInvoke(): void
     {
-        $foundMoreNews = new IsBuyHigherThanSell();
+        $foundMoreNews = new IsBuyHigherThanSell(self::TREND);
 
         $company = $this->createCompanyWithNews([
             '0m' => [
@@ -38,7 +40,7 @@ final class IsBuyBiggerThanSellTest extends TestCase
         return new Company(
             Symbol::fromString('SYMBOL'),
             [
-                IsBuyHigherThanSell::TREND => $trend,
+                self::TREND => $trend,
             ]
         );
     }

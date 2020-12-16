@@ -11,9 +11,11 @@ use PHPUnit\Framework\TestCase;
 
 final class FoundMoreNewsTest extends TestCase
 {
+    private const NEWS = 'the-key-for-news';
+
     public function testInvoke(): void
     {
-        $foundMoreNews = new FoundMoreNews();
+        $foundMoreNews = new FoundMoreNews(self::NEWS);
 
         $company = $this->createCompanyWithNews([
             [
@@ -49,7 +51,7 @@ final class FoundMoreNewsTest extends TestCase
         return new Company(
             Symbol::fromString('SYMBOL'),
             [
-                FoundMoreNews::NEWS => $news,
+                self::NEWS => $news,
             ]
         );
     }

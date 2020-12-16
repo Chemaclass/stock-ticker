@@ -9,17 +9,17 @@ use Chemaclass\StockTicker\Domain\ReadModel\Company;
 
 final class FoundMoreNews implements PolicyConditionInterface
 {
-    public const NEWS = 'NEWS';
-
     /**
      * @var array<string,string>
      * For example ['TickerSymbol' => 'datetime']
      */
     private static array $cacheOldestDateTimeBySymbol = [];
 
-    public function __construct()
+    private string $companyKey;
+
+    public function __construct(string $companyKey)
     {
-        // TODO: Add as optional arg: the datetime from where to start looking for news.
+        $this->companyKey = $companyKey;
     }
 
     public function __invoke(Company $company): bool
@@ -35,7 +35,7 @@ final class FoundMoreNews implements PolicyConditionInterface
     private function findLatestDateTimeFromNews(Company $company): string
     {
         $reduced = array_reduce(
-            (array) $company->info(self::NEWS),
+            (array) $company->info($this->companyKey),
             static function (?array $carry, array $current): array {
                 if (null === $carry) {
                     return $current;

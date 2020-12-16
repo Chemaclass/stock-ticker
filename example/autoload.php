@@ -15,8 +15,6 @@ use Chemaclass\StockTicker\Domain\Notifier\Channel\TwigTemplateGenerator;
 use Chemaclass\StockTicker\Domain\Notifier\ChannelInterface;
 use Chemaclass\StockTicker\Domain\Notifier\NotifierPolicy;
 use Chemaclass\StockTicker\Domain\Notifier\NotifyResult;
-use Chemaclass\StockTicker\Domain\Notifier\Policy\Condition\FoundMoreNews;
-use Chemaclass\StockTicker\Domain\Notifier\Policy\Condition\IsBuyHigherThanSell;
 use Chemaclass\StockTicker\Domain\Notifier\Policy\PolicyGroup;
 use Chemaclass\StockTicker\StockTickerFacade;
 use Chemaclass\StockTicker\StockTickerFactory;
@@ -69,14 +67,15 @@ final class TickerNews
         array $groupedPolicies,
         int $maxNewsToFetch = self::DEFAULT_MAX_NEWS_TO_FETCH
     ): NotifyResult {
-        $policy = new NotifierPolicy($groupedPolicies);
-        $symbols = array_keys($groupedPolicies);
+        $channels = $this->factory
+            ->createChannelByNames($channelNames);
 
-        $channels = $this->factory->createChannelByNames($channelNames);
+        $symbols = array_keys($groupedPolicies);
+        $crawlResult = $this->crawlStock($symbols, $maxNewsToFetch);
 
         return $this->factory
             ->createTickerNewsFacade(...$channels)
-            ->notify($policy, $this->crawlStock($symbols, $maxNewsToFetch));
+            ->notify(new NotifierPolicy($groupedPolicies), $crawlResult);
     }
 
     /**
@@ -86,12 +85,12 @@ final class TickerNews
         array $symbols,
         int $maxNewsToFetch = self::DEFAULT_MAX_NEWS_TO_FETCH
     ): CrawlResult {
+        $siteCrawlers = $this->factory
+            ->createAllSiteCrawlers($maxNewsToFetch);
+
         return $this->factory
             ->createTickerNewsFacade()
-            ->crawlStock(
-                $this->factory->createAllSiteCrawlers($maxNewsToFetch),
-                $symbols
-            );
+            ->crawlStock($siteCrawlers, $symbols);
     }
 }
 
@@ -103,14 +102,14 @@ final class TickerNews
  */
 final class Factory
 {
-    private const NAME = 'NAME';
-    private const PRICE = 'PRICE';
-    private const CURRENCY = 'CURRENCY';
-    private const CHANGE = 'CHANGE';
-    private const CHANGE_PERCENT = 'CHANGE_PERCENT';
-    private const TREND = IsBuyHigherThanSell::TREND;
-    private const NEWS = FoundMoreNews::NEWS;
-    private const URL = 'URL';
+    public const NAME = 'NAME';
+    public const PRICE = 'PRICE';
+    public const CURRENCY = 'CURRENCY';
+    public const CHANGE = 'CHANGE';
+    public const CHANGE_PERCENT = 'CHANGE_PERCENT';
+    public const TREND = 'TREND';
+    public const NEWS = 'NEWS';
+    public const URL = 'URL';
 
     private array $env;
 
@@ -185,7 +184,7 @@ final class Factory
         );
     }
 
-    private function createFinanceYahooSiteCrawler(int $maxNewsToFetch = 3): FinanceYahooSiteCrawler
+    private function createFinanceYahooSiteCrawler(int $maxNewsToFetch): FinanceYahooSiteCrawler
     {
         return new FinanceYahooSiteCrawler([
             self::NAME => new JsonExtractor\QuoteSummaryStore\CompanyName(),
@@ -199,7 +198,7 @@ final class Factory
         ]);
     }
 
-    private function createBarronsSiteCrawler(int $maxNewsToFetch = 3): BarronsSiteCrawler
+    private function createBarronsSiteCrawler(int $maxNewsToFetch): BarronsSiteCrawler
     {
         return new BarronsSiteCrawler([
             self::NEWS => new HtmlCrawler\News($this->createNewsNormalizer($maxNewsToFetch)),
