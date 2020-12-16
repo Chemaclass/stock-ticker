@@ -14,12 +14,14 @@ final class NotifyResult
     /**
      * @param string[] $conditionNames
      */
-    public function add(Company $company, array $conditionNames): void
+    public function add(Company $company, array $conditionNames): self
     {
         $this->result[$company->symbol()->toString()] = [
             'company' => $company,
             'conditionNames' => $conditionNames,
         ];
+
+        return $this;
     }
 
     /**

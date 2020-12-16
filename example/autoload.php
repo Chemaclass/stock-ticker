@@ -10,7 +10,6 @@ use Chemaclass\StockTicker\Domain\Crawler\Site\FinanceYahoo\JsonExtractor;
 use Chemaclass\StockTicker\Domain\Crawler\Site\Shared\NewsNormalizer;
 use Chemaclass\StockTicker\Domain\Notifier\Channel\Email\EmailChannel;
 use Chemaclass\StockTicker\Domain\Notifier\Channel\Slack\SlackChannel;
-use Chemaclass\StockTicker\Domain\Notifier\Channel\Slack\SlackHttpClient;
 use Chemaclass\StockTicker\Domain\Notifier\Channel\TwigTemplateGenerator;
 use Chemaclass\StockTicker\Domain\Notifier\ChannelInterface;
 use Chemaclass\StockTicker\Domain\Notifier\NotifierPolicy;
@@ -174,7 +173,7 @@ final class Factory
     {
         return new SlackChannel(
             $this->env['SLACK_DESTINY_CHANNEL_ID'],
-            new SlackHttpClient(HttpClient::create([
+            new HttpClient(HttpClient::create([
                 'auth_bearer' => $this->env['SLACK_BOT_USER_OAUTH_ACCESS_TOKEN'],
             ])),
             new TwigTemplateGenerator(

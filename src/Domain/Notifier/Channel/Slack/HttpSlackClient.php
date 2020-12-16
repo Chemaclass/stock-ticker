@@ -7,7 +7,7 @@ namespace Chemaclass\StockTicker\Domain\Notifier\Channel\Slack;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
-final class SlackHttpClient
+final class HttpSlackClient implements SlackClientInterface
 {
     public const SLACK_API_POST_MESSAGE = 'https://slack.com/api/chat.postMessage';
 
@@ -18,7 +18,7 @@ final class SlackHttpClient
         $this->client = $client;
     }
 
-    public function postToChannel(string $channel, string $text, bool $asUser = true): ResponseInterface
+    public function postToChannel(string $channel, string $text): ResponseInterface
     {
         return $this->client->request(
             'POST',
@@ -27,7 +27,7 @@ final class SlackHttpClient
                 'json' => [
                     'channel' => $channel,
                     'text' => $text,
-                    'as_user' => $asUser,
+                    'as_user' => true,
                 ],
             ]
         );

@@ -10,15 +10,15 @@ use Chemaclass\StockTicker\Domain\Notifier\NotifyResult;
 
 final class SlackChannel implements ChannelInterface
 {
-    private SlackHttpClient $slackClient;
-
     private string $slackDestinyChannelId;
+
+    private SlackClientInterface $slackClient;
 
     private TemplateGeneratorInterface $templateGenerator;
 
     public function __construct(
         string $slackDestinyChannelId,
-        SlackHttpClient $slackClient,
+        SlackClientInterface $slackClient,
         TemplateGeneratorInterface $templateGenerator
     ) {
         $this->slackClient = $slackClient;
