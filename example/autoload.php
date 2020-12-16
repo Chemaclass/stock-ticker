@@ -9,12 +9,14 @@ use Chemaclass\StockTicker\Domain\Crawler\Site\FinanceYahoo\FinanceYahooSiteCraw
 use Chemaclass\StockTicker\Domain\Crawler\Site\FinanceYahoo\JsonExtractor;
 use Chemaclass\StockTicker\Domain\Crawler\Site\Shared\NewsNormalizer;
 use Chemaclass\StockTicker\Domain\Notifier\Channel\Email\EmailChannel;
+use Chemaclass\StockTicker\Domain\Notifier\Channel\Slack\HttpSlackClient;
 use Chemaclass\StockTicker\Domain\Notifier\Channel\Slack\SlackChannel;
 use Chemaclass\StockTicker\Domain\Notifier\Channel\TwigTemplateGenerator;
 use Chemaclass\StockTicker\Domain\Notifier\ChannelInterface;
 use Chemaclass\StockTicker\Domain\Notifier\NotifierPolicy;
 use Chemaclass\StockTicker\Domain\Notifier\NotifyResult;
 use Chemaclass\StockTicker\Domain\Notifier\Policy\Condition\FoundMoreNews;
+use Chemaclass\StockTicker\Domain\Notifier\Policy\Condition\IsBuyHigherThanSell;
 use Chemaclass\StockTicker\Domain\Notifier\Policy\PolicyGroup;
 use Chemaclass\StockTicker\StockTickerFacade;
 use Chemaclass\StockTicker\StockTickerFactory;
@@ -106,7 +108,7 @@ final class Factory
     private const CURRENCY = 'CURRENCY';
     private const CHANGE = 'CHANGE';
     private const CHANGE_PERCENT = 'CHANGE_PERCENT';
-    private const TREND = 'TREND';
+    private const TREND = IsBuyHigherThanSell::TREND;
     private const NEWS = FoundMoreNews::NEWS;
     private const URL = 'URL';
 
@@ -173,7 +175,7 @@ final class Factory
     {
         return new SlackChannel(
             $this->env['SLACK_DESTINY_CHANNEL_ID'],
-            new HttpClient(HttpClient::create([
+            new HttpSlackClient(HttpClient::create([
                 'auth_bearer' => $this->env['SLACK_BOT_USER_OAUTH_ACCESS_TOKEN'],
             ])),
             new TwigTemplateGenerator(

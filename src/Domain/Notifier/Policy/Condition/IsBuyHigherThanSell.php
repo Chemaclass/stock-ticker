@@ -9,9 +9,11 @@ use Chemaclass\StockTicker\Domain\ReadModel\Company;
 
 final class IsBuyHigherThanSell implements PolicyConditionInterface
 {
+    public const TREND = 'trend';
+
     public function __invoke(Company $company): bool
     {
-        $trend = (array) $company->info('trend');
+        $trend = (array) $company->info(self::TREND);
 
         $strongBuys = $this->mapValues($trend, 'strongBuy');
         $buys = $this->mapValues($trend, 'buy');
