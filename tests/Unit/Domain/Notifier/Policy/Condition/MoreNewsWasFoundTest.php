@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Chemaclass\StockTickerTests\Unit\Domain\Notifier\Policy\Condition;
 
-use Chemaclass\StockTicker\Domain\Notifier\Policy\Condition\MoreNewsWasFound;
+use Chemaclass\StockTicker\Domain\Notifier\Policy\Condition\OlderWasFound;
 use Chemaclass\StockTicker\Domain\ReadModel\Company;
 use Chemaclass\StockTicker\Domain\ReadModel\Symbol;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +15,7 @@ final class FoundMoreNewsTest extends TestCase
 
     public function testInvoke(): void
     {
-        $foundMoreNews = new MoreNewsWasFound(self::NEWS);
+        $foundMoreNews = new OlderWasFound(self::NEWS);
 
         $company = $this->createCompanyWithNews([
             [

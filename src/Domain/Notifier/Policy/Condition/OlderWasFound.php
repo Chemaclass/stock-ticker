@@ -7,27 +7,30 @@ namespace Chemaclass\StockTicker\Domain\Notifier\Policy\Condition;
 use Chemaclass\StockTicker\Domain\Notifier\Policy\PolicyConditionInterface;
 use Chemaclass\StockTicker\Domain\ReadModel\Company;
 
-final class MoreNewsWasFound implements PolicyConditionInterface
+final class OlderWasFound implements PolicyConditionInterface
 {
     /**
      * @var array<string,string>
      * For example ['TickerSymbol' => 'datetime']
      */
-    private static array $cacheOldestDateTimeBySymbol = [];
+    private static array $cacheOldestBySymbol = [];
 
     private string $companyKey;
 
-    public function __construct(string $companyKey)
+    private string $keyToCompare;
+
+    public function __construct(string $companyKey, string $keyToCompare = 'datetime')
     {
         $this->companyKey = $companyKey;
+        $this->keyToCompare = $keyToCompare;
     }
 
     public function __invoke(Company $company): bool
     {
         $current = $this->findLatestDateTimeFromNews($company);
-        $previous = self::$cacheOldestDateTimeBySymbol[$company->symbol()->toString()] ?? '';
+        $previous = self::$cacheOldestBySymbol[$company->symbol()->toString()] ?? '';
 
-        self::$cacheOldestDateTimeBySymbol[$company->symbol()->toString()] = $current;
+        self::$cacheOldestBySymbol[$company->symbol()->toString()] = $current;
 
         return $current > $previous;
     }
@@ -36,17 +39,17 @@ final class MoreNewsWasFound implements PolicyConditionInterface
     {
         $reduced = array_reduce(
             (array) $company->info($this->companyKey),
-            static function (?array $carry, array $current): array {
+            function (?array $carry, array $current): array {
                 if (null === $carry) {
                     return $current;
                 }
 
-                return $carry['datetime'] > $current['datetime']
+                return $carry[$this->keyToCompare] > $current[$this->keyToCompare]
                     ? $carry
                     : $current;
             }
         );
 
-        return $reduced['datetime'];
+        return $reduced[$this->keyToCompare];
     }
 }
