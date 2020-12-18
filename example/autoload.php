@@ -9,13 +9,12 @@ use Chemaclass\StockTicker\Domain\Crawler\Site\FinanceYahoo\FinanceYahooSiteCraw
 use Chemaclass\StockTicker\Domain\Crawler\Site\FinanceYahoo\JsonExtractor;
 use Chemaclass\StockTicker\Domain\Crawler\Site\Shared\NewsNormalizer;
 use Chemaclass\StockTicker\Domain\Notifier\Channel\Email\EmailChannel;
+use Chemaclass\StockTicker\Domain\Notifier\Channel\Slack\HttpSlackClient;
 use Chemaclass\StockTicker\Domain\Notifier\Channel\Slack\SlackChannel;
-use Chemaclass\StockTicker\Domain\Notifier\Channel\Slack\SlackHttpClient;
 use Chemaclass\StockTicker\Domain\Notifier\Channel\TwigTemplateGenerator;
 use Chemaclass\StockTicker\Domain\Notifier\ChannelInterface;
 use Chemaclass\StockTicker\Domain\Notifier\NotifierPolicy;
 use Chemaclass\StockTicker\Domain\Notifier\NotifyResult;
-use Chemaclass\StockTicker\Domain\Notifier\Policy\Condition\FoundMoreNews;
 use Chemaclass\StockTicker\Domain\Notifier\Policy\PolicyGroup;
 use Chemaclass\StockTicker\StockTickerFacade;
 use Chemaclass\StockTicker\StockTickerFactory;
@@ -68,14 +67,15 @@ final class TickerNews
         array $groupedPolicies,
         int $maxNewsToFetch = self::DEFAULT_MAX_NEWS_TO_FETCH
     ): NotifyResult {
-        $policy = new NotifierPolicy($groupedPolicies);
-        $symbols = array_keys($groupedPolicies);
+        $channels = $this->factory
+            ->createChannelByNames($channelNames);
 
-        $channels = $this->factory->createChannelByNames($channelNames);
+        $symbols = array_keys($groupedPolicies);
+        $crawlResult = $this->crawlStock($symbols, $maxNewsToFetch);
 
         return $this->factory
             ->createTickerNewsFacade(...$channels)
-            ->notify($policy, $this->crawlStock($symbols, $maxNewsToFetch));
+            ->notify(new NotifierPolicy($groupedPolicies), $crawlResult);
     }
 
     /**
@@ -85,12 +85,12 @@ final class TickerNews
         array $symbols,
         int $maxNewsToFetch = self::DEFAULT_MAX_NEWS_TO_FETCH
     ): CrawlResult {
+        $siteCrawlers = $this->factory
+            ->createAllSiteCrawlers($maxNewsToFetch);
+
         return $this->factory
             ->createTickerNewsFacade()
-            ->crawlStock(
-                $this->factory->createAllSiteCrawlers($maxNewsToFetch),
-                $symbols
-            );
+            ->crawlStock($siteCrawlers, $symbols);
     }
 }
 
@@ -102,14 +102,14 @@ final class TickerNews
  */
 final class Factory
 {
-    private const NAME = 'NAME';
-    private const PRICE = 'PRICE';
-    private const CURRENCY = 'CURRENCY';
-    private const CHANGE = 'CHANGE';
-    private const CHANGE_PERCENT = 'CHANGE_PERCENT';
-    private const TREND = 'TREND';
-    private const NEWS = FoundMoreNews::NEWS;
-    private const URL = 'URL';
+    public const NAME = 'NAME';
+    public const PRICE = 'PRICE';
+    public const CURRENCY = 'CURRENCY';
+    public const CHANGE = 'CHANGE';
+    public const CHANGE_PERCENT = 'CHANGE_PERCENT';
+    public const TREND = 'TREND';
+    public const NEWS = 'NEWS';
+    public const URL = 'URL';
 
     private array $env;
 
@@ -155,6 +155,32 @@ final class Factory
         return $channels;
     }
 
+    private function createFinanceYahooSiteCrawler(int $maxNewsToFetch): FinanceYahooSiteCrawler
+    {
+        return new FinanceYahooSiteCrawler([
+            self::NAME => new JsonExtractor\QuoteSummaryStore\CompanyName(),
+            self::PRICE => new JsonExtractor\QuoteSummaryStore\RegularMarketPrice(),
+            self::CURRENCY => new JsonExtractor\QuoteSummaryStore\Currency(),
+            self::CHANGE => new JsonExtractor\QuoteSummaryStore\RegularMarketChange(),
+            self::CHANGE_PERCENT => new JsonExtractor\QuoteSummaryStore\RegularMarketChangePercent(),
+            self::TREND => new JsonExtractor\QuoteSummaryStore\RecommendationTrend(),
+            self::NEWS => new JsonExtractor\StreamStore\News($this->createNewsNormalizer($maxNewsToFetch)),
+            self::URL => new JsonExtractor\RouteStore\ExternalUrl(),
+        ]);
+    }
+
+    private function createBarronsSiteCrawler(int $maxNewsToFetch): BarronsSiteCrawler
+    {
+        return new BarronsSiteCrawler([
+            self::NEWS => new HtmlCrawler\News($this->createNewsNormalizer($maxNewsToFetch)),
+        ]);
+    }
+
+    private function createNewsNormalizer(int $maxNewsToFetch): NewsNormalizer
+    {
+        return new NewsNormalizer(new DateTimeZone('Europe/Berlin'), $maxNewsToFetch);
+    }
+
     private function createEmailChannel(string $templateName = 'email.twig'): EmailChannel
     {
         return new EmailChannel(
@@ -174,7 +200,7 @@ final class Factory
     {
         return new SlackChannel(
             $this->env['SLACK_DESTINY_CHANNEL_ID'],
-            new SlackHttpClient(HttpClient::create([
+            new HttpSlackClient(HttpClient::create([
                 'auth_bearer' => $this->env['SLACK_BOT_USER_OAUTH_ACCESS_TOKEN'],
             ])),
             new TwigTemplateGenerator(
@@ -182,32 +208,6 @@ final class Factory
                 $templateName
             )
         );
-    }
-
-    private function createFinanceYahooSiteCrawler(int $maxNewsToFetch = 3): FinanceYahooSiteCrawler
-    {
-        return new FinanceYahooSiteCrawler([
-            self::NAME => new JsonExtractor\QuoteSummaryStore\CompanyName(),
-            self::PRICE => new JsonExtractor\QuoteSummaryStore\RegularMarketPrice(),
-            self::CURRENCY => new JsonExtractor\QuoteSummaryStore\Currency(),
-            self::CHANGE => new JsonExtractor\QuoteSummaryStore\RegularMarketChange(),
-            self::CHANGE_PERCENT => new JsonExtractor\QuoteSummaryStore\RegularMarketChangePercent(),
-            self::TREND => new JsonExtractor\QuoteSummaryStore\RecommendationTrend(),
-            self::NEWS => new JsonExtractor\StreamStore\News($this->createNewsNormalizer($maxNewsToFetch)),
-            self::URL => new JsonExtractor\RouteStore\ExternalUrl(),
-        ]);
-    }
-
-    private function createBarronsSiteCrawler(int $maxNewsToFetch = 3): BarronsSiteCrawler
-    {
-        return new BarronsSiteCrawler([
-            self::NEWS => new HtmlCrawler\News($this->createNewsNormalizer($maxNewsToFetch)),
-        ]);
-    }
-
-    private function createNewsNormalizer(int $maxNewsToFetch = 3): NewsNormalizer
-    {
-        return new NewsNormalizer(new DateTimeZone('Europe/Berlin'), $maxNewsToFetch);
     }
 }
 
