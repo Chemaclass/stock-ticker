@@ -15,11 +15,12 @@ You can see some real working examples in this [readme](example/README.md).
 
 ## Installation
 
-A) Includes Docker + Composer dependencies: plug & play!
+A) Install the example. Includes Docker + Composer dependencies: plug & play!
 
 ```bash
-curl -sS https://raw.githubusercontent.com/Chemaclass/StockTicker/master/installation.sh > installation.sh \
-  && bash installation.sh
+curl -sS https://raw.githubusercontent.com/Chemaclass/StockTicker/master/example/install.sh > install.sh
+bash install.sh StockTickerExample
+rm install.sh
 ```
 
 B) As composer dependency:
