@@ -8,7 +8,7 @@ use Chemaclass\StockTicker\Domain\Crawler\Site\FinanceYahoo\FinanceYahooSiteCraw
 use Chemaclass\StockTicker\Domain\Crawler\Site\FinanceYahoo\JsonExtractorInterface;
 use Chemaclass\StockTicker\Domain\ReadModel\Site;
 use Chemaclass\StockTicker\Domain\ReadModel\Symbol;
-use Chemaclass\StockTickerTests\WithFakeHttpClient;
+use Chemaclass\StockTickerTests\Unit\WithFakeHttpClient;
 use PHPUnit\Framework\TestCase;
 
 final class FinanceYahooSiteCrawlerTest extends TestCase

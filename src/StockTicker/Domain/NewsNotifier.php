@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Chemaclass\StockTicker;
+namespace Chemaclass\StockTicker\Domain;
 
 use Chemaclass\StockTicker\Domain\Crawler\CompanyCrawler;
 use Chemaclass\StockTicker\Domain\Crawler\SiteCrawlerInterface;
@@ -11,7 +11,7 @@ use Chemaclass\StockTicker\Domain\Notifier\Notifier;
 use Chemaclass\StockTicker\Domain\Notifier\NotifierPolicy;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-final class StockTickerFactory implements StockTickerFactoryInterface
+final class NewsNotifier
 {
     private HttpClientInterface $httpClient;
 

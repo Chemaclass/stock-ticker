@@ -10,7 +10,7 @@ use Chemaclass\StockTicker\Domain\Crawler\SiteCrawlerInterface;
 use Chemaclass\StockTicker\Domain\ReadModel\Company;
 use Chemaclass\StockTicker\Domain\ReadModel\Site;
 use Chemaclass\StockTicker\Domain\ReadModel\Symbol;
-use Chemaclass\StockTickerTests\WithFakeHttpClient;
+use Chemaclass\StockTickerTests\Unit\WithFakeHttpClient;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
