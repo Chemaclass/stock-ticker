@@ -6,8 +6,8 @@ namespace Chemaclass\StockTicker\Domain\WriteModel;
 
 final class CompanyName extends AbstractWriteModel
 {
-    private const SHORT_NAME = 'shortName';
-    private const LONG_NAME = 'longName';
+    public const SHORT_NAME = 'shortName';
+    public const LONG_NAME = 'longName';
 
     private const METADATA = [
         self::SHORT_NAME => [

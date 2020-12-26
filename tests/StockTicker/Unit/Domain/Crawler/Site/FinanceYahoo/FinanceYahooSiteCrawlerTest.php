@@ -33,6 +33,7 @@ BODY;
         );
 
         self::assertEquals(new Site([
+            'symbol' => 'EXAMPLE_TICKER',
             'extractor name' => ['example expected value'],
         ]), $actual);
     }
@@ -48,6 +49,7 @@ BODY;
         );
 
         self::assertEquals(new Site([
+            'symbol' => 'EXAMPLE_TICKER',
             get_class($jsonExtractor) => ['example expected value'],
         ]), $actual);
     }

@@ -43,7 +43,9 @@ final class FinanceYahooSiteCrawler implements SiteCrawlerInterface
         preg_match('/root\.App\.main\ =\ (?<json>.*);/m', $html, $matches);
 
         $json = (array) json_decode($matches['json'], true);
-        $data = [];
+        $data = [
+            'symbol' => $symbol->toString(),
+        ];
 
         foreach ($this->jsonExtractors as $name => $extractor) {
             $name = is_int($name) ? get_class($extractor) : $name;

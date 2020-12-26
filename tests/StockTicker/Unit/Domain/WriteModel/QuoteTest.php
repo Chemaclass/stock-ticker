@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Chemaclass\StockTickerTests\Unit\Domain\WriteModel;
 
 use Chemaclass\StockTicker\Domain\WriteModel\CompanyName;
+use Chemaclass\StockTicker\Domain\WriteModel\Currency;
 use Chemaclass\StockTicker\Domain\WriteModel\MarketCap;
 use Chemaclass\StockTicker\Domain\WriteModel\News;
 use Chemaclass\StockTicker\Domain\WriteModel\Quote;
@@ -26,7 +27,10 @@ final class QuoteTest extends TestCase
                 'shortName' => 'Short Company name, Inc.',
                 'longName' => 'Long Company name, Inc.',
             ],
-            'currency' => 'USD',
+            'currency' => [
+                'currency' => 'USD',
+                'symbol' => '$',
+            ],
             'url' => 'https://example.url.com',
             'regularMarketPrice' => [
                 'raw' => 629.999,
@@ -90,7 +94,12 @@ final class QuoteTest extends TestCase
 
     public function testCurrency(): void
     {
-        self::assertEquals('USD', $this->quote->getCurrency());
+        self::assertEquals(
+            (new Currency())
+                ->setSymbol('$')
+                ->setCurrency('USD'),
+            $this->quote->getCurrency()
+        );
     }
 
     public function testUrl(): void

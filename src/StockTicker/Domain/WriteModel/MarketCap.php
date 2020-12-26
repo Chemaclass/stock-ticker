@@ -6,9 +6,9 @@ namespace Chemaclass\StockTicker\Domain\WriteModel;
 
 final class MarketCap extends AbstractWriteModel
 {
-    private const RAW = 'raw';
-    private const FMT = 'fmt';
-    private const LONG_FMT = 'longFmt';
+    public const RAW = 'raw';
+    public const FMT = 'fmt';
+    public const LONG_FMT = 'longFmt';
 
     private const METADATA = [
         self::RAW => [
@@ -22,27 +22,11 @@ final class MarketCap extends AbstractWriteModel
         ],
     ];
 
-    private ?float $raw = null;
+    protected ?float $raw = null;
 
-    private ?string $fmt = null;
+    protected ?string $fmt = null;
 
-    private ?string $longFmt = null;
-
-    public function fromArray(array $data): self
-    {
-        foreach ($data as $propertyName => $value) {
-            switch ($propertyName) {
-                case 'raw':
-                case 'fmt':
-                case 'longFmt':
-                    $this->$propertyName = $value;
-
-                    break;
-            }
-        }
-
-        return $this;
-    }
+    protected ?string $longFmt = null;
 
     public function getRaw(): ?float
     {

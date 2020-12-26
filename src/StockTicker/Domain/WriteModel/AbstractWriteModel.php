@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Chemaclass\StockTicker\Domain\WriteModel;
 
-abstract class AbstractWriteModel
-{
-    public const TYPE_INT = 'int';
-    public const TYPE_FLOAT = 'float';
-    public const TYPE_STRING = 'string';
+use JsonSerializable;
 
-    public const SCALAR_TYPES = [
+abstract class AbstractWriteModel implements JsonSerializable
+{
+    protected const TYPE_INT = 'int';
+    protected const TYPE_FLOAT = 'float';
+    protected const TYPE_STRING = 'string';
+
+    protected const SCALAR_TYPES = [
         self::TYPE_INT,
         self::TYPE_FLOAT,
         self::TYPE_STRING,
@@ -36,7 +38,6 @@ abstract class AbstractWriteModel
                 $this->$propertyName = $value;
             } elseif (class_exists($type)) {
                 $isArray = $concreteMeta['is_array'] ?? false;
-
                 $this->$propertyName = ($isArray)
                     ? $this->mapValueAsArray($type, $value)
                     : $this->mapValueAsObject($type, $value);
@@ -51,14 +52,18 @@ abstract class AbstractWriteModel
         $result = [];
         $props = get_object_vars($this);
 
-        foreach ($props as $propName => $propValue) {
-            if ($propValue instanceof self) {
-                $propValue = $propValue->toArray();
-            }
-            $result[$propName] = $propValue;
+        foreach ($props as $name => $value) {
+            $result[$name] = ($value instanceof self)
+                ? $value->toArray()
+                : $value;
         }
 
         return $result;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 
     abstract protected function metadata(): array;

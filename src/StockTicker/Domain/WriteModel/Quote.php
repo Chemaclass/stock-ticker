@@ -6,16 +6,16 @@ namespace Chemaclass\StockTicker\Domain\WriteModel;
 
 final class Quote extends AbstractWriteModel
 {
-    private const SYMBOL = 'symbol';
-    private const COMPANY_NAME = 'companyName';
-    private const REGULAR_MARKET_PRICE = 'regularMarketPrice';
-    private const CURRENCY = 'currency';
-    private const REGULAR_MARKET_CHANGE = 'regularMarketChange';
-    private const REGULAR_MARKET_CHANGE_PERCENT = 'regularMarketChangePercent';
-    private const MARKET_CAP = 'marketCap';
-    private const URL = 'url';
-    private const LAST_TREND = 'lastTrend';
-    private const LATEST_NEWS = 'latestNews';
+    public const SYMBOL = 'symbol';
+    public const COMPANY_NAME = 'companyName';
+    public const REGULAR_MARKET_PRICE = 'regularMarketPrice';
+    public const CURRENCY = 'currency';
+    public const REGULAR_MARKET_CHANGE = 'regularMarketChange';
+    public const REGULAR_MARKET_CHANGE_PERCENT = 'regularMarketChangePercent';
+    public const MARKET_CAP = 'marketCap';
+    public const URL = 'url';
+    public const LAST_TREND = 'lastTrend';
+    public const LATEST_NEWS = 'latestNews';
 
     private const METADATA = [
         self::SYMBOL => [
@@ -28,7 +28,7 @@ final class Quote extends AbstractWriteModel
             'type' => RegularMarketPrice::class,
         ],
         self::CURRENCY => [
-            'type' => self::TYPE_STRING,
+            'type' => Currency::class,
         ],
         self::REGULAR_MARKET_CHANGE => [
             'type' => RegularMarketChange::class,
@@ -56,7 +56,7 @@ final class Quote extends AbstractWriteModel
 
     protected ?CompanyName $companyName = null;
 
-    protected ?string $currency = null;
+    protected ?Currency $currency = null;
 
     protected ?string $url = null;
 
@@ -110,12 +110,12 @@ final class Quote extends AbstractWriteModel
         return $this;
     }
 
-    public function getCurrency(): ?string
+    public function getCurrency(): ?Currency
     {
         return $this->currency;
     }
 
-    public function setCurrency(string $currency): self
+    public function setCurrency(Currency $currency): self
     {
         $this->currency = $currency;
 

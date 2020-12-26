@@ -6,12 +6,12 @@ namespace Chemaclass\StockTicker\Domain\WriteModel;
 
 final class Trend extends AbstractWriteModel
 {
-    private const PERIOD = 'period';
-    private const STRONG_BUY = 'strongBuy';
-    private const BUY = 'buy';
-    private const HOLD = 'hold';
-    private const SELL = 'sell';
-    private const STRONG_SELL = 'strongSell';
+    public const PERIOD = 'period';
+    public const STRONG_BUY = 'strongBuy';
+    public const BUY = 'buy';
+    public const HOLD = 'hold';
+    public const SELL = 'sell';
+    public const STRONG_SELL = 'strongSell';
 
     private const METADATA = [
         self::PERIOD => [

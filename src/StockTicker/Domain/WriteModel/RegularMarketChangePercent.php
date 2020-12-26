@@ -6,8 +6,8 @@ namespace Chemaclass\StockTicker\Domain\WriteModel;
 
 final class RegularMarketChangePercent extends AbstractWriteModel
 {
-    private const FMT = 'fmt';
-    private const RAW = 'raw';
+    public const FMT = 'fmt';
+    public const RAW = 'raw';
 
     private const METADATA = [
         self::FMT => [

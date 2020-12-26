@@ -6,11 +6,11 @@ namespace Chemaclass\StockTicker\Domain\WriteModel;
 
 final class News extends AbstractWriteModel
 {
-    private const DATETIME = 'datetime';
-    private const TIMEZONE = 'timezone';
-    private const URL = 'url';
-    private const TITLE = 'title';
-    private const SUMMARY = 'summary';
+    public const DATETIME = 'datetime';
+    public const TIMEZONE = 'timezone';
+    public const URL = 'url';
+    public const TITLE = 'title';
+    public const SUMMARY = 'summary';
 
     private const METADATA = [
         self::DATETIME => [
