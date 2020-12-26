@@ -9673,7 +9673,7 @@
               "META_LOOKUP_KEYWORDS":"symbol lookup, ticker lookup, stock symbol lookup",
               "META_LOOKUP_TITLE":"Symbol Lookup from Yahoo Finance",
               "META_TITLE_CALENDAR_ALL":"Financial Calendars - Yahoo Finance",
-              "META_TITLE_CALENDAR_EARNINGS_SYMBOL":"Earnings {symbol}: Company Earnings Calendar for {symbol} - Yahoo Finance",
+              "META_TITLE_CALENDAR_EARNINGS_SYMBOL":"Earnings {symbol}:Company Earnings Calendar for {symbol} - Yahoo Finance",
               "META_TITLE_CALENDAR_EARNINGS":"Company Earnings Calendar - Yahoo Finance",
               "META_TITLE_CALENDAR_ECONOMIC":"Economic Calendar - Yahoo Finance",
               "META_TITLE_CALENDAR_IPO":"Upcoming & Recent IPO's - IPOs Calendar - Yahoo Finance",

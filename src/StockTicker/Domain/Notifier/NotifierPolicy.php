@@ -23,4 +23,9 @@ final class NotifierPolicy
     {
         return $this->groupedBySymbol;
     }
+
+    public function symbols(): array
+    {
+        return array_keys($this->groupedBySymbol);
+    }
 }

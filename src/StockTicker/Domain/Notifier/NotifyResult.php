@@ -4,24 +4,38 @@ declare(strict_types=1);
 
 namespace Chemaclass\StockTicker\Domain\Notifier;
 
-use Chemaclass\StockTicker\Domain\ReadModel\Company;
+use Chemaclass\StockTicker\Domain\WriteModel\Quote;
 
 final class NotifyResult
 {
-    /** @psalm-var array<string, array{company: Company, conditionNames: string[]}> */
+    /** @psalm-var array<string, array{quote: Quote, conditionNames: string[]}> */
     private array $result = [];
 
     /**
      * @param string[] $conditionNames
      */
-    public function add(Company $company, array $conditionNames): self
+    public function add(Quote $quote, array $conditionNames): self
     {
-        $this->result[$company->symbol()->toString()] = [
-            'company' => $company,
+        /** @var string $symbol */
+        $symbol = $quote->getSymbol();
+
+        $this->result[$symbol] = [
+            'quote' => $quote,
             'conditionNames' => $conditionNames,
         ];
 
         return $this;
+    }
+
+    public function conditionNamesGroupBySymbol(): array
+    {
+        $conditionNamesBySymbol = [];
+
+        foreach ($this->symbols() as $symbol) {
+            $conditionNamesBySymbol[$symbol] = $this->conditionNamesForSymbol($symbol);
+        }
+
+        return $conditionNamesBySymbol;
     }
 
     /**
@@ -40,20 +54,9 @@ final class NotifyResult
         return $this->result[$symbol]['conditionNames'];
     }
 
-    public function conditionNamesGroupBySymbol(): array
+    public function getQuoteBySymbol(string $symbol): Quote
     {
-        $conditionNamesBySymbol = [];
-
-        foreach ($this->symbols() as $symbol) {
-            $conditionNamesBySymbol[$symbol] = $this->conditionNamesForSymbol($symbol);
-        }
-
-        return $conditionNamesBySymbol;
-    }
-
-    public function companyForSymbol(string $symbol): Company
-    {
-        return $this->result[$symbol]['company'] ?? Company::empty();
+        return $this->result[$symbol]['quote'] ?? new Quote();
     }
 
     public function isEmpty(): bool

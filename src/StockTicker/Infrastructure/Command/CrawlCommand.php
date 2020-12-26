@@ -70,10 +70,10 @@ final class CrawlCommand extends Command
         $output->writeln('~~~~~~ Crawl result ~~~~~~');
         $output->writeln('~~~~~~~~~~~~~~~~~~~~~~~~~~');
 
-        foreach ($crawlResult->getCompaniesGroupedBySymbol() as $symbol => $company) {
+        foreach ($crawlResult->getCompaniesGroupedBySymbol() as $symbol => $quote) {
             $output->writeln($symbol);
 
-            foreach ($company->allInfo() as $key => $value) {
+            foreach ($quote->toArray() as $key => $value) {
                 $output->writeln(sprintf('# %s => %s', $key, json_encode($value)));
             }
 

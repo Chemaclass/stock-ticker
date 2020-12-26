@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace Chemaclass\StockTickerTests\Unit;
 
-use Chemaclass\StockTicker\Domain\Crawler\CrawlResult;
+use Chemaclass\StockTicker\Domain\Crawler\Mapper\CrawledInfoMapperInterface;
+use Chemaclass\StockTicker\Domain\Crawler\QuoteCrawler;
 use Chemaclass\StockTicker\Domain\Crawler\SiteCrawlerInterface;
 use Chemaclass\StockTicker\Domain\Notifier\Channel\Email\EmailChannel;
 use Chemaclass\StockTicker\Domain\Notifier\ChannelInterface;
-use Chemaclass\StockTicker\Domain\Notifier\Policy\PolicyGroup;
-use Chemaclass\StockTicker\Domain\ReadModel\Company;
+use Chemaclass\StockTicker\Domain\Notifier\NotifierInterface;
+use Chemaclass\StockTicker\Domain\Notifier\NotifierPolicy;
+use Chemaclass\StockTicker\Domain\Notifier\NotifyResult;
 use Chemaclass\StockTicker\Domain\ReadModel\Site;
-use Chemaclass\StockTicker\Domain\ReadModel\Symbol;
+use Chemaclass\StockTicker\Domain\WriteModel\Quote;
 use Chemaclass\StockTicker\StockTickerFacade;
-use Chemaclass\StockTicker\StockTickerFactory;
-use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
+use Chemaclass\StockTicker\StockTickerFactoryInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -22,61 +23,54 @@ final class StockTickerFacadeTest extends TestCase
 {
     public function testCrawlStock(): void
     {
-        $facade = $this->createStockTickerFacade(self::never());
-
-        $siteCrawler = new class() implements SiteCrawlerInterface {
-            public function crawl(HttpClientInterface $httpClient, Symbol $symbol): Site
-            {
-                return new Site([
-                    'name' => ['Amazon.com, Inc.'],
-                ]);
-            }
-        };
-
+        $facade = new StockTickerFacade($this->mockFactory());
         $result = $facade->crawlStock(['AMZN']);
-        $amazon = $result->getCompany('AMZN');
+        $amazon = $result->getQuote('AMZN');
 
-        self::assertEquals(Symbol::fromString('AMZN'), $amazon->symbol());
-        self::assertSame(['Amazon.com, Inc.'], $amazon->info('name'));
+        self::assertSame('AMZN', $amazon->getSymbol());
+        self::assertSame('Amazon.com, Inc.', $amazon->getCompanyName()->getLongName());
     }
 
     public function testNotify(): void
     {
-        $amazon = new Company(
-            Symbol::fromString('AMZN'),
-            ['trend' => ['buy' => 0, 'sell' => 10]],
-        );
-
-        $conditions = [
-            $amazon->symbol()->toString() => new PolicyGroup([
-                'high trend to buy' => static fn (Company $c) => $c->info('trend')['buy'] > 5,
-                'high trend to sell' => static fn (Company $c) => $c->info('trend')['sell'] > 5,
-            ]),
-            'UNKNOWN' => new PolicyGroup([]),
-        ];
-
-        $facade = $this->createStockTickerFacade(self::once());
-
-//        new CrawlResult([
-//            $amazon->symbol()->toString() => $amazon,
-//        ])
-        $notifyResult = $facade->sendNotifications(
-            $channelNames = [EmailChannel::class],
-            $conditions
-        );
-
-        self::assertSame(['AMZN'], $notifyResult->symbols());
-        self::assertSame($amazon, $notifyResult->companyForSymbol('AMZN'));
-        self::assertSame(['high trend to sell'], $notifyResult->conditionNamesForSymbol('AMZN'));
+        $facade = new StockTickerFacade($this->mockFactory());
+        $facade->sendNotifications([EmailChannel::class], new NotifierPolicy([]));
     }
 
-    private function createStockTickerFacade(InvocationOrder $channelSendExpected): StockTickerFacade
+    private function mockFactory(): StockTickerFactoryInterface
     {
-        $channel = $this->createMock(ChannelInterface::class);
-        $channel->expects($channelSendExpected)->method('send');
+        $siteCrawler = $this->createMock(SiteCrawlerInterface::class);
+        $siteCrawler->method('crawl')->willReturn(new Site([
+            'symbol' => 'AMZN',
+            'companyName' => ['longName' => 'Amazon.com, Inc.'],
+        ]));
 
-        return new StockTickerFacade(
-            new StockTickerFactory(new FakeStockTickerConfig())
-        );
+        $factory = $this->createMock(StockTickerFactoryInterface::class);
+        $factory->method('createCompanyCrawler')
+            ->willReturn(new QuoteCrawler(
+                $this->createMock(HttpClientInterface::class),
+                $this->mockCrawledInfoMapper(),
+                $siteCrawler
+            ));
+
+        $channel = $this->createMock(ChannelInterface::class);
+        $channel->expects(self::never())->method('send');
+        $factory->method('createChannels')->willReturn([$channel]);
+
+        $notifier = $this->createMock(NotifierInterface::class);
+        $notifier->method('notify')->willReturn(new NotifyResult());
+        $factory->method('createNotifier')->willReturn($notifier);
+
+        return $factory;
+    }
+
+    private function mockCrawledInfoMapper()
+    {
+        $crawledInfoMapper = $this->createMock(CrawledInfoMapperInterface::class);
+        $crawledInfoMapper
+            ->method('mapQuote')
+            ->willReturnCallback(fn (array $info): Quote => (new Quote())->fromArray($info));
+
+        return $crawledInfoMapper;
     }
 }

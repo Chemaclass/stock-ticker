@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Chemaclass\StockTickerTests\Unit\Domain\Notifier;
 
 use Chemaclass\StockTicker\Domain\Notifier\NotifyResult;
-use Chemaclass\StockTicker\Domain\ReadModel\Company;
-use Chemaclass\StockTicker\Domain\ReadModel\Symbol;
+use Chemaclass\StockTicker\Domain\WriteModel\Quote;
 use PHPUnit\Framework\TestCase;
 
 final class NotifyResultTest extends TestCase
@@ -26,11 +25,9 @@ final class NotifyResultTest extends TestCase
         );
     }
 
-    private function createCompany(string $symbol): Company
+    private function createCompany(string $symbol): Quote
     {
-        return new Company(
-            Symbol::fromString($symbol),
-            ['key1' => 'value 1']
-        );
+        return (new Quote())
+            ->setSymbol($symbol);
     }
 }

@@ -7,8 +7,7 @@ namespace Chemaclass\StockTickerTests\Unit\Domain\Notifier\Channel\Email;
 use Chemaclass\StockTicker\Domain\Notifier\Channel\Email\EmailChannel;
 use Chemaclass\StockTicker\Domain\Notifier\Channel\TemplateGeneratorInterface;
 use Chemaclass\StockTicker\Domain\Notifier\NotifyResult;
-use Chemaclass\StockTicker\Domain\ReadModel\Company;
-use Chemaclass\StockTicker\Domain\ReadModel\Symbol;
+use Chemaclass\StockTicker\Domain\WriteModel\Quote;
 use PHPUnit\Framework\MockObject\Rule\InvokedCount;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Mailer\MailerInterface;
@@ -52,11 +51,9 @@ final class EmailChannelTest extends TestCase
         return $templateGenerator;
     }
 
-    private function createCompany(string $symbol): Company
+    private function createCompany(string $symbol): Quote
     {
-        return new Company(
-            Symbol::fromString($symbol),
-            ['key1' => 'value 1']
-        );
+        return (new Quote())
+            ->setSymbol($symbol);
     }
 }

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Chemaclass\StockTicker\Domain\Crawler;
 
-use Chemaclass\StockTicker\Domain\ReadModel\Company;
+use Chemaclass\StockTicker\Domain\WriteModel\Quote;
 
 final class CrawlResult
 {
-    /** @var array<string,Company> */
+    /** @var array<string,Quote> */
     private array $companiesGroupedBySymbol;
 
     public function __construct(array $companiesGroupedBySymbol)
@@ -16,9 +16,9 @@ final class CrawlResult
         $this->companiesGroupedBySymbol = $companiesGroupedBySymbol;
     }
 
-    public function getCompany(string $symbol): Company
+    public function getQuote(string $symbol): Quote
     {
-        return $this->companiesGroupedBySymbol[$symbol] ?? Company::empty();
+        return $this->companiesGroupedBySymbol[$symbol] ?? new Quote();
     }
 
     public function getCompaniesGroupedBySymbol(): array

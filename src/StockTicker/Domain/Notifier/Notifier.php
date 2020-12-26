@@ -6,9 +6,9 @@ namespace Chemaclass\StockTicker\Domain\Notifier;
 
 use Chemaclass\StockTicker\Domain\Crawler\CrawlResult;
 use Chemaclass\StockTicker\Domain\Notifier\Policy\PolicyGroup;
-use Chemaclass\StockTicker\Domain\ReadModel\Company;
+use Chemaclass\StockTicker\Domain\WriteModel\Quote;
 
-final class Notifier
+final class Notifier implements NotifierInterface
 {
     private NotifierPolicy $policy;
 
@@ -28,11 +28,11 @@ final class Notifier
         $result = new NotifyResult();
 
         foreach ($this->policy->groupedBySymbol() as $symbol => $policyGroup) {
-            $company = $crawlResult->getCompany($symbol);
-            $conditionNames = $this->matchConditions($policyGroup, $company);
+            $quote = $crawlResult->getQuote($symbol);
+            $conditionNames = $this->matchConditions($policyGroup, $quote);
 
             if (!empty($conditionNames)) {
-                $result->add($company, $conditionNames);
+                $result->add($quote, $conditionNames);
             }
         }
 
@@ -43,12 +43,12 @@ final class Notifier
         return $result;
     }
 
-    private function matchConditions(PolicyGroup $policyGroup, Company $company): array
+    private function matchConditions(PolicyGroup $policyGroup, Quote $quote): array
     {
         $conditionNames = [];
 
         foreach ($policyGroup->conditions() as $conditionName => $callablePolicy) {
-            if (!$callablePolicy($company)) {
+            if (!$callablePolicy($quote)) {
                 continue;
             }
 

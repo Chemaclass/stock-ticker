@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Chemaclass\StockTicker\Infrastructure\Command;
 
 use Chemaclass\StockTicker\Domain\Notifier\Channel\Email\EmailChannel;
+use Chemaclass\StockTicker\Domain\Notifier\NotifierPolicy;
 use Chemaclass\StockTicker\Domain\Notifier\NotifyResult;
-use Chemaclass\StockTicker\Domain\Notifier\Policy\Condition\ComparingTwoGroups;
-use Chemaclass\StockTicker\Domain\Notifier\Policy\Condition\OlderWasFound;
+use Chemaclass\StockTicker\Domain\Notifier\Policy\Condition\RecentNewsWasFound;
 use Chemaclass\StockTicker\Domain\Notifier\Policy\PolicyGroup;
 use Chemaclass\StockTicker\StockTickerConfig;
 use Chemaclass\StockTicker\StockTickerFacade;
@@ -55,7 +55,7 @@ final class NotifyCommand extends Command
         $maxNews = (int) $input->getOption('maxNews');
         $sleepingTime = (int) $input->getOption('sleepingTime');
 
-        $conditions = $this->createConditionsForSymbols($symbols);
+        $policy = $this->createPolicyForSymbols($symbols);
 
         $channels = [
             EmailChannel::class,
@@ -67,7 +67,7 @@ final class NotifyCommand extends Command
         while (true) {
             $output->writeln(sprintf('Looking for news in %s ...', implode(', ', $symbols)));
 
-            $result = $facade->sendNotifications($channels, $conditions, $maxNews);
+            $result = $facade->sendNotifications($channels, $policy, $maxNews);
 
             $this->printNotifyResult($output, $result);
             $this->sleepWithPrompt($output, $sleepingTime);
@@ -76,19 +76,14 @@ final class NotifyCommand extends Command
 
     /**
      * @param string[] $symbols
-     *
-     * @return array<string, PolicyGroup>
      */
-    private function createConditionsForSymbols(array $symbols): array
+    private function createPolicyForSymbols(array $symbols): NotifierPolicy
     {
-        return array_fill_keys($symbols, new PolicyGroup([
-            'More news was found' => new OlderWasFound(StockTickerFactory::NEWS),
-            'Buying is higher than selling' => new ComparingTwoGroups(
-                StockTickerFactory::TREND,
-                ['buy', 'strongBuy'],
-                ['selling', 'strongSelling'],
-            ),
+        $conditions = array_fill_keys($symbols, new PolicyGroup([
+            'More news was found' => new RecentNewsWasFound(),
         ]));
+
+        return new NotifierPolicy($conditions);
     }
 
     private function createStockTickerFacade(): StockTickerFacade

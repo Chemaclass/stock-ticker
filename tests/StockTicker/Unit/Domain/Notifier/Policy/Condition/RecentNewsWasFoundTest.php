@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace Chemaclass\StockTickerTests\Unit\Domain\Notifier\Policy\Condition;
 
-use Chemaclass\StockTicker\Domain\Notifier\Policy\Condition\OlderWasFound;
-use Chemaclass\StockTicker\Domain\ReadModel\Company;
-use Chemaclass\StockTicker\Domain\ReadModel\Symbol;
+use Chemaclass\StockTicker\Domain\Notifier\Policy\Condition\RecentNewsWasFound;
+use Chemaclass\StockTicker\Domain\WriteModel\Quote;
 use PHPUnit\Framework\TestCase;
 
-final class OlderWasFoundTest extends TestCase
+final class RecentNewsWasFoundTest extends TestCase
 {
     private const NEWS = 'the key where the news are';
 
     public function testInvoke(): void
     {
-        $foundMoreNews = new OlderWasFound(self::NEWS);
+        $foundMoreNews = new RecentNewsWasFound();
 
         $company = $this->createCompanyWithNews([
             [
@@ -46,13 +45,10 @@ final class OlderWasFoundTest extends TestCase
         self::assertTrue($foundMoreNews($company));
     }
 
-    private function createCompanyWithNews(array $news): Company
+    private function createCompanyWithNews(array $news): Quote
     {
-        return new Company(
-            Symbol::fromString('SYMBOL'),
-            [
-                self::NEWS => $news,
-            ]
-        );
+        return (new Quote())
+            ->setSymbol('SYMBOL')
+            ->setLatestNews($news);
     }
 }

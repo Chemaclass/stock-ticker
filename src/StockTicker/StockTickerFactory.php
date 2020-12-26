@@ -4,17 +4,23 @@ declare(strict_types=1);
 
 namespace Chemaclass\StockTicker;
 
+use Chemaclass\StockTicker\Domain\Crawler\Mapper\CrawledInfoMapper;
+use Chemaclass\StockTicker\Domain\Crawler\QuoteCrawler;
+use Chemaclass\StockTicker\Domain\Crawler\QuoteCrawlerInterface;
 use Chemaclass\StockTicker\Domain\Crawler\Site\Barrons\BarronsSiteCrawler;
 use Chemaclass\StockTicker\Domain\Crawler\Site\Barrons\HtmlCrawler\News;
 use Chemaclass\StockTicker\Domain\Crawler\Site\FinanceYahoo\FinanceYahooSiteCrawler;
 use Chemaclass\StockTicker\Domain\Crawler\Site\FinanceYahoo\JsonExtractor;
 use Chemaclass\StockTicker\Domain\Crawler\Site\Shared\NewsNormalizer;
-use Chemaclass\StockTicker\Domain\NewsNotifier;
+use Chemaclass\StockTicker\Domain\Crawler\SiteCrawlerInterface;
 use Chemaclass\StockTicker\Domain\Notifier\Channel\Email\EmailChannel;
 use Chemaclass\StockTicker\Domain\Notifier\Channel\Slack\HttpSlackClient;
 use Chemaclass\StockTicker\Domain\Notifier\Channel\Slack\SlackChannel;
 use Chemaclass\StockTicker\Domain\Notifier\Channel\TwigTemplateGenerator;
 use Chemaclass\StockTicker\Domain\Notifier\ChannelInterface;
+use Chemaclass\StockTicker\Domain\Notifier\Notifier;
+use Chemaclass\StockTicker\Domain\Notifier\NotifierInterface;
+use Chemaclass\StockTicker\Domain\Notifier\NotifierPolicy;
 use DateTimeZone;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Mailer\Bridge\Google\Transport\GmailSmtpTransport;
@@ -40,12 +46,18 @@ final class StockTickerFactory implements StockTickerFactoryInterface
         $this->config = $config;
     }
 
-    public function createNewsNotifier(ChannelInterface ...$channels): NewsNotifier
+    public function createCompanyCrawler(SiteCrawlerInterface ...$siteCrawlers): QuoteCrawlerInterface
     {
-        return new NewsNotifier(
+        return new QuoteCrawler(
             HttpClient::create(),
-            ...$channels
+            new CrawledInfoMapper(),
+            ...$siteCrawlers
         );
+    }
+
+    public function createNotifier(NotifierPolicy $policy, ChannelInterface ...$channels): NotifierInterface
+    {
+        return new Notifier($policy, ...$channels);
     }
 
     /**

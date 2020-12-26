@@ -4,23 +4,27 @@ declare(strict_types=1);
 
 namespace Chemaclass\StockTicker\Domain\Crawler;
 
-use Chemaclass\StockTicker\Domain\ReadModel\Company;
+use Chemaclass\StockTicker\Domain\Crawler\Mapper\CrawledInfoMapperInterface;
 use Chemaclass\StockTicker\Domain\ReadModel\Site;
 use Chemaclass\StockTicker\Domain\ReadModel\Symbol;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-final class CompanyCrawler
+final class QuoteCrawler implements QuoteCrawlerInterface
 {
     private HttpClientInterface $httpClient;
+
+    private CrawledInfoMapperInterface $crawledInfoMapper;
 
     /** @var SiteCrawlerInterface[] */
     private array $siteCrawlers;
 
     public function __construct(
         HttpClientInterface $httpClient,
+        CrawledInfoMapperInterface $crawledInfoMapper,
         SiteCrawlerInterface ...$siteCrawlers
     ) {
         $this->httpClient = $httpClient;
+        $this->crawledInfoMapper = $crawledInfoMapper;
         $this->siteCrawlers = $siteCrawlers;
     }
 
@@ -31,11 +35,9 @@ final class CompanyCrawler
 
         foreach ($symbols as $symbol) {
             $sites = $this->crawlAllSitesForSymbol($symbol);
+            $info = $this->flat(...$sites);
 
-            $result[$symbol->toString()] = new Company(
-                $symbol,
-                $this->flat(...$sites)
-            );
+            $result[$symbol->toString()] = $this->crawledInfoMapper->mapQuote($info);
         }
 
         return new CrawlResult($result);
