@@ -1,0 +1,14 @@
+Conditions lookup reached for these companies:
+{% for symbol in notifyResult.symbols() %}
+    {% set quote = notifyResult.quoteBySymbol(symbol) %}
+*`{{ quote.companyName.longName }}` ({{ symbol }})* {{ quote.currency.symbol }} {{ quote.regularMarketPrice.fmt }}
+    {% for condition in notifyResult.conditionNamesForSymbol(symbol) %}
+→ {{ condition }}
+    {% endfor %}
+    *LATEST NEWS*
+    {% for news in quote.latestNews %}
+📬 {{ news.title | raw }} `{{ news.datetime }}` <{{ news.url }}|Read more>
+    {% endfor %}
+―――――――――――――――――――――――――――――――――――――――――――――――――――――――
+{% endfor %}
+

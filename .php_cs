@@ -1,7 +1,6 @@
 <?php declare(strict_types=1);
 
 $finder = PhpCsFixer\Finder::create()
-    ->in('example/')
     ->in('src/')
     ->in('tests/')
 ;
@@ -39,7 +38,7 @@ return PhpCsFixer\Config::create()
         ],
         'braces' => true,
         'cast_spaces' => true,
-        'class_attributes_separation' => ['elements' => ['method', 'property']],
+        'class_attributes_separation' => ['elements' => ['method']],
         'class_definition' => true,
         'combine_consecutive_issets' => true,
         'combine_consecutive_unsets' => true,

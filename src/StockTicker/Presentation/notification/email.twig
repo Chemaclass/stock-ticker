@@ -1,0 +1,82 @@
+<h1>Conditions lookup reached for these companies</h1>
+
+<div class="companies" style="">
+    {% for symbol in notifyResult.symbols() %}
+        <div class="quote {{ symbol }}"
+             style="border:1px solid gray;
+                    margin-bottom: 8px;
+                    padding: 16px;">
+            {% set quote = notifyResult.quoteBySymbol(symbol) %}
+            <h2>
+                {{ quote.companyName.longName }}
+                <small class="symbol"
+                       style="font-weight: bold">
+                    (<a href="{{ quote.url }}">{{ symbol }}</a>)
+                </small>
+            </h2>
+
+            <h3>
+                <span class="price">
+                    Current price:
+                    <span class="formatted-price"
+                          style="color: darkred;
+                                 font-weight: bold">
+                        {{ quote.currency.symbol }}
+                        {{ quote.regularMarketPrice.fmt }}
+                    </span>
+                    {{ quote.currency.currency }}
+                </span>
+                <span class="change"
+                      style="border-radius: 5px;
+                             border:1px solid lightgray;
+                             padding: 6px">
+                    {{ quote.regularMarketChange.fmt }}
+                    ({{ quote.regularMarketChangePercent.fmt }})
+                </span>
+            </h3>
+
+            <ul class="policy-conditions"
+                style="border-radius: 5px;
+                       padding: 6px">
+                {% for condition in notifyResult.conditionNamesForSymbol(symbol) %}
+                    <li>{{ condition }}</li>
+                {% endfor %}
+            </ul>
+
+            <h3>Latest News</h3>
+            <div class="all-news"
+                 style="padding: 4px;">
+                {% for news in quote.latestNews %}
+                    <div class="news"
+                         style="border-bottom:1px solid lightgray;
+                                border-top:1px solid lightgray;
+                                margin: 0 10px 0 10px;
+                                clear: both;">
+
+                        <div style="width: 70%; float:left">
+                            <h5>{{ news.datetime }} <small>{{ news.timezone }}</small></h5>
+                            <h4>{{ news.title | raw }} <small>[Source: {{ news.source }}]</small></h4>
+                            <p>
+                                {{ news.summary | raw }}
+                                <a href="{{ news.url }}">Read more</a>
+                            </p>
+                        </div>
+
+                        {% set firstImg = news.images | last %}
+                        {% if firstImg.url is defined %}
+                        <div style="margin:1.76em 0 1.76em 0; width: 30%; float:right">
+                            <a href="{{ news.url }}">
+                                <img src="{{ firstImg.url | raw }}"
+                                     alt="img to {{ news.url }}"
+                                     width="100%"
+                                     height="auto">
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <hr style="clear: both;">
+        </div>
+    {% endfor %}
+</div>
