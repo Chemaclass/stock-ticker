@@ -45,4 +45,14 @@ final class StockTickerConfig implements StockTickerConfigInterface
     {
         return $this->env['SLACK_BOT_USER_OAUTH_ACCESS_TOKEN'];
     }
+
+    public function isDebug(): bool
+    {
+        return $this->isTrue($this->env['DEBUG'] ?? null);
+    }
+
+    private function isTrue(?string $bool): bool
+    {
+        return in_array($bool, [true, 'true', '1', 'yes'], true);
+    }
 }

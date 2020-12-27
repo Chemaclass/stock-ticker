@@ -17,4 +17,6 @@ interface StockTickerConfigInterface
     public function getSlackDestinyChannelId(): string;
 
     public function getSlackBotUserOauthAccessToken(): string;
+
+    public function isDebug(): bool;
 }

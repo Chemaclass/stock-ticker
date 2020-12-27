@@ -2,18 +2,18 @@
 
 <div class="companies">
     {% for symbol in notifyResult.symbols() %}
-        <div class="company {{ symbol }}"
+        <div class="quote {{ symbol }}"
              style="border:1px solid gray;
                     margin-bottom: 8px;
                     padding: 16px"
         >
-            {% set company = notifyResult.companyForSymbol(symbol) %}
+            {% set quote = notifyResult.quoteBySymbol(symbol) %}
             <h2>
-                {{ company.info('NAME') | first }}
+                {{ quote.companyName.longName }}
                 <small class="symbol"
                        style="font-weight: bold"
                 >
-                    (<a href="{{ company.info('URL') | first }}">{{ symbol }}</a>)
+                    (<a href="{{ quote.url }}">{{ symbol }}</a>)
                 </small>
             </h2>
 
@@ -24,9 +24,9 @@
                           style="color: darkred;
                                  font-weight: bold"
                     >
-                        {{ company.info('CURRENCY')['symbol'] }}
-                        {{ company.info('PRICE')['fmt'] }}
-                        ({{ company.info('CURRENCY')['currency'] }})
+                        {{ quote.currency.symbol }}
+                        {{ quote.regularMarketPrice.fmt }}
+                        {{ quote.currency.currency }}
                     </span>
                 </span>
                 <span class="change"
@@ -34,8 +34,8 @@
                              border:1px solid lightgray;
                              padding: 6px"
                 >
-                    {{ company.info('CHANGE')['fmt'] }}
-                    ({{ company.info('CHANGE_PERCENT')['fmt'] }})
+                    {{ quote.regularMarketChange.fmt }}
+                    ({{ quote.regularMarketChangePercent.fmt }})
                 </span>
             </h3>
 
@@ -53,7 +53,7 @@
             <div class="all-news"
                  style="padding: 4px"
             >
-                {% for news in company.info('NEWS') %}
+                {% for news in quote.latestNews %}
                     <div class="news"
                          style="border-bottom:1px solid lightgray;
                                 border-top:1px solid lightgray;

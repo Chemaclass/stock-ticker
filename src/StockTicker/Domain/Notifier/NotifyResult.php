@@ -54,7 +54,7 @@ final class NotifyResult
         return $this->result[$symbol]['conditionNames'];
     }
 
-    public function getQuoteBySymbol(string $symbol): Quote
+    public function quoteBySymbol(string $symbol): Quote
     {
         return $this->result[$symbol]['quote'] ?? new Quote();
     }

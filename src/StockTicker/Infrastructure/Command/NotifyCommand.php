@@ -6,7 +6,6 @@ namespace Chemaclass\StockTicker\Infrastructure\Command;
 
 use Chemaclass\StockTicker\Domain\Notifier\Channel\Email\EmailChannel;
 use Chemaclass\StockTicker\Domain\Notifier\NotifierPolicy;
-use Chemaclass\StockTicker\Domain\Notifier\NotifyResult;
 use Chemaclass\StockTicker\Domain\Notifier\Policy\Condition\RecentNewsWasFound;
 use Chemaclass\StockTicker\Domain\Notifier\Policy\PolicyGroup;
 use Chemaclass\StockTicker\StockTickerConfig;
@@ -67,9 +66,11 @@ final class NotifyCommand extends Command
         while (true) {
             $output->writeln(sprintf('Looking for news in %s ...', implode(', ', $symbols)));
 
-            $result = $facade->sendNotifications($channels, $policy, $maxNews);
+            $crawlResult = $facade->crawlStock($policy->symbols(), $maxNews);
+            ResultOutputPrinter::printCrawResult($output, $crawlResult);
 
-            $this->printNotifyResult($output, $result);
+            $notifyResult = $facade->sendNotifications($channels, $policy, $crawlResult);
+            ResultOutputPrinter::printNotifyResult($output, $notifyResult);
             $this->sleepWithPrompt($output, $sleepingTime);
         }
     }
@@ -91,37 +92,11 @@ final class NotifyCommand extends Command
         return new StockTickerFacade(
             new StockTickerFactory(
                 new StockTickerConfig(
-                    dirname(__DIR__) . '/Templates',
+                    dirname(__DIR__) . '/../Presentation/notification',
                     $_ENV
                 )
             ),
         );
-    }
-
-    private function printNotifyResult(OutputInterface $output, NotifyResult $notifyResult): void
-    {
-        if ($notifyResult->isEmpty()) {
-            $output->writeln(' ~~~ Nothing new here...');
-
-            return;
-        }
-
-        $output->writeln('===========================');
-        $output->writeln('====== Notify result ======');
-        $output->writeln('===========================');
-
-        foreach ($notifyResult->conditionNamesGroupBySymbol() as $symbol => $conditionNames) {
-            $output->writeln($symbol);
-            $output->writeln('Conditions:');
-
-            foreach ($conditionNames as $conditionName) {
-                $output->writeln(sprintf('  - %s', $conditionName));
-            }
-
-            $output->writeln('');
-        }
-
-        $output->writeln('');
     }
 
     private function sleepWithPrompt(OutputInterface $output, int $sec): void

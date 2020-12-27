@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Chemaclass\StockTickerTests\Unit;
 
+use Chemaclass\StockTicker\Domain\Crawler\CrawlResult;
 use Chemaclass\StockTicker\Domain\Crawler\Mapper\CrawledInfoMapperInterface;
 use Chemaclass\StockTicker\Domain\Crawler\QuoteCrawler;
 use Chemaclass\StockTicker\Domain\Crawler\SiteCrawlerInterface;
@@ -34,7 +35,11 @@ final class StockTickerFacadeTest extends TestCase
     public function testNotify(): void
     {
         $facade = new StockTickerFacade($this->mockFactory());
-        $facade->sendNotifications([EmailChannel::class], new NotifierPolicy([]));
+        $facade->sendNotifications(
+            [EmailChannel::class],
+            new NotifierPolicy([]),
+            new CrawlResult([])
+        );
     }
 
     private function mockFactory(): StockTickerFactoryInterface

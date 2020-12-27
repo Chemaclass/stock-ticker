@@ -20,24 +20,6 @@ final class StockTickerFacade
     }
 
     /**
-     * @param string[] $channelNames
-     */
-    public function sendNotifications(
-        array $channelNames,
-        NotifierPolicy $policy,
-        int $maxNewsToFetch = self::DEFAULT_MAX_NEWS_TO_FETCH
-    ): NotifyResult {
-        $channels = $this->factory
-            ->createChannels($channelNames);
-
-        $crawlResult = $this->crawlStock($policy->symbols(), $maxNewsToFetch);
-
-        return $this->factory
-            ->createNotifier($policy, ...$channels)
-            ->notify($crawlResult);
-    }
-
-    /**
      * @param string[] $symbols
      */
     public function crawlStock(
@@ -50,5 +32,21 @@ final class StockTickerFacade
         return $this->factory
             ->createCompanyCrawler(...$siteCrawlers)
             ->crawlStock(...$symbols);
+    }
+
+    /**
+     * @param string[] $channelNames
+     */
+    public function sendNotifications(
+        array $channelNames,
+        NotifierPolicy $policy,
+        CrawlResult  $crawlResult
+    ): NotifyResult {
+        $channels = $this->factory
+            ->createChannels($channelNames);
+
+        return $this->factory
+            ->createNotifier($policy, ...$channels)
+            ->notify($crawlResult);
     }
 }

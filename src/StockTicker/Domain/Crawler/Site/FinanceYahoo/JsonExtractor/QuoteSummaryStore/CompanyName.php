@@ -13,7 +13,8 @@ final class CompanyName implements JsonExtractorInterface
         $quoteSummaryStore = $json['context']['dispatcher']['stores']['QuoteSummaryStore'];
 
         return [
-            $quoteSummaryStore['price']['longName'],
+            'shortName' => $quoteSummaryStore['price']['shortName'],
+            'longName' => $quoteSummaryStore['price']['longName'],
         ];
     }
 }

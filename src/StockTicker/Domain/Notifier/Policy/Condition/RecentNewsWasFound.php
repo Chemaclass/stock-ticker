@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Chemaclass\StockTicker\Domain\Notifier\Policy\Condition;
 
 use Chemaclass\StockTicker\Domain\Notifier\Policy\PolicyConditionInterface;
+use Chemaclass\StockTicker\Domain\WriteModel\News;
 use Chemaclass\StockTicker\Domain\WriteModel\Quote;
 
 final class RecentNewsWasFound implements PolicyConditionInterface
@@ -33,17 +34,17 @@ final class RecentNewsWasFound implements PolicyConditionInterface
     {
         $reduced = array_reduce(
             $quote->getLatestNews(),
-            static function (?array $carry, array $current): array {
+            static function (?News $carry, News $current): News {
                 if (null === $carry) {
                     return $current;
                 }
 
-                return $carry['datetime'] > $current['datetime']
+                return $carry->getDatetime() > $current->getDatetime()
                     ? $carry
                     : $current;
             }
         );
 
-        return $reduced['datetime'];
+        return $reduced->getDatetime();
     }
 }

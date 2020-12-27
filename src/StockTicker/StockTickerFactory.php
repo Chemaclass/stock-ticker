@@ -28,10 +28,13 @@ use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Mailer\Bridge\Google\Transport\GmailSmtpTransport;
 use Symfony\Component\Mailer\Mailer;
 use Twig\Environment;
+use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 
 final class StockTickerFactory implements StockTickerFactoryInterface
 {
+    private const DEBUG_TEMPLATES = false;
+
     private const NAME = 'NAME';
     private const PRICE = 'PRICE';
     private const CURRENCY = 'CURRENCY';
@@ -146,7 +149,7 @@ final class StockTickerFactory implements StockTickerFactoryInterface
                 $this->config->getMailerPassword()
             )),
             new TwigTemplateGenerator(
-                new Environment(new FilesystemLoader($this->config->getTemplatesDir())),
+                $this->createTwigEnvironment(),
                 $templateName
             )
         );
@@ -160,9 +163,22 @@ final class StockTickerFactory implements StockTickerFactoryInterface
                 'auth_bearer' => $this->config->getSlackBotUserOauthAccessToken(),
             ])),
             new TwigTemplateGenerator(
-                new Environment(new FilesystemLoader($this->config->getTemplatesDir())),
+                $this->createTwigEnvironment(),
                 $templateName
             )
         );
+    }
+
+    private function createTwigEnvironment(): Environment
+    {
+        $loader = new FilesystemLoader($this->config->getTemplatesDir());
+        $isDebug = $this->config->isDebug();
+        $twig = new Environment($loader, ['debug' => $isDebug]);
+
+        if ($isDebug) {
+            $twig->addExtension(new DebugExtension());
+        }
+
+        return $twig;
     }
 }
