@@ -33,17 +33,7 @@ use Twig\Loader\FilesystemLoader;
 
 final class StockTickerFactory implements StockTickerFactoryInterface
 {
-    private const DEBUG_TEMPLATES = false;
-
-    private const NAME = 'NAME';
-    private const PRICE = 'PRICE';
-    private const CURRENCY = 'CURRENCY';
-    private const CHANGE = 'CHANGE';
-    private const CHANGE_PERCENT = 'CHANGE_PERCENT';
-    private const MARKET_CAP = 'MARKET_CAP';
-    private const TREND = 'TREND';
-    private const NEWS = 'NEWS';
-    private const URL = 'URL';
+    private const URLS = 'URLS';
 
     private StockTickerConfigInterface $config;
 
@@ -99,15 +89,7 @@ final class StockTickerFactory implements StockTickerFactoryInterface
     private function createCrawledInfoMapper(): CrawledInfoMapperInterface
     {
         return new CrawledInfoMapper(function (array $info): array {
-            $info[Quote::COMPANY_NAME] = $info[self::NAME];
-            $info[Quote::REGULAR_MARKET_PRICE] = $info[self::PRICE];
-            $info[Quote::CURRENCY] = $info[self::CURRENCY];
-            $info[Quote::REGULAR_MARKET_CHANGE] = $info[self::CHANGE];
-            $info[Quote::REGULAR_MARKET_CHANGE_PERCENT] = $info[self::CHANGE_PERCENT];
-            $info[Quote::LAST_TREND] = $info[self::TREND];
-            $info[Quote::MARKET_CAP] = $info[self::MARKET_CAP];
-            $info[Quote::LATEST_NEWS] = $info[self::NEWS];
-            $info[Quote::URL] = $info[self::URL][0];
+            $info[Quote::URL] = $info[self::URLS][0];
 
             return $info;
         });
@@ -116,15 +98,15 @@ final class StockTickerFactory implements StockTickerFactoryInterface
     private function createFinanceYahooSiteCrawler(int $maxNewsToFetch): FinanceYahooSiteCrawler
     {
         return new FinanceYahooSiteCrawler([
-            self::NAME => new JsonExtractor\QuoteSummaryStore\CompanyName(),
-            self::PRICE => new JsonExtractor\QuoteSummaryStore\RegularMarketPrice(),
-            self::CURRENCY => new JsonExtractor\QuoteSummaryStore\Currency(),
-            self::CHANGE => new JsonExtractor\QuoteSummaryStore\RegularMarketChange(),
-            self::CHANGE_PERCENT => new JsonExtractor\QuoteSummaryStore\RegularMarketChangePercent(),
-            self::MARKET_CAP => new JsonExtractor\QuoteSummaryStore\MarketCap(),
-            self::TREND => new JsonExtractor\QuoteSummaryStore\RecommendationTrend(),
-            self::NEWS => new JsonExtractor\StreamStore\News($this->createNewsNormalizer($maxNewsToFetch)),
-            self::URL => new JsonExtractor\RouteStore\ExternalUrl(),
+            Quote::COMPANY_NAME => new JsonExtractor\QuoteSummaryStore\CompanyName(),
+            Quote::REGULAR_MARKET_PRICE => new JsonExtractor\QuoteSummaryStore\RegularMarketPrice(),
+            Quote::CURRENCY => new JsonExtractor\QuoteSummaryStore\Currency(),
+            Quote::REGULAR_MARKET_CHANGE => new JsonExtractor\QuoteSummaryStore\RegularMarketChange(),
+            Quote::REGULAR_MARKET_CHANGE_PERCENT => new JsonExtractor\QuoteSummaryStore\RegularMarketChangePercent(),
+            Quote::MARKET_CAP => new JsonExtractor\QuoteSummaryStore\MarketCap(),
+            Quote::LAST_TREND => new JsonExtractor\QuoteSummaryStore\RecommendationTrend(),
+            Quote::LATEST_NEWS => new JsonExtractor\StreamStore\News($this->createNewsNormalizer($maxNewsToFetch)),
+            self::URLS => new JsonExtractor\RouteStore\ExternalUrl(),
         ]);
     }
 
@@ -136,7 +118,7 @@ final class StockTickerFactory implements StockTickerFactoryInterface
     private function createBarronsSiteCrawler(int $maxNewsToFetch): BarronsSiteCrawler
     {
         return new BarronsSiteCrawler([
-            self::NEWS => new News($this->createNewsNormalizer($maxNewsToFetch)),
+            Quote::LATEST_NEWS => new News($this->createNewsNormalizer($maxNewsToFetch)),
         ]);
     }
 

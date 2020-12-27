@@ -40,10 +40,12 @@ final class StockTickerFacade
     public function sendNotifications(
         array $channelNames,
         NotifierPolicy $policy,
-        CrawlResult  $crawlResult
+        int $maxNewsToFetch = self::DEFAULT_MAX_NEWS_TO_FETCH
     ): NotifyResult {
         $channels = $this->factory
             ->createChannels($channelNames);
+
+        $crawlResult = $this->crawlStock($policy->symbols(), $maxNewsToFetch);
 
         return $this->factory
             ->createNotifier($policy, ...$channels)

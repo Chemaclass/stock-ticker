@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Chemaclass\StockTicker\Infrastructure\Command;
 
 use Chemaclass\StockTicker\Domain\Notifier\Channel\Email\EmailChannel;
+use Chemaclass\StockTicker\Domain\Notifier\Channel\Slack\SlackChannel;
 use Chemaclass\StockTicker\Domain\Notifier\NotifierPolicy;
 use Chemaclass\StockTicker\Domain\Notifier\Policy\Condition\RecentNewsWasFound;
 use Chemaclass\StockTicker\Domain\Notifier\Policy\PolicyGroup;
@@ -66,10 +67,7 @@ final class NotifyCommand extends Command
         while (true) {
             $output->writeln(sprintf('Looking for news in %s ...', implode(', ', $symbols)));
 
-            $crawlResult = $facade->crawlStock($policy->symbols(), $maxNews);
-            ResultOutputPrinter::printCrawResult($output, $crawlResult);
-
-            $notifyResult = $facade->sendNotifications($channels, $policy, $crawlResult);
+            $notifyResult = $facade->sendNotifications($channels, $policy, $maxNews);
             ResultOutputPrinter::printNotifyResult($output, $notifyResult);
             $this->sleepWithPrompt($output, $sleepingTime);
         }
