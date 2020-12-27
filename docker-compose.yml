@@ -4,7 +4,7 @@ services:
   stock_ticker:
     build:
       context: .
-      dockerfile: devops/dev/php.dockerfile
+      dockerfile: build/php.dockerfile
     container_name: stock_ticker
     hostname: php
     volumes:
