@@ -12,8 +12,6 @@ Created a new Module called `Notifier` which will be responsible for:
 - Defining some already prepared channels (such as Email and Slack)
 - Create a `PolicyGroup` logic in which you are able to define a group of conditions per Ticker
 
-See the [example/notify.php](../example/notify.php) file to see a fully working example.
-
 ```php
 $policy = new NotifierPolicy([
     'AMZN' => new PolicyGroup([

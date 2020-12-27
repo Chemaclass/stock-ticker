@@ -6,28 +6,15 @@
 [![MIT Software License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE.md)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.4-8892BF.svg?style=flat-square)](https://php.net/)
 
-This is an API to get a report/notification (via email and/or slack) of the latest news related to the 
-Tinker (the Stock Symbol) that you are interested in based on a personal lookup that you can define yourself.
+This is an API to get a notification (via email and/or slack) with the latest news related to the 
+Stock Symbol that you are interested in based on a personal lookup that you can define yourself.
 
-## Examples
+## Commands
 
-You can see some real working examples in this [readme](example/README.md).
-
-## Installation
-
-A) Install the example. Includes Docker + Composer dependencies: plug & play!
-
-```bash
-curl -sS https://raw.githubusercontent.com/Chemaclass/StockTicker/master/example/install.sh > install.sh
-bash install.sh StockTickerExample
-rm install.sh
-```
-
-B) As composer dependency:
-
-```bash
-composer require chemaclass/stock-ticker dev-master
-```
+- [Crawl](src/StockTicker/Infrastructure/Command/CrawlCommand.php): Crawl multiple websites and group their info per stock. 
+  - `php bin/console crawl DIS TSLA --maxNews=8 `
+- [Notify](src/StockTicker/Infrastructure/Command/NotifyCommand.php): Crawl and notify via different channels according to your criteria.
+  - `php bin/console notify DIS TSLA --maxNews=5 --sleepingTime=10`
 
 ## Contribute
 
@@ -38,9 +25,6 @@ Set up the container and install the composer dependencies:
 ```bash
 docker-compose up -d
 docker-compose exec stock_ticker composer install
-
-docker-compose exec stock_ticker example/crawl.php
-docker-compose exec stock_ticker example/notify.php
 ```
 
 You can go even go inside the docker container:
