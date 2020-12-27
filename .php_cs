@@ -13,7 +13,9 @@ return PhpCsFixer\Config::create()
         'align_multiline_comment' => true,
         'array_indentation' => true,
         'array_syntax' => ['syntax' => 'short'],
-        'binary_operator_spaces' => true,
+        'binary_operator_spaces' => [
+            'operators' => ['|' => 'no_space'],
+        ],
         'blank_line_after_namespace' => true,
         'blank_line_before_statement' => [
             'statements' => [

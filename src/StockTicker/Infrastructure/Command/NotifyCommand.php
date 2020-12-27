@@ -29,7 +29,7 @@ final class NotifyCommand extends Command
             ->setDescription('It notifies based on conditions applied to the crawled result')
             ->addArgument(
                 'symbols',
-                InputArgument::IS_ARRAY | InputArgument::REQUIRED,
+                InputArgument::IS_ARRAY|InputArgument::REQUIRED,
                 'Which stock symbols do you want to crawl?'
             )
             ->addOption(

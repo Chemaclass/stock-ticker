@@ -9,29 +9,32 @@
 This is an API to get a notification (via email and/or slack) with the latest news related to the 
 Stock Symbol that you are interested in based on a personal lookup that you can define yourself.
 
-## Commands
-
-- [Crawl](src/StockTicker/Infrastructure/Command/CrawlCommand.php): Crawl multiple websites and group their info per stock. 
-  - `php bin/console crawl DIS TSLA --maxNews=8 `
-- [Notify](src/StockTicker/Infrastructure/Command/NotifyCommand.php): Crawl and notify via different channels according to your criteria.
-  - `php bin/console notify DIS TSLA --maxNews=5 --sleepingTime=10`
-
-## Contribute
-
 ### Set up the project
 
-Set up the container and install the composer dependencies:
-
+Using docker:
 ```bash
 docker-compose up -d
 docker-compose exec stock_ticker composer install
 ```
 
-You can go even go inside the docker container:
-
+You can go inside the docker container to run the commands:
 ```bash
 docker exec -ti -u dev stock_ticker bash
+php bin/console crawl DIS TSLA 
 ```
+
+Or directly from your local machine using `docker exec`:
+```bash
+docker exec -ti -u dev stock_ticker php bin/console crawl DIS TSLA
+```
+
+### Commands
+
+- [Crawl](src/StockTicker/Infrastructure/Command/CrawlCommand.php): It crawls multiple websites and group their info per stock.
+  - `php bin/console crawl DIS TSLA --maxNews=8 `
+
+- [Notify](src/StockTicker/Infrastructure/Command/NotifyCommand.php): It crawls and notifies via different channels.
+  - `php bin/console notify DIS TSLA --maxNews=5 --sleepingTime=10`
 
 ----------
 

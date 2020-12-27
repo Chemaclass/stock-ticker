@@ -23,7 +23,7 @@ final class CrawlCommand extends Command
             ->setDescription('It crawls the websites and fetch their latest news')
             ->addArgument(
                 'symbols',
-                InputArgument::IS_ARRAY | InputArgument::REQUIRED,
+                InputArgument::IS_ARRAY|InputArgument::REQUIRED,
                 'Which stock symbols do you want to crawl?'
             )
             ->addOption(

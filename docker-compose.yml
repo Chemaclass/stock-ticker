@@ -8,4 +8,4 @@ services:
     container_name: stock_ticker
     hostname: php
     volumes:
-      - .:/srv/StockTicker:delegated
+      - .:/srv/stock-ticker:delegated
