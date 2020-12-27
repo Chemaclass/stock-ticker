@@ -12,7 +12,7 @@ use Chemaclass\StockTicker\Domain\Notifier\NotifierPolicy;
 
 interface StockTickerFactoryInterface
 {
-    public function createCompanyCrawler(SiteCrawlerInterface ...$siteCrawlers): QuoteCrawlerInterface;
+    public function createQuoteCrawler(SiteCrawlerInterface ...$siteCrawlers): QuoteCrawlerInterface;
 
     public function createNotifier(NotifierPolicy $policy, ChannelInterface ...$channels): NotifierInterface;
 

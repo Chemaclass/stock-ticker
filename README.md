@@ -1,8 +1,8 @@
-# StockTicker
+# Stock Ticker
 
-[![Build Status](https://scrutinizer-ci.com/g/Chemaclass/StockTicker/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Chemaclass/StockTicker/build-status/master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Chemaclass/StockTicker/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Chemaclass/StockTicker/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/Chemaclass/StockTicker/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Chemaclass/StockTicker/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/Chemaclass/stock-ticker/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Chemaclass/stock-ticker/build-status/master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Chemaclass/stock-ticker/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Chemaclass/stock-ticker/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/Chemaclass/stock-ticker/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Chemaclass/stock-ticker/?branch=master)
 [![MIT Software License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE.md)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.4-8892BF.svg?style=flat-square)](https://php.net/)
 

@@ -42,7 +42,7 @@ final class StockTickerFactory implements StockTickerFactoryInterface
         $this->config = $config;
     }
 
-    public function createCompanyCrawler(SiteCrawlerInterface ...$siteCrawlers): QuoteCrawlerInterface
+    public function createQuoteCrawler(SiteCrawlerInterface ...$siteCrawlers): QuoteCrawlerInterface
     {
         return new QuoteCrawler(
             HttpClient::create(),

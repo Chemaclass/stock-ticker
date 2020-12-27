@@ -53,7 +53,7 @@ final class StockTickerFacadeTest extends TestCase
         ]));
 
         $factory = $this->createMock(StockTickerFactoryInterface::class);
-        $factory->method('createCompanyCrawler')
+        $factory->method('createQuoteCrawler')
             ->willReturn(new QuoteCrawler(
                 $this->createMock(HttpClientInterface::class),
                 $this->mockCrawledInfoMapper(),

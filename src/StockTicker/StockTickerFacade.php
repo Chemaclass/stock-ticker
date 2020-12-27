@@ -48,7 +48,7 @@ final class StockTickerFacade
             ->createSiteCrawlers($maxNewsToFetch);
 
         return $this->factory
-            ->createCompanyCrawler(...$siteCrawlers)
+            ->createQuoteCrawler(...$siteCrawlers)
             ->crawlStock(...$symbols);
     }
 }
