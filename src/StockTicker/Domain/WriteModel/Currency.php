@@ -19,7 +19,6 @@ final class Currency extends AbstractWriteModel
     ];
 
     protected ?string $currency = null;
-
     protected ?string $symbol = null;
 
     public function getCurrency(): ?string

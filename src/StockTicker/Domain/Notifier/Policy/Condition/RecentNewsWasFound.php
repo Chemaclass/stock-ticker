@@ -45,6 +45,6 @@ final class RecentNewsWasFound implements PolicyConditionInterface
             }
         );
 
-        return $reduced->getDatetime();
+        return $reduced->getDatetime() ?? '';
     }
 }

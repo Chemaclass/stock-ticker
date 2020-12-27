@@ -53,19 +53,12 @@ final class Quote extends AbstractWriteModel
     ];
 
     protected ?string $symbol = null;
-
     protected ?CompanyName $companyName = null;
-
     protected ?Currency $currency = null;
-
     protected ?string $url = null;
-
     protected ?RegularMarketPrice $regularMarketPrice = null;
-
     protected ?RegularMarketChange $regularMarketChange = null;
-
     protected ?RegularMarketChangePercent $regularMarketChangePercent = null;
-
     protected ?MarketCap $marketCap = null;
 
     /** @var Trend[] */

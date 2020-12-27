@@ -35,15 +35,10 @@ final class Trend extends AbstractWriteModel
     ];
 
     protected ?string $period = null;
-
     protected ?int $strongBuy = null;
-
     protected ?int $buy = null;
-
     protected ?int $hold = null;
-
     protected ?int $sell = null;
-
     protected ?int $strongSell = null;
 
     public function getPeriod(): ?string

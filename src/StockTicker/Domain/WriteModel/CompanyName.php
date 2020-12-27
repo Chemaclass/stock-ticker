@@ -19,7 +19,6 @@ final class CompanyName extends AbstractWriteModel
     ];
 
     protected ?string $shortName = null;
-
     protected ?string $longName = null;
 
     public function getShortName(): ?string

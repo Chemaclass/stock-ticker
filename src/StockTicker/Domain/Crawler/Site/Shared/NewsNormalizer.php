@@ -7,11 +7,11 @@ namespace Chemaclass\StockTicker\Domain\Crawler\Site\Shared;
 use DateTimeImmutable;
 use DateTimeZone;
 
-final class NewsNormalizer
+final class NewsNormalizer implements NewsNormalizerInterface
 {
     private const NORMALIZED_DATETIME_FORMAT = 'Y-m-d H:i:s';
 
-    private const DEFAULT_MAX_TEXT_LENGTH_CHARS = 180;
+    private const DEFAULT_MAX_TEXT_LENGTH_CHARS = 1500;
 
     private DateTimeZone $timeZone;
 

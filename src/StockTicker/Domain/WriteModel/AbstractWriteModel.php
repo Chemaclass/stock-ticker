@@ -11,11 +11,13 @@ abstract class AbstractWriteModel implements JsonSerializable
     protected const TYPE_INT = 'int';
     protected const TYPE_FLOAT = 'float';
     protected const TYPE_STRING = 'string';
+    protected const TYPE_ARRAY = 'array';
 
     protected const SCALAR_TYPES = [
         self::TYPE_INT,
         self::TYPE_FLOAT,
         self::TYPE_STRING,
+        self::TYPE_ARRAY,
     ];
 
     /**
@@ -34,17 +36,22 @@ abstract class AbstractWriteModel implements JsonSerializable
             $concreteMeta = $meta[$propertyName] ?? reset($meta);
             $type = $concreteMeta['type'];
 
-            if ($this->isScalar($type)) {
-                $this->$propertyName = $value;
-            } elseif (class_exists($type)) {
+            if (class_exists($type)) {
                 $isArray = $concreteMeta['is_array'] ?? false;
                 $this->$propertyName = ($isArray)
                     ? $this->mapValueAsArray($type, $value)
                     : $this->mapValueAsObject($type, $value);
+            } elseif ($this->isScalar($type)) {
+                $this->$propertyName = $value;
             }
         }
 
         return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 
     public function toArray(): array
@@ -61,17 +68,7 @@ abstract class AbstractWriteModel implements JsonSerializable
         return $result;
     }
 
-    public function jsonSerialize(): array
-    {
-        return $this->toArray();
-    }
-
     abstract protected function metadata(): array;
-
-    private function isScalar(string $type): bool
-    {
-        return in_array($type, self::SCALAR_TYPES);
-    }
 
     private function mapValueAsArray(string $type, array $value): array
     {
@@ -84,5 +81,10 @@ abstract class AbstractWriteModel implements JsonSerializable
     private function mapValueAsObject(string $type, array $value): self
     {
         return (new $type())->fromArray($value);
+    }
+
+    private function isScalar(string $type): bool
+    {
+        return in_array($type, self::SCALAR_TYPES);
     }
 }

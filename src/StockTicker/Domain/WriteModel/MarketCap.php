@@ -23,9 +23,7 @@ final class MarketCap extends AbstractWriteModel
     ];
 
     protected ?float $raw = null;
-
     protected ?string $fmt = null;
-
     protected ?string $longFmt = null;
 
     public function getRaw(): ?float

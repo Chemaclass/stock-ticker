@@ -70,6 +70,8 @@ final class NewsTest extends TestCase
                     'pubtime' => self::EXAMPLE_UNIX_PUBTIME,
                     'url' => 'url.com',
                     'summary' => 'A summary',
+                    'publisher' => null,
+                    'images' => [],
                 ],
             ],
             'expected' => [
@@ -79,6 +81,9 @@ final class NewsTest extends TestCase
                     'url' => 'url.com',
                     'summary' => 'A summary',
                     'timezone' => self::EXAMPLE_TIMEZONE,
+                    'source' => 'FinanceYahoo',
+                    'publisher' => null,
+                    'images' => [],
                 ],
             ],
         ];
@@ -105,6 +110,9 @@ final class NewsTest extends TestCase
                     'pubtime' => self::EXAMPLE_UNIX_PUBTIME,
                     'url' => 'url.1.com',
                     'summary' => 'First summary',
+                    'source' => 'FinanceYahoo',
+                    'publisher' => null,
+                    'images' => [],
                 ],
                 [
                     'type' => 'video',
@@ -119,6 +127,9 @@ final class NewsTest extends TestCase
                     'pubtime' => self::EXAMPLE_UNIX_PUBTIME,
                     'url' => 'url.2.com',
                     'summary' => 'Second summary',
+                    'source' => 'FinanceYahoo',
+                    'publisher' => null,
+                    'images' => [],
                 ],
             ],
             'expected' => [
@@ -128,6 +139,9 @@ final class NewsTest extends TestCase
                     'url' => 'url.1.com',
                     'summary' => 'First summary',
                     'timezone' => self::EXAMPLE_TIMEZONE,
+                    'source' => 'FinanceYahoo',
+                    'publisher' => null,
+                    'images' => [],
                 ],
                 [
                     'title' => 'The second title',
@@ -135,6 +149,9 @@ final class NewsTest extends TestCase
                     'url' => 'url.2.com',
                     'summary' => 'Second summary',
                     'timezone' => self::EXAMPLE_TIMEZONE,
+                    'source' => 'FinanceYahoo',
+                    'publisher' => null,
+                    'images' => [],
                 ],
             ],
         ];

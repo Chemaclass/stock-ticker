@@ -19,7 +19,6 @@ final class RegularMarketChangePercent extends AbstractWriteModel
     ];
 
     protected ?string $fmt = null;
-
     protected ?float $raw = null;
 
     public function getFmt(): ?string

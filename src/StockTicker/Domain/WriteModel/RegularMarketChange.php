@@ -19,7 +19,6 @@ final class RegularMarketChange extends AbstractWriteModel
     ];
 
     protected ?float $raw = null;
-
     protected ?string $fmt = null;
 
     public function getRaw(): ?float
