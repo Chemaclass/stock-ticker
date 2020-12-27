@@ -13,7 +13,7 @@ final class ExternalUrl implements JsonExtractorInterface
         $routeStore = $json['context']['dispatcher']['stores']['RouteStore'];
 
         return [
-            $routeStore['currentNavigate']['externalUrl'],
+            $routeStore['currentNavigate']['externalUrl'] ?? '',
         ];
     }
 }

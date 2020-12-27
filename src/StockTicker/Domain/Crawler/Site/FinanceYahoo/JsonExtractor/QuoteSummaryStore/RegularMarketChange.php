@@ -10,8 +10,8 @@ final class RegularMarketChange implements JsonExtractorInterface
 {
     public function extractFromJson(array $json): array
     {
-        $quoteSummaryStore = $json['context']['dispatcher']['stores']['QuoteSummaryStore'];
+        $quoteSummaryStore = $json['context']['dispatcher']['stores']['QuoteSummaryStore'] ?? [];
 
-        return $quoteSummaryStore['price']['regularMarketChange'];
+        return $quoteSummaryStore['price']['regularMarketChange'] ?? [];
     }
 }

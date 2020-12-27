@@ -10,8 +10,8 @@ final class RecommendationTrend implements JsonExtractorInterface
 {
     public function extractFromJson(array $json): array
     {
-        $quoteSummaryStore = $json['context']['dispatcher']['stores']['QuoteSummaryStore'];
+        $quoteSummaryStore = $json['context']['dispatcher']['stores']['QuoteSummaryStore'] ?? [];
 
-        return (array) $quoteSummaryStore['recommendationTrend']['trend'];
+        return $quoteSummaryStore['recommendationTrend']['trend'] ?? [];
     }
 }

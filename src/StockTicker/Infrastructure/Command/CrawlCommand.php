@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Chemaclass\StockTicker\Infrastructure\Command;
 
+use Chemaclass\StockTicker\Domain\Crawler\CrawlResult;
 use Chemaclass\StockTicker\StockTickerConfig;
 use Chemaclass\StockTicker\StockTickerFacade;
 use Chemaclass\StockTicker\StockTickerFactory;
@@ -45,7 +46,13 @@ final class CrawlCommand extends Command
 
         $crawlResult = $facade->crawlStock($symbols, (int) $input->getOption('maxNews'));
 
-        ResultOutputPrinter::printCrawResult($output, $crawlResult);
+        if ($crawlResult->isEmpty()) {
+            $output->writeln('Nothing new here...');
+
+            return Command::FAILURE;
+        }
+
+        $this->printCrawResult($output, $crawlResult);
 
         return Command::SUCCESS;
     }
@@ -55,5 +62,22 @@ final class CrawlCommand extends Command
         return new StockTickerFacade(
             new StockTickerFactory(new StockTickerConfig())
         );
+    }
+
+    private function printCrawResult(OutputInterface $output, CrawlResult $crawlResult): void
+    {
+        $output->writeln('~~~~~~~~~~~~~~~~~~~~~~~~~~');
+        $output->writeln('~~~~~~ Crawl result ~~~~~~');
+        $output->writeln('~~~~~~~~~~~~~~~~~~~~~~~~~~');
+
+        foreach ($crawlResult->getCompaniesGroupedBySymbol() as $symbol => $quote) {
+            $output->writeln($symbol);
+
+            foreach ($quote->toArray() as $key => $value) {
+                $output->writeln(sprintf('# %s => %s', $key, json_encode($value)));
+            }
+
+            $output->writeln('');
+        }
     }
 }

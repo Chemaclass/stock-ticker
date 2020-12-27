@@ -37,7 +37,11 @@ final class QuoteCrawler implements QuoteCrawlerInterface
             $sites = $this->crawlAllSitesForSymbol($symbol);
             $info = $this->flat(...$sites);
 
-            $result[$symbol->toString()] = $this->crawledInfoMapper->mapQuote($info);
+            $quote = $this->crawledInfoMapper->mapQuote($info);
+
+            if ($quote->hasMandatoryFields()) {
+                $result[$symbol->toString()] = $quote;
+            }
         }
 
         return new CrawlResult($result);

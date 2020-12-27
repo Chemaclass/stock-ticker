@@ -81,10 +81,12 @@ final class QuoteTest extends TestCase
 
     public function testCompanyName(): void
     {
-        self::assertEquals((new CompanyName())->fromArray([
-            'shortName' => 'Short Company name, Inc.',
-            'longName' => 'Long Company name, Inc.',
-        ]), $this->quote->getCompanyName());
+        self::assertEquals(
+            (new CompanyName())
+                ->setShortName('Short Company name, Inc.')
+                ->setLongName('Long Company name, Inc.'),
+            $this->quote->getCompanyName()
+        );
     }
 
     public function testSymbol(): void
@@ -109,35 +111,43 @@ final class QuoteTest extends TestCase
 
     public function testRegularMarketPrice(): void
     {
-        self::assertEquals((new RegularMarketPrice())->fromArray([
-            'raw' => 629.999,
-            'fmt' => '629.99',
-        ]), $this->quote->getRegularMarketPrice());
+        self::assertEquals(
+            (new RegularMarketPrice())
+                ->setFmt('629.99')
+                ->setRaw(629.999),
+            $this->quote->getRegularMarketPrice()
+        );
     }
 
     public function testRegularMarketChange(): void
     {
-        self::assertEquals((new RegularMarketChange())->fromArray([
-            'raw' => -3.2900085,
-            'fmt' => '-3.29',
-        ]), $this->quote->getRegularMarketChange());
+        self::assertEquals(
+            (new RegularMarketChange())
+                ->setFmt('-3.29')
+                ->setRaw(-3.2900085),
+            $this->quote->getRegularMarketChange()
+        );
     }
 
     public function testRegularMarketChangePercent(): void
     {
-        self::assertEquals((new RegularMarketChangePercent())->fromArray([
-            'raw' => -1.8199171,
-            'fmt' => '-1.82%',
-        ]), $this->quote->getRegularMarketChangePercent());
+        self::assertEquals(
+            (new RegularMarketChangePercent())
+                ->setFmt('-1.82%')
+                ->setRaw(-1.8199171),
+            $this->quote->getRegularMarketChangePercent()
+        );
     }
 
     public function testMarketCap(): void
     {
-        self::assertEquals((new MarketCap())->fromArray([
-            'raw' => 797834477568,
-            'fmt' => '797.834B',
-            'longFmt' => '797,834,477,568',
-        ]), $this->quote->getMarketCap());
+        self::assertEquals(
+            (new MarketCap())
+                ->setRaw(797834477568)
+                ->setFmt('797.834B')
+                ->setLongFmt('797,834,477,568'),
+            $this->quote->getMarketCap()
+        );
     }
 
     public function testLastTrend(): void

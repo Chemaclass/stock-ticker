@@ -20,6 +20,8 @@ abstract class AbstractWriteModel implements JsonSerializable
         self::TYPE_ARRAY,
     ];
 
+    protected const PROPERTY_NAME_MAP = [];
+
     /**
      * @return static
      */
@@ -27,7 +29,9 @@ abstract class AbstractWriteModel implements JsonSerializable
     {
         $props = get_object_vars($this);
 
-        foreach ($data as $propertyName => $value) {
+        foreach ($data as $property => $value) {
+            $propertyName = static::PROPERTY_NAME_MAP[$property] ?? $property;
+
             if (!array_key_exists($propertyName, $props)) {
                 continue;
             }
@@ -47,6 +51,37 @@ abstract class AbstractWriteModel implements JsonSerializable
         }
 
         return $this;
+    }
+
+    public function hasMandatoryFields(): bool
+    {
+        $props = get_object_vars($this);
+
+        foreach ($props as $propertyName => $value) {
+            $meta = $this->metadata();
+            $concreteMeta = $meta[$propertyName] ?? reset($meta);
+            $type = $concreteMeta['type'];
+
+            if (class_exists($type)) {
+                if (($concreteMeta['is_array'] ?? false)) {
+                    foreach ($value as $item) {
+                        if (!$item->hasMandatoryFields()) {
+                            return false;
+                        }
+                    }
+                } elseif ($value && !$value->hasMandatoryFields()) {
+                    return false;
+                }
+            }
+
+            $isMandatoryField = $concreteMeta['mandatory'] ?? false;
+
+            if ($isMandatoryField && empty($value)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function jsonSerialize(): array

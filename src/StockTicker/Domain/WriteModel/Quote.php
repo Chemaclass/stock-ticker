@@ -20,9 +20,11 @@ final class Quote extends AbstractWriteModel
     private const METADATA = [
         self::SYMBOL => [
             'type' => self::TYPE_STRING,
+            'mandatory' => true,
         ],
         self::COMPANY_NAME => [
             'type' => CompanyName::class,
+            'mandatory' => true,
         ],
         self::REGULAR_MARKET_PRICE => [
             'type' => RegularMarketPrice::class,

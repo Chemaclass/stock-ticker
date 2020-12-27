@@ -34,7 +34,7 @@ docker exec -ti -u dev stock_ticker php bin/console crawl DIS TSLA
   - `php bin/console crawl DIS TSLA --maxNews=8 `
 
 - [Notify](src/StockTicker/Infrastructure/Command/NotifyCommand.php): It crawls and notifies via different channels.
-  - `php bin/console notify DIS TSLA --maxNews=5 --sleepingTime=10`
+  - `php bin/console notify DIS TSLA --maxNews=5 --sleepingTime=10 --channels=email,slack`
 
 ----------
 

@@ -28,6 +28,7 @@ final class StockTickerFacadeTest extends TestCase
         $amazon = $result->getQuote('AMZN');
 
         self::assertSame('AMZN', $amazon->getSymbol());
+        self::assertSame('Amazon.com, Inc.', $amazon->getCompanyName()->getShortName());
         self::assertSame('Amazon.com, Inc.', $amazon->getCompanyName()->getLongName());
     }
 
@@ -45,7 +46,10 @@ final class StockTickerFacadeTest extends TestCase
         $siteCrawler = $this->createMock(SiteCrawlerInterface::class);
         $siteCrawler->method('crawl')->willReturn(new Site([
             'symbol' => 'AMZN',
-            'companyName' => ['longName' => 'Amazon.com, Inc.'],
+            'companyName' => [
+                'longName' => 'Amazon.com, Inc.',
+                'shortName' => 'Amazon.com, Inc.',
+            ],
         ]));
 
         $factory = $this->createMock(StockTickerFactoryInterface::class);

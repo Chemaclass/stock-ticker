@@ -10,11 +10,11 @@ final class Currency implements JsonExtractorInterface
 {
     public function extractFromJson(array $json): array
     {
-        $quoteSummaryStore = $json['context']['dispatcher']['stores']['QuoteSummaryStore'];
+        $quoteSummaryStore = $json['context']['dispatcher']['stores']['QuoteSummaryStore'] ?? [];
 
         return [
-            'currency' => $quoteSummaryStore['price']['currency'],
-            'symbol' => $quoteSummaryStore['price']['currencySymbol'],
+            'currency' => $quoteSummaryStore['price']['currency'] ?? '',
+            'symbol' => $quoteSummaryStore['price']['currencySymbol'] ?? '',
         ];
     }
 }

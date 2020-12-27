@@ -32,7 +32,7 @@ final class BarronsSiteCrawler implements SiteCrawlerInterface
 
         $html = $httpClient
             ->request(self::REQUEST_METHOD, $url, $this->buildRequestHeaders())
-            ->getContent();
+            ->getContent($throw = false);
 
         $crawled = [];
 

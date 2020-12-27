@@ -55,12 +55,12 @@ final class News implements JsonExtractorInterface
     {
         return [
             'source' => self::SOURCE,
-            'datetime' => $this->normalizeDateTimeFromUnix($article['pubtime']),
+            'datetime' => $this->normalizeDateTimeFromUnix($article['pubtime'] ?? 0),
             'timezone' => $this->newsNormalizer->getTimeZoneName(),
-            'url' => $article['url'],
-            'title' => $this->newsNormalizer->normalizeText($article['title']),
-            'summary' => $this->newsNormalizer->normalizeText($article['summary']),
-            'publisher' => $article['publisher'],
+            'url' => $article['url'] ?? '',
+            'title' => $this->newsNormalizer->normalizeText($article['title'] ?? ''),
+            'summary' => $this->newsNormalizer->normalizeText($article['summary'] ?? ''),
+            'publisher' => $article['publisher'] ?? '',
             'images' => $article['images'] ?? [],
         ];
     }
