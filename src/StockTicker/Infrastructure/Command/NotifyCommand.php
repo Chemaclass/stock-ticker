@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Chemaclass\StockTicker\Infrastructure\Command;
 
-use Chemaclass\StockTicker\Domain\Notifier\Channel\Email\EmailChannel;
-use Chemaclass\StockTicker\Domain\Notifier\Channel\Slack\SlackChannel;
 use Chemaclass\StockTicker\Domain\Notifier\NotifierPolicy;
 use Chemaclass\StockTicker\Domain\Notifier\NotifyResult;
 use Chemaclass\StockTicker\Domain\Notifier\Policy\Condition\RecentNewsWasFound;
 use Chemaclass\StockTicker\Domain\Notifier\Policy\PolicyGroup;
+use Chemaclass\StockTicker\Infrastructure\Command\ReadModel\NotifyCommandInput;
 use Chemaclass\StockTicker\StockTickerConfig;
 use Chemaclass\StockTicker\StockTickerFacade;
 use Chemaclass\StockTicker\StockTickerFactory;
@@ -21,13 +20,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class NotifyCommand extends Command
 {
     private const DEFAULT_MAX_NEWS_TO_FETCH = 3;
+    private const DEFAULT_MAX_REPETITIONS = PHP_INT_MAX;
     private const DEFAULT_SLEEPING_TIME_IN_SECONDS = 60;
     private const DEFAULT_CHANNEL = 'email';
 
-    private const MAP_POSSIBLE_CHANNELS = [
-        'email' => EmailChannel::class,
-        'slack' => SlackChannel::class,
-    ];
+    /**
+     * @psalm-suppress PropertyNotSetInConstructor
+     */
+    private OutputInterface $output;
 
     protected function configure(): void
     {
@@ -47,6 +47,13 @@ final class NotifyCommand extends Command
                 self::DEFAULT_MAX_NEWS_TO_FETCH
             )
             ->addOption(
+                'maxRepetitions',
+                'r',
+                InputArgument::OPTIONAL,
+                'Max number repetitions for the loop. 0 for non-end.',
+                self::DEFAULT_MAX_REPETITIONS
+            )
+            ->addOption(
                 'channels',
                 'c',
                 InputArgument::OPTIONAL,
@@ -62,36 +69,31 @@ final class NotifyCommand extends Command
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /** @var string[] $symbols */
-        $symbols = (array) $input->getArgument('symbols');
-        $maxNews = (int) $input->getOption('maxNews');
-        $sleepingTime = (int) $input->getOption('sleepingTime');
-        /** @psalm-suppress PossiblyInvalidCast */
-        $channelClassNames = $this->mapChannelNames((string) $input->getOption('channels'));
+        $this->output = $output;
 
-        $policy = $this->createPolicyForSymbols($symbols);
+        $commandInput = NotifyCommandInput::createFromInput($input);
+
+        $policy = $this->createPolicyForSymbols($commandInput->getSymbols());
         $facade = $this->createStockTickerFacade();
 
-        while (true) {
-            $output->writeln(sprintf('Looking for news in %s ...', implode(', ', $symbols)));
+        for ($i = 0; $i < $commandInput->getMaxRepetitions(); $i++) {
+            $this->printStartingIteration($commandInput->getSymbols(), $i, $commandInput->getMaxRepetitions());
 
-            $notifyResult = $facade->sendNotifications($channelClassNames, $policy, $maxNews);
-            $this->printNotifyResult($output, $notifyResult);
-            $this->sleepWithPrompt($output, $sleepingTime);
+            $notifyResult = $facade->sendNotifications($commandInput->getChannelNames(), $policy, $commandInput->getMaxNews());
+            $this->printNotifyResult($notifyResult);
+            $this->sleepWithPrompt($commandInput->getSleepingTime());
         }
-    }
 
-    private function mapChannelNames(string $channelsAsString): array
-    {
-        return array_filter(array_map(
-            static fn (string $c): string => self::MAP_POSSIBLE_CHANNELS[$c] ?? '',
-            explode(',', $channelsAsString)
-        ));
+        $output->writeln('Already reached the max repetition limit of ' . $commandInput->getMaxRepetitions());
+
+        return Command::SUCCESS;
     }
 
     /**
+     * Create the same policy group to all symbols.
+     *
      * @param string[] $symbols
      */
     private function createPolicyForSymbols(array $symbols): NotifierPolicy
@@ -115,40 +117,52 @@ final class NotifyCommand extends Command
         );
     }
 
-    private function printNotifyResult(OutputInterface $output, NotifyResult $notifyResult): void
+    private function printStartingIteration(array $symbols, int $actualIteration, int $maxRepetitions): void
+    {
+        $this->output->writeln(sprintf('Looking for news in %s ...', implode(', ', $symbols)));
+        $this->output->writeln(sprintf('Completed %d of %d', $actualIteration, $maxRepetitions));
+    }
+
+    private function printNotifyResult(NotifyResult $notifyResult): void
     {
         if ($notifyResult->isEmpty()) {
-            $output->writeln(' ~~~ Nothing new here...');
+            $this->output->writeln(' ~~~ Nothing new here...');
 
             return;
         }
 
-        $output->writeln('===========================');
-        $output->writeln('====== Notify result ======');
-        $output->writeln('===========================');
+        $this->output->writeln('===========================');
+        $this->output->writeln('====== Notify result ======');
+        $this->output->writeln('===========================');
 
         foreach ($notifyResult->conditionNamesGroupBySymbol() as $symbol => $conditionNames) {
-            $output->writeln($symbol);
-            $output->writeln('Conditions:');
+            $quote = $notifyResult->quoteBySymbol($symbol);
+
+            $companyName = (null !== $quote->getCompanyName())
+                ? $quote->getCompanyName()->getLongName() ?? ''
+                : '';
+
+            $symbol = $quote->getSymbol() ?: '';
+            $this->output->writeln(sprintf('%s (%s)', $companyName, $symbol));
 
             foreach ($conditionNames as $conditionName) {
-                $output->writeln(sprintf('  - %s', $conditionName));
+                $this->output->writeln("  - $conditionName");
             }
-
-            $output->writeln('');
+            $this->output->writeln('');
         }
+        $this->output->writeln('');
     }
 
-    private function sleepWithPrompt(OutputInterface $output, int $sec): void
+    private function sleepWithPrompt(int $sec): void
     {
-        $output->writeln("Sleeping {$sec} seconds...");
+        $this->output->writeln("Sleeping {$sec} seconds...");
         $len = mb_strlen((string) $sec);
 
         for ($i = $sec; $i > 0; $i--) {
-            $output->write(sprintf("%0{$len}d\r", $i));
+            $this->output->write(sprintf("%0{$len}d\r", $i));
             sleep(1);
         }
 
-        $output->writeln('Awake again!');
+        $this->output->writeln('Awake again!');
     }
 }
