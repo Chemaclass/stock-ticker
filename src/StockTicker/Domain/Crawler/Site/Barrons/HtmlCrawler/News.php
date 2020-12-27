@@ -13,6 +13,8 @@ use Symfony\Component\DomCrawler\Crawler;
 
 final class News implements HtmlCrawlerInterface
 {
+    private const SOURCE = 'Barrons';
+
     /**
      * TODO: Refactor this logic to use regex instead... Something like this:
      * (?<month>\w{3}) (?<day>\d{1,2}), (?<year>\d{4}) ?(?<time>)
@@ -62,6 +64,7 @@ final class News implements HtmlCrawlerInterface
             'url' => $matches['url'],
             'title' => $this->newsNormalizer->normalizeText($matches['title']),
             'summary' => '',
+            'source' => self::SOURCE,
         ];
     }
 

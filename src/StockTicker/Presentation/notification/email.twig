@@ -60,7 +60,7 @@
                                 margin: 0 10px 0 10px;"
                     >
                         <h5>{{ news.datetime }} <small>{{ news.timezone }}</small></h5>
-                        <h4>{{ news.title | raw }}</h4>
+                        <h4>{{ news.title | raw }} <small>[Source: {{ news.source }}]</small></h4>
                         <p>
                             {{ news.summary | raw }}
                             <a href="{{ news.url }}">Read more</a>

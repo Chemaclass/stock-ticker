@@ -10,6 +10,8 @@ use DateTimeImmutable;
 
 final class News implements JsonExtractorInterface
 {
+    private const SOURCE = 'FinanceYahoo';
+
     private NewsNormalizer $newsNormalizer;
 
     public function __construct(NewsNormalizer $newsNormalizer)
@@ -56,6 +58,7 @@ final class News implements JsonExtractorInterface
                 'url' => $i['url'],
                 'title' => $this->newsNormalizer->normalizeText($i['title']),
                 'summary' => $this->newsNormalizer->normalizeText($i['summary']),
+                'source' => self::SOURCE,
             ],
             $articles
         );

@@ -11,6 +11,7 @@ final class News extends AbstractWriteModel
     public const URL = 'url';
     public const TITLE = 'title';
     public const SUMMARY = 'summary';
+    public const SOURCE = 'source';
 
     private const METADATA = [
         self::DATETIME => [
@@ -28,6 +29,9 @@ final class News extends AbstractWriteModel
         self::SUMMARY => [
             'type' => self::TYPE_STRING,
         ],
+        self::SOURCE => [
+            'type' => self::TYPE_STRING,
+        ],
     ];
 
     protected string $datetime = '';
@@ -39,6 +43,8 @@ final class News extends AbstractWriteModel
     protected string $title = '';
 
     protected string $summary = '';
+
+    protected string $source = '';
 
     public function getDatetime(): string
     {
@@ -97,6 +103,17 @@ final class News extends AbstractWriteModel
     {
         $this->summary = $summary;
 
+        return $this;
+    }
+
+    public function getSource(): string
+    {
+        return $this->source;
+    }
+
+    public function setSource(string $source): self
+    {
+        $this->source = $source;
         return $this;
     }
 
