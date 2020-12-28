@@ -15,12 +15,13 @@ Using docker:
 ```bash
 docker-compose up -d
 docker-compose exec stock_ticker composer install
+cp .env.dist .env
 ```
 
 You can go inside the docker container to run the commands:
 ```bash
 docker exec -ti -u dev stock_ticker bash
-php bin/console crawl DIS TSLA 
+php bin/console crawl DIS TSLA
 ```
 
 Or directly from your local machine using `docker exec`:
@@ -40,7 +41,7 @@ docker exec -ti -u dev stock_ticker php bin/console crawl DIS TSLA
   - Options
     - `maxNews`: Max number of news to fetch per crawled site
     - `maxRepetitions`: Max number repetitions for the loop
-    - `channels`: Channels to notify separated by comma. For example `email` and `slack`
+    - `channels`: Channels to notify separated by a comma. For example `email` and `slack`
     - `sleepingTime`: Sleeping time in seconds
 
 ----------
