@@ -53,6 +53,6 @@ final class StockTickerConfig implements StockTickerConfigInterface
 
     private function isTrue(?string $bool): bool
     {
-        return in_array($bool, [true, 'true', '1', 'yes'], true);
+        return in_array($bool, ['true', '1', 'yes'], true);
     }
 }
