@@ -6,8 +6,15 @@ namespace Chemaclass\StockTicker\Domain\WriteModel;
 
 final class RegularMarketChange extends AbstractWriteModel
 {
-    public const RAW = 'raw';
     public const FMT = 'fmt';
+    public const RAW = 'raw';
+
+    protected const PROPERTY_NAME_MAP = [
+        'raw' => self::RAW,
+        'Raw' => self::RAW,
+        'fmt' => self::FMT,
+        'Fmt' => self::FMT,
+    ];
 
     private const METADATA = [
         self::FMT => [
@@ -18,20 +25,8 @@ final class RegularMarketChange extends AbstractWriteModel
         ],
     ];
 
-    protected ?float $raw = null;
     protected ?string $fmt = null;
-
-    public function getRaw(): ?float
-    {
-        return $this->raw;
-    }
-
-    public function setRaw(?float $raw): self
-    {
-        $this->raw = $raw;
-
-        return $this;
-    }
+    protected ?float $raw = null;
 
     public function getFmt(): ?string
     {
@@ -41,6 +36,18 @@ final class RegularMarketChange extends AbstractWriteModel
     public function setFmt(?string $fmt): self
     {
         $this->fmt = $fmt;
+
+        return $this;
+    }
+
+    public function getRaw(): ?float
+    {
+        return $this->raw;
+    }
+
+    public function setRaw(?float $raw): self
+    {
+        $this->raw = $raw;
 
         return $this;
     }

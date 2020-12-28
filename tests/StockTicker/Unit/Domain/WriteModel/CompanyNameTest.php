@@ -16,8 +16,10 @@ final class CompanyNameTest extends TestCase
             'longName' => 'Long Company name, Inc.',
         ];
 
-        $companyName = (new CompanyName())->fromArray($array);
+        $model = (new CompanyName())->fromArray($array);
 
-        self::assertEquals($array, $companyName->toArray());
+        self::assertEquals($array, $model->toArray());
+        self::assertEquals($array['shortName'], $model->getShortName());
+        self::assertEquals($array['longName'], $model->getLongName());
     }
 }

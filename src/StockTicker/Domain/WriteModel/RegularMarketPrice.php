@@ -6,15 +6,22 @@ namespace Chemaclass\StockTicker\Domain\WriteModel;
 
 final class RegularMarketPrice extends AbstractWriteModel
 {
-    public const SHORT_NAME = 'shortName';
-    public const LONG_NAME = 'longName';
+    public const FMT = 'fmt';
+    public const RAW = 'raw';
+
+    protected const PROPERTY_NAME_MAP = [
+        'raw' => self::RAW,
+        'Raw' => self::RAW,
+        'fmt' => self::FMT,
+        'Fmt' => self::FMT,
+    ];
 
     private const METADATA = [
-        self::SHORT_NAME => [
+        self::FMT => [
             'type' => self::TYPE_STRING,
         ],
-        self::LONG_NAME => [
-            'type' => self::TYPE_STRING,
+        self::RAW => [
+            'type' => self::TYPE_FLOAT,
         ],
     ];
 

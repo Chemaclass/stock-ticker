@@ -66,5 +66,8 @@ jobs:
       - name: Install dependencies
         run: composer update --no-interaction --no-ansi --no-progress
 
-      - name: Run tests
-        run: ./vendor/bin/phpunit
+      - name: Run the feature tests
+        run: ./vendor/bin/phpunit --testsuite feature
+
+      - name: Run the unit tests
+        run: ./vendor/bin/phpunit --testsuite unit

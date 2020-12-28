@@ -74,6 +74,13 @@ final class QuoteTest extends TestCase
                     'url' => 'example url',
                     'title' => 'example title',
                     'summary' => 'example summary',
+                    'publisher' => 'example publisher',
+                    'source' => 'example source',
+                    'images' => [
+                        [
+                            'url' => 'example.img.url',
+                        ],
+                    ],
                 ],
             ],
         ]);
@@ -178,7 +185,14 @@ final class QuoteTest extends TestCase
                 ->setTimezone('example timezone')
                 ->setUrl('example url')
                 ->setTitle('example title')
-                ->setSummary('example summary'),
+                ->setPublisher('example publisher')
+                ->setSource('example source')
+                ->setSummary('example summary')
+                ->setImages([
+                    [
+                        'url' => 'example.img.url',
+                    ],
+                ]),
         ], $this->quote->getLatestNews());
     }
 }

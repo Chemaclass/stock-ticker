@@ -9,6 +9,13 @@ final class RegularMarketChangePercent extends AbstractWriteModel
     public const FMT = 'fmt';
     public const RAW = 'raw';
 
+    protected const PROPERTY_NAME_MAP = [
+        'raw' => self::RAW,
+        'Raw' => self::RAW,
+        'fmt' => self::FMT,
+        'Fmt' => self::FMT,
+    ];
+
     private const METADATA = [
         self::FMT => [
             'type' => self::TYPE_STRING,

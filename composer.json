@@ -46,13 +46,15 @@
     "scripts": {
         "test-all": [
             "@test-quality",
-            "@test-unit"
+            "@test-unit",
+            "@test-feature"
         ],
         "test-quality": [
             "@csrun",
             "@psalm"
         ],
-        "test-unit": "./vendor/bin/phpunit",
+        "test-unit": "./vendor/bin/phpunit --testsuite unit",
+        "test-feature": "./vendor/bin/phpunit --testsuite feature",
         "test-coverage": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-html coverage",
         "psalm": "./vendor/bin/psalm",
         "csfix": "./vendor/bin/php-cs-fixer fix",

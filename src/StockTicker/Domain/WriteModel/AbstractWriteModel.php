@@ -36,9 +36,8 @@ abstract class AbstractWriteModel implements JsonSerializable
                 continue;
             }
 
-            $meta = $this->metadata();
-            $concreteMeta = $meta[$propertyName] ?? reset($meta);
-            $type = $concreteMeta['type'];
+            $concreteMeta = $this->metadata()[$propertyName] ?? [];
+            $type = $concreteMeta['type'] ?? '';
 
             if (class_exists($type)) {
                 $isArray = $concreteMeta['is_array'] ?? false;
@@ -58,9 +57,8 @@ abstract class AbstractWriteModel implements JsonSerializable
         $props = get_object_vars($this);
 
         foreach ($props as $propertyName => $value) {
-            $meta = $this->metadata();
-            $concreteMeta = $meta[$propertyName] ?? reset($meta);
-            $type = $concreteMeta['type'];
+            $concreteMeta = $this->metadata()[$propertyName] ?? [];
+            $type = $concreteMeta['type'] ?? '';
 
             if (class_exists($type)) {
                 if (($concreteMeta['is_array'] ?? false)) {

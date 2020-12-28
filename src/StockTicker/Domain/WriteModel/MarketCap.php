@@ -10,6 +10,16 @@ final class MarketCap extends AbstractWriteModel
     public const FMT = 'fmt';
     public const LONG_FMT = 'longFmt';
 
+    protected const PROPERTY_NAME_MAP = [
+        'raw' => self::RAW,
+        'Raw' => self::RAW,
+        'fmt' => self::FMT,
+        'Fmt' => self::FMT,
+        'long_fmt' => self::LONG_FMT,
+        'longFmt' => self::LONG_FMT,
+        'LongFmt' => self::LONG_FMT,
+    ];
+
     private const METADATA = [
         self::RAW => [
             'type' => self::TYPE_FLOAT,

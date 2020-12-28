@@ -11,21 +11,23 @@ final class TrendTest extends TestCase
 {
     public function testToArray(): void
     {
-        $trend = (new Trend())
-            ->setPeriod('0m')
-            ->setStrongBuy(1)
-            ->setBuy(2)
-            ->setHold(3)
-            ->setSell(4)
-            ->setStrongSell(5);
-
-        self::assertEquals([
+        $array = [
             'period' => '0m',
-            'strongBuy' => 1,
-            'buy' => 2,
-            'hold' => 3,
-            'sell' => 4,
-            'strongSell' => 5,
-        ], $trend->toArray());
+            'strongBuy' => 11,
+            'buy' => 12,
+            'hold' => 13,
+            'sell' => 14,
+            'strongSell' => 15,
+        ];
+
+        $model = (new Trend())->fromArray($array);
+
+        self::assertEquals($array, $model->toArray());
+        self::assertEquals($array['period'], $model->getPeriod());
+        self::assertEquals($array['strongBuy'], $model->getStrongBuy());
+        self::assertEquals($array['buy'], $model->getBuy());
+        self::assertEquals($array['hold'], $model->getHold());
+        self::assertEquals($array['sell'], $model->getSell());
+        self::assertEquals($array['strongSell'], $model->getStrongSell());
     }
 }

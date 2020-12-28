@@ -13,6 +13,23 @@ final class Trend extends AbstractWriteModel
     public const SELL = 'sell';
     public const STRONG_SELL = 'strongSell';
 
+    protected const PROPERTY_NAME_MAP = [
+        'period' => self::PERIOD,
+        'Period' => self::PERIOD,
+        'strong_buy' => self::STRONG_BUY,
+        'strongBuy' => self::STRONG_BUY,
+        'StrongBuy' => self::STRONG_BUY,
+        'buy' => self::BUY,
+        'Buy' => self::BUY,
+        'hold' => self::HOLD,
+        'Hold' => self::HOLD,
+        'sell' => self::SELL,
+        'Sell' => self::SELL,
+        'strong_sell' => self::STRONG_SELL,
+        'strongSell' => self::STRONG_SELL,
+        'StrongSell' => self::STRONG_SELL,
+    ];
+
     private const METADATA = [
         self::PERIOD => [
             'type' => self::TYPE_STRING,

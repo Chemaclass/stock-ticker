@@ -9,6 +9,13 @@ final class Currency extends AbstractWriteModel
     public const CURRENCY = 'currency';
     public const SYMBOL = 'symbol';
 
+    protected const PROPERTY_NAME_MAP = [
+        'currency' => self::CURRENCY,
+        'Currency' => self::CURRENCY,
+        'symbol' => self::SYMBOL,
+        'Symbol' => self::SYMBOL,
+    ];
+
     private const METADATA = [
         self::CURRENCY => [
             'type' => self::TYPE_STRING,
@@ -17,7 +24,6 @@ final class Currency extends AbstractWriteModel
             'type' => self::TYPE_STRING,
         ],
     ];
-
     protected ?string $currency = null;
     protected ?string $symbol = null;
 

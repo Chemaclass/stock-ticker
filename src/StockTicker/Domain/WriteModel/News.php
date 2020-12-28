@@ -31,6 +31,9 @@ final class News extends AbstractWriteModel
         self::SUMMARY => [
             'type' => self::TYPE_STRING,
         ],
+        self::SOURCE => [
+            'type' => self::TYPE_STRING,
+        ],
         self::PUBLISHER => [
             'type' => self::TYPE_STRING,
         ],

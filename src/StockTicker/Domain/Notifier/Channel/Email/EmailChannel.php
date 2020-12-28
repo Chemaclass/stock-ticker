@@ -12,7 +12,7 @@ use Symfony\Component\Mime\Email;
 
 final class EmailChannel implements ChannelInterface
 {
-    private const NO_REPLY_EMAIL = 'finance.yahoo.api@noreply.com';
+    private const NO_REPLY_EMAIL = 'stock.ticker@noreply.com';
 
     private string $toAddress;
 
