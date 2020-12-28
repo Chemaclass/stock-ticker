@@ -22,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class NotifyCommand extends Command
 {
-    private const DEFAULT_MAX_NEWS_TO_FETCH = 3;
+    private const DEFAULT_MAX_NEWS_PER_CRAWLED_SITE = 3;
     private const DEFAULT_MAX_REPETITIONS = PHP_INT_MAX;
     private const DEFAULT_SLEEPING_TIME_IN_SECONDS = 60;
     private const DEFAULT_CHANNEL = 'email';
@@ -33,16 +33,12 @@ final class NotifyCommand extends Command
         'fake' => FakeChannel::class,
     ];
 
-    /**
-     * @psalm-suppress PropertyNotSetInConstructor
-     */
-    private OutputInterface $output;
-
     protected function configure(): void
     {
         $this
             ->setName('notify')
-            ->setDescription('It notifies based on conditions applied to the crawled result')
+            ->setDescription('It notifies based on conditions applied to the crawled result.')
+            ->setHelp('Example: php bin/console --channels=email --maxNews=3 --maxRepetitions=10 --sleepingTime=300 YM GC EA')
             ->addArgument(
                 'symbols',
                 InputArgument::IS_ARRAY|InputArgument::REQUIRED,
@@ -59,8 +55,8 @@ final class NotifyCommand extends Command
                 'maxNews',
                 'm',
                 InputArgument::OPTIONAL,
-                'Max number of news to fetch per Quote',
-                self::DEFAULT_MAX_NEWS_TO_FETCH
+                'Max number of news to fetch per crawled site',
+                self::DEFAULT_MAX_NEWS_PER_CRAWLED_SITE
             )
             ->addOption(
                 'maxRepetitions',
@@ -80,8 +76,6 @@ final class NotifyCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->output = $output;
-
         $commandInput = NotifyCommandInput::createFromInput($input);
         $channelNames = $this->mapChannelNames($commandInput->getChannelsAsString());
 
@@ -89,7 +83,7 @@ final class NotifyCommand extends Command
         $facade = $this->createStockTickerFacade();
 
         for ($i = 0; $i < $commandInput->getMaxRepetitions(); $i++) {
-            $this->printStartingIteration($commandInput, $i);
+            $this->printStartingIteration($output, $commandInput, $i);
 
             $notifyResult = $facade->sendNotifications(
                 $channelNames,
@@ -97,8 +91,8 @@ final class NotifyCommand extends Command
                 $commandInput->getMaxNews()
             );
 
-            $this->printNotifyResult($notifyResult);
-            $this->sleepWithPrompt($commandInput->getSleepingTime());
+            $this->printNotifyResult($output, $notifyResult);
+            $this->sleepWithPrompt($output, $commandInput->getSleepingTime());
         }
 
         $output->writeln('Already reached the max repetition limit of ' . $commandInput->getMaxRepetitions());
@@ -140,23 +134,26 @@ final class NotifyCommand extends Command
         );
     }
 
-    private function printStartingIteration(NotifyCommandInput $commandInput, int $actualIteration): void
-    {
-        $this->output->writeln(sprintf('Looking for news in %s ...', implode(', ', $commandInput->getSymbols())));
-        $this->output->writeln(sprintf('Completed %d of %d', $actualIteration, $commandInput->getMaxRepetitions()));
+    private function printStartingIteration(
+        OutputInterface $output,
+        NotifyCommandInput $commandInput,
+        int $actualIteration
+    ): void {
+        $output->writeln(sprintf('<comment>Looking for news in %s</comment>', implode(', ', $commandInput->getSymbols())));
+        $output->writeln(sprintf('<comment>Completed %d of %d</comment>', $actualIteration, $commandInput->getMaxRepetitions()));
     }
 
-    private function printNotifyResult(NotifyResult $notifyResult): void
+    private function printNotifyResult(OutputInterface $output, NotifyResult $notifyResult): void
     {
         if ($notifyResult->isEmpty()) {
-            $this->output->writeln(' ~~~~ Nothing new here ~~~~');
+            $output->writeln('<question>~~~~ Nothing new here ~~~~</question>');
 
             return;
         }
 
-        $this->output->writeln('===========================');
-        $this->output->writeln('====== Notify result ======');
-        $this->output->writeln('===========================');
+        $output->writeln('===========================');
+        $output->writeln('====== Notify result ======');
+        $output->writeln('===========================');
 
         foreach ($notifyResult->conditionNamesGroupBySymbol() as $symbol => $conditionNames) {
             $quote = $notifyResult->quoteBySymbol($symbol);
@@ -166,26 +163,27 @@ final class NotifyCommand extends Command
                 : '';
 
             $symbol = $quote->getSymbol() ?? '';
-            $this->output->writeln(sprintf('%s (%s)', $companyName, $symbol));
+            $output->writeln(sprintf('<options=bold,underscore>%s</> (%s)', $companyName, $symbol));
 
             foreach ($conditionNames as $conditionName) {
-                $this->output->writeln("  - $conditionName");
+                $output->writeln("  - <info>$conditionName</info>");
             }
-            $this->output->writeln('');
+            $output->writeln('');
         }
-        $this->output->writeln('');
+        $output->writeln('');
     }
 
-    private function sleepWithPrompt(int $sec): void
+    private function sleepWithPrompt(OutputInterface $output, int $sec): void
     {
-        $this->output->writeln("Sleeping {$sec} seconds...");
+        $text = "<comment>Sleeping {$sec} seconds</comment>";
         $len = mb_strlen((string) $sec);
 
         for ($i = $sec; $i > 0; $i--) {
-            $this->output->write(sprintf("%0{$len}d\r", $i));
+            $output->write(sprintf("$text: %0{$len}d\r", $i));
             sleep(1);
         }
 
-        $this->output->writeln('Awake again!');
+        $output->writeln('');
+        $output->writeln('<info>Awake again!</info>');
     }
 }

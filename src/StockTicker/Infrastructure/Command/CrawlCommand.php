@@ -31,7 +31,7 @@ final class CrawlCommand extends Command
                 'maxNews',
                 'm',
                 InputArgument::OPTIONAL,
-                'Which stock symbols do you want to crawl?',
+                'Max number of news to fetch per crawled site',
                 self::DEFAULT_MAX_NEWS_TO_FETCH
             );
     }
@@ -40,14 +40,13 @@ final class CrawlCommand extends Command
     {
         $symbols = (array) $input->getArgument('symbols');
 
-        $txt = sprintf('Crawling stock %s...', implode(', ', $symbols));
-        $output->writeln($txt);
+        $output->writeln(sprintf('<comment>Crawling stock for symbols: %s</comment>', implode(', ', $symbols)));
         $facade = $this->createStockTickerFacade();
 
         $crawlResult = $facade->crawlStock($symbols, (int) $input->getOption('maxNews'));
 
         if ($crawlResult->isEmpty()) {
-            $output->writeln('Nothing new here...');
+            $output->writeln('<question>Nothing new here...</question>');
 
             return Command::FAILURE;
         }
@@ -71,10 +70,10 @@ final class CrawlCommand extends Command
         $output->writeln('~~~~~~~~~~~~~~~~~~~~~~~~~~');
 
         foreach ($crawlResult->getCompaniesGroupedBySymbol() as $symbol => $quote) {
-            $output->writeln($symbol);
+            $output->writeln("Symbol: <options=bold,underscore>$symbol</>");
 
             foreach ($quote->toArray() as $key => $value) {
-                $output->writeln(sprintf('# %s => %s', $key, json_encode($value)));
+                $output->writeln(sprintf('# <comment>%s</comment> => <info>%s</info>', $key, json_encode($value)));
             }
 
             $output->writeln('');

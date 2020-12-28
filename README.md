@@ -33,12 +33,12 @@ docker exec -ti -u dev stock_ticker php bin/console crawl DIS TSLA
 - [Crawl](src/StockTicker/Infrastructure/Command/CrawlCommand.php): It crawls multiple websites and group their info per stock.
   - `php bin/console crawl DIS TSLA --maxNews=8`
   - Options
-    - `maxNews`: Max number of news to fetch per Quote
+    - `maxNews`: Max number of news to fetch per crawled site
 
 - [Notify](src/StockTicker/Infrastructure/Command/NotifyCommand.php): It crawls and notifies via different channels.
   - `php bin/console notify DIS TSLA --maxNews=5 --channels=email,slack --sleepingTime=10`
   - Options
-    - `maxNews`: Max number of news to fetch per Quote
+    - `maxNews`: Max number of news to fetch per crawled site
     - `maxRepetitions`: Max number repetitions for the loop
     - `channels`: Channels to notify separated by comma. For example `email` and `slack`
     - `sleepingTime`: Sleeping time in seconds
