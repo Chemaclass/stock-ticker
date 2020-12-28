@@ -4,24 +4,15 @@ declare(strict_types=1);
 
 namespace Chemaclass\StockTicker\Infrastructure\Command\ReadModel;
 
-use Chemaclass\StockTicker\Domain\Notifier\Channel\Email\EmailChannel;
-use Chemaclass\StockTicker\Domain\Notifier\Channel\Fake\FakeChannel;
-use Chemaclass\StockTicker\Domain\Notifier\Channel\Slack\SlackChannel;
 use Symfony\Component\Console\Input\InputInterface;
 
 final class NotifyCommandInput
 {
-    private const MAP_POSSIBLE_CHANNELS = [
-        'email' => EmailChannel::class,
-        'slack' => SlackChannel::class,
-        'fake' => FakeChannel::class,
-    ];
-
     private array $symbols;
     private int $maxNews;
     private int $maxRepetitions;
     private int $sleepingTime;
-    private array $channelNames;
+    private string $channelsAsString;
 
     public static function createFromInput(InputInterface $input): self
     {
@@ -33,7 +24,7 @@ final class NotifyCommandInput
             (int) $input->getOption('maxNews'),
             (int) $input->getOption('maxRepetitions'),
             (int) $input->getOption('sleepingTime'),
-            self::mapChannelNames($channelsAsString)
+            $channelsAsString
         );
     }
 
@@ -42,13 +33,13 @@ final class NotifyCommandInput
         int $maxNews,
         int $maxRepetitions,
         int $sleepingTime,
-        array $channelNames
+        string $channelsAsString
     ) {
         $this->symbols = $symbols;
         $this->maxNews = $maxNews;
         $this->maxRepetitions = $maxRepetitions;
         $this->sleepingTime = $sleepingTime;
-        $this->channelNames = $channelNames;
+        $this->channelsAsString = $channelsAsString;
     }
 
     /**
@@ -74,16 +65,8 @@ final class NotifyCommandInput
         return $this->sleepingTime;
     }
 
-    public function getChannelNames(): array
+    public function getChannelsAsString(): string
     {
-        return $this->channelNames;
-    }
-
-    private static function mapChannelNames(string $channelsAsString): array
-    {
-        return array_filter(array_map(
-            static fn (string $c): string => self::MAP_POSSIBLE_CHANNELS[$c] ?? '',
-            explode(',', $channelsAsString)
-        ));
+        return $this->channelsAsString;
     }
 }

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Chemaclass\StockTicker\Infrastructure\Command;
 
+use Chemaclass\StockTicker\Domain\Notifier\Channel\Email\EmailChannel;
+use Chemaclass\StockTicker\Domain\Notifier\Channel\Fake\FakeChannel;
+use Chemaclass\StockTicker\Domain\Notifier\Channel\Slack\SlackChannel;
 use Chemaclass\StockTicker\Domain\Notifier\NotifierPolicy;
 use Chemaclass\StockTicker\Domain\Notifier\NotifyResult;
 use Chemaclass\StockTicker\Domain\Notifier\Policy\Condition\RecentNewsWasFound;
@@ -24,6 +27,12 @@ final class NotifyCommand extends Command
     private const DEFAULT_SLEEPING_TIME_IN_SECONDS = 60;
     private const DEFAULT_CHANNEL = 'email';
 
+    private const MAP_POSSIBLE_CHANNELS = [
+        'email' => EmailChannel::class,
+        'slack' => SlackChannel::class,
+        'fake' => FakeChannel::class,
+    ];
+
     /**
      * @psalm-suppress PropertyNotSetInConstructor
      */
@@ -40,25 +49,25 @@ final class NotifyCommand extends Command
                 'Which stock symbols do you want to crawl?'
             )
             ->addOption(
+                'channels',
+                'c',
+                InputArgument::OPTIONAL,
+                'Channels to notify separated by comma [email,slack]',
+                self::DEFAULT_CHANNEL
+            )
+            ->addOption(
                 'maxNews',
                 'm',
                 InputArgument::OPTIONAL,
-                'Max number of news to fetch',
+                'Max number of news to fetch per Quote',
                 self::DEFAULT_MAX_NEWS_TO_FETCH
             )
             ->addOption(
                 'maxRepetitions',
                 'r',
                 InputArgument::OPTIONAL,
-                'Max number repetitions for the loop. 0 for non-end.',
+                'Max number repetitions for the loop',
                 self::DEFAULT_MAX_REPETITIONS
-            )
-            ->addOption(
-                'channels',
-                'c',
-                InputArgument::OPTIONAL,
-                'Channels to notify separated by comma [email,slack]',
-                self::DEFAULT_CHANNEL
             )
             ->addOption(
                 'sleepingTime',
@@ -74,14 +83,20 @@ final class NotifyCommand extends Command
         $this->output = $output;
 
         $commandInput = NotifyCommandInput::createFromInput($input);
+        $channelNames = $this->mapChannelNames($commandInput->getChannelsAsString());
 
         $policy = $this->createPolicyForSymbols($commandInput->getSymbols());
         $facade = $this->createStockTickerFacade();
 
         for ($i = 0; $i < $commandInput->getMaxRepetitions(); $i++) {
-            $this->printStartingIteration($commandInput->getSymbols(), $i, $commandInput->getMaxRepetitions());
+            $this->printStartingIteration($commandInput, $i);
 
-            $notifyResult = $facade->sendNotifications($commandInput->getChannelNames(), $policy, $commandInput->getMaxNews());
+            $notifyResult = $facade->sendNotifications(
+                $channelNames,
+                $policy,
+                $commandInput->getMaxNews()
+            );
+
             $this->printNotifyResult($notifyResult);
             $this->sleepWithPrompt($commandInput->getSleepingTime());
         }
@@ -91,15 +106,23 @@ final class NotifyCommand extends Command
         return Command::SUCCESS;
     }
 
+    private function mapChannelNames(string $channelsAsString): array
+    {
+        return array_filter(array_map(
+            static fn (string $c): string => self::MAP_POSSIBLE_CHANNELS[$c] ?? '',
+            explode(',', $channelsAsString)
+        ));
+    }
+
     /**
-     * Create the same policy group to all symbols.
+     * Create the same policy group for all symbols.
      *
      * @param string[] $symbols
      */
     private function createPolicyForSymbols(array $symbols): NotifierPolicy
     {
         $conditions = array_fill_keys($symbols, new PolicyGroup([
-            'More news was found' => new RecentNewsWasFound(),
+            'Recent news was found' => new RecentNewsWasFound(),
         ]));
 
         return new NotifierPolicy($conditions);
@@ -117,16 +140,16 @@ final class NotifyCommand extends Command
         );
     }
 
-    private function printStartingIteration(array $symbols, int $actualIteration, int $maxRepetitions): void
+    private function printStartingIteration(NotifyCommandInput $commandInput, int $actualIteration): void
     {
-        $this->output->writeln(sprintf('Looking for news in %s ...', implode(', ', $symbols)));
-        $this->output->writeln(sprintf('Completed %d of %d', $actualIteration, $maxRepetitions));
+        $this->output->writeln(sprintf('Looking for news in %s ...', implode(', ', $commandInput->getSymbols())));
+        $this->output->writeln(sprintf('Completed %d of %d', $actualIteration, $commandInput->getMaxRepetitions()));
     }
 
     private function printNotifyResult(NotifyResult $notifyResult): void
     {
         if ($notifyResult->isEmpty()) {
-            $this->output->writeln(' ~~~ Nothing new here...');
+            $this->output->writeln(' ~~~~ Nothing new here ~~~~');
 
             return;
         }
@@ -142,7 +165,7 @@ final class NotifyCommand extends Command
                 ? $quote->getCompanyName()->getLongName() ?? ''
                 : '';
 
-            $symbol = $quote->getSymbol() ?: '';
+            $symbol = $quote->getSymbol() ?? '';
             $this->output->writeln(sprintf('%s (%s)', $companyName, $symbol));
 
             foreach ($conditionNames as $conditionName) {
