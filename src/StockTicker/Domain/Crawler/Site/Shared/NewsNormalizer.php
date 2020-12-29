@@ -47,7 +47,7 @@ final class NewsNormalizer implements NewsNormalizerInterface
             return $text;
         }
 
-        return mb_substr($text, 0, $this->maxTextLengthChars) . '...';
+        return mb_strimwidth($text, 0, $this->maxTextLengthChars, '...');
     }
 
     public function limitByMaxToFetch(array $info): array
