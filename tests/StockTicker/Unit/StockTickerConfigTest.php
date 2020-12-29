@@ -14,7 +14,7 @@ final class StockTickerConfigTest extends TestCase
 
     public function testTemplateDir(): void
     {
-        $config = new StockTickerConfig(self::EXAMPLE_TEMPLATE_DIR, []);
+        $config = StockTickerConfig::createWith(self::EXAMPLE_TEMPLATE_DIR, []);
 
         self::assertSame(self::EXAMPLE_TEMPLATE_DIR, $config->getTemplatesDir());
     }
@@ -27,7 +27,7 @@ final class StockTickerConfigTest extends TestCase
             'MAILER_PASSWORD' => 'MAILER_PASSWORD',
         ];
 
-        $config = new StockTickerConfig(self::EXAMPLE_TEMPLATE_DIR, $env);
+        $config = StockTickerConfig::createWith(self::EXAMPLE_TEMPLATE_DIR, $env);
 
         self::assertSame($env['TO_ADDRESS'], $config->getToAddress());
         self::assertSame($env['MAILER_USERNAME'], $config->getMailerUsername());
@@ -41,7 +41,7 @@ final class StockTickerConfigTest extends TestCase
             'SLACK_BOT_USER_OAUTH_ACCESS_TOKEN' => 'SLACK_BOT_USER_OAUTH_ACCESS_TOKEN',
         ];
 
-        $config = new StockTickerConfig(self::EXAMPLE_TEMPLATE_DIR, $env);
+        $config = StockTickerConfig::createWith(self::EXAMPLE_TEMPLATE_DIR, $env);
 
         self::assertSame($env['SLACK_DESTINY_CHANNEL_ID'], $config->getSlackDestinyChannelId());
         self::assertSame($env['SLACK_BOT_USER_OAUTH_ACCESS_TOKEN'], $config->getSlackBotUserOauthAccessToken());
@@ -52,7 +52,7 @@ final class StockTickerConfigTest extends TestCase
      */
     public function testDebugConfig(string $debugParam, bool $expected): void
     {
-        $config = new StockTickerConfig(self::EXAMPLE_TEMPLATE_DIR, [
+        $config = StockTickerConfig::createWith(self::EXAMPLE_TEMPLATE_DIR, [
             'DEBUG' => $debugParam,
         ]);
 

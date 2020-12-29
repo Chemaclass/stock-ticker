@@ -10,7 +10,17 @@ final class StockTickerConfig implements StockTickerConfigInterface
 
     private array $env;
 
-    public function __construct(string $templatesDir = '', array $env = [])
+    public static function empty(): self
+    {
+        return new self('', []);
+    }
+
+    public static function createWith(string $templatesDir, array $env): self
+    {
+        return new self($templatesDir, $env);
+    }
+
+    private function __construct(string $templatesDir, array $env)
     {
         $this->templatesDir = $templatesDir;
         $this->env = $env;

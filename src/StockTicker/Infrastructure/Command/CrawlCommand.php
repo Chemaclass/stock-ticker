@@ -59,7 +59,7 @@ final class CrawlCommand extends Command
     private function createStockTickerFacade(): StockTickerFacade
     {
         return new StockTickerFacade(
-            new StockTickerFactory(new StockTickerConfig())
+            new StockTickerFactory(StockTickerConfig::empty())
         );
     }
 

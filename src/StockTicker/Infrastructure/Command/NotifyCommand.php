@@ -126,7 +126,7 @@ final class NotifyCommand extends Command
     {
         return new StockTickerFacade(
             new StockTickerFactory(
-                new StockTickerConfig(
+                StockTickerConfig::createWith(
                     dirname(__DIR__) . '/../Presentation/notification',
                     $_ENV
                 )
