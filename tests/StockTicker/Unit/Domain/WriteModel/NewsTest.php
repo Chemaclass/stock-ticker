@@ -18,6 +18,7 @@ final class NewsTest extends TestCase
             'title' => 'example title',
             'summary' => 'example summary',
             'publisher' => 'example publisher',
+            'author' => 'example author',
             'source' => 'example source',
             'images' => [
                 [
@@ -35,6 +36,7 @@ final class NewsTest extends TestCase
         self::assertEquals($array['title'], $model->getTitle());
         self::assertEquals($array['summary'], $model->getSummary());
         self::assertEquals($array['publisher'], $model->getPublisher());
+        self::assertEquals($array['author'], $model->getAuthor());
         self::assertEquals($array['source'], $model->getSource());
         self::assertEquals($array['images'], $model->getImages());
     }

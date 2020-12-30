@@ -8,10 +8,12 @@ use Chemaclass\StockTicker\Domain\Crawler\Mapper\CrawledInfoMapper;
 use Chemaclass\StockTicker\Domain\Crawler\Mapper\CrawledInfoMapperInterface;
 use Chemaclass\StockTicker\Domain\Crawler\QuoteCrawler;
 use Chemaclass\StockTicker\Domain\Crawler\QuoteCrawlerInterface;
+use Chemaclass\StockTicker\Domain\Crawler\Site\Barrons;
 use Chemaclass\StockTicker\Domain\Crawler\Site\Barrons\BarronsSiteCrawler;
-use Chemaclass\StockTicker\Domain\Crawler\Site\Barrons\HtmlCrawler\News;
 use Chemaclass\StockTicker\Domain\Crawler\Site\FinanceYahoo\FinanceYahooSiteCrawler;
 use Chemaclass\StockTicker\Domain\Crawler\Site\FinanceYahoo\JsonExtractor;
+use Chemaclass\StockTicker\Domain\Crawler\Site\MarketWatch;
+use Chemaclass\StockTicker\Domain\Crawler\Site\MarketWatch\MarketWatchSiteCrawler;
 use Chemaclass\StockTicker\Domain\Crawler\Site\Shared\NewsNormalizer;
 use Chemaclass\StockTicker\Domain\Crawler\SiteCrawlerInterface;
 use Chemaclass\StockTicker\Domain\Notifier\Channel\Email\EmailChannel;
@@ -64,6 +66,7 @@ final class StockTickerFactory implements StockTickerFactoryInterface
         return [
             $this->createFinanceYahooSiteCrawler($maxNewsToFetch),
             $this->createBarronsSiteCrawler($maxNewsToFetch),
+            $this->createMarketWatchSiteCrawler($maxNewsToFetch),
         ];
     }
 
@@ -118,7 +121,14 @@ final class StockTickerFactory implements StockTickerFactoryInterface
     private function createBarronsSiteCrawler(int $maxNewsToFetch): BarronsSiteCrawler
     {
         return new BarronsSiteCrawler([
-            Quote::LATEST_NEWS => new News($this->createNewsNormalizer($maxNewsToFetch)),
+            Quote::LATEST_NEWS => new Barrons\HtmlCrawler\News($this->createNewsNormalizer($maxNewsToFetch)),
+        ]);
+    }
+
+    private function createMarketWatchSiteCrawler(int $maxNewsToFetch): MarketWatchSiteCrawler
+    {
+        return new MarketWatchSiteCrawler([
+            Quote::LATEST_NEWS => new MarketWatch\HtmlCrawler\News($this->createNewsNormalizer($maxNewsToFetch)),
         ]);
     }
 
