@@ -13,28 +13,37 @@ final class News extends AbstractWriteModel
     public const SUMMARY = 'summary';
     public const SOURCE = 'source';
     public const PUBLISHER = 'publisher';
+    public const AUTHOR = 'author';
     public const IMAGES = 'images';
 
     private const METADATA = [
         self::DATETIME => [
             'type' => self::TYPE_STRING,
+            'mandatory' => true,
         ],
         self::TIMEZONE => [
             'type' => self::TYPE_STRING,
+            'mandatory' => true,
         ],
         self::URL => [
             'type' => self::TYPE_STRING,
+            'mandatory' => true,
         ],
         self::TITLE => [
             'type' => self::TYPE_STRING,
+            'mandatory' => true,
         ],
         self::SUMMARY => [
             'type' => self::TYPE_STRING,
         ],
         self::SOURCE => [
             'type' => self::TYPE_STRING,
+            'mandatory' => true,
         ],
         self::PUBLISHER => [
+            'type' => self::TYPE_STRING,
+        ],
+        self::AUTHOR => [
             'type' => self::TYPE_STRING,
         ],
         self::IMAGES => [
@@ -49,6 +58,7 @@ final class News extends AbstractWriteModel
     protected ?string $summary = null;
     protected ?string $source = null;
     protected ?string $publisher = null;
+    protected ?string $author = null;
     protected ?array $images = null;
 
     public function getDatetime(): ?string
@@ -133,6 +143,16 @@ final class News extends AbstractWriteModel
         $this->publisher = $publisher;
 
         return $this;
+    }
+
+    public function getAuthor(): ?string
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?string $author): void
+    {
+        $this->author = $author;
     }
 
     public function getImages(): ?array
