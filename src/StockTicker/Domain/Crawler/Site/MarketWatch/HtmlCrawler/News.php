@@ -53,11 +53,11 @@ final class News implements HtmlCrawlerInterface
 
         return [
             'source' => self::SOURCE,
-            'author' => $matches['author'],
-            'datetime' => $this->normalizeIncomingDate((int) $matches['timestamp']),
+            'author' => $matches['author'] ?? 'Unknown author',
+            'datetime' => $this->normalizeIncomingDate((int) ($matches['timestamp'] ?? 0)),
             'timezone' => $this->newsNormalizer->getTimeZoneName(),
-            'url' => $matches['url'],
-            'title' => $this->newsNormalizer->normalizeText($this->normalizeTitle($matches['title'])),
+            'url' => $matches['url'] ?? 'Unknown url',
+            'title' => $this->newsNormalizer->normalizeText($this->normalizeTitle($matches['title'] ?? 'Unknown title', )),
             'images' => isset($matches['image']) ? [$matches['image']] : null,
         ];
     }
