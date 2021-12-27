@@ -26,6 +26,7 @@ use Chemaclass\StockTicker\Domain\Notifier\NotifierInterface;
 use Chemaclass\StockTicker\Domain\Notifier\NotifierPolicy;
 use Chemaclass\StockTicker\Domain\WriteModel\Quote;
 use DateTimeZone;
+use Gacela\Framework\AbstractFactory;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Mailer\Bridge\Google\Transport\GmailSmtpTransport;
 use Symfony\Component\Mailer\Mailer;
@@ -33,16 +34,12 @@ use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 
-final class StockTickerFactory implements StockTickerFactoryInterface
+/**
+ * @method StockTickerConfig getConfig()
+ */
+final class StockTickerFactory extends AbstractFactory
 {
     private const URLS = 'URLS';
-
-    private StockTickerConfigInterface $config;
-
-    public function __construct(StockTickerConfigInterface $config)
-    {
-        $this->config = $config;
-    }
 
     public function createQuoteCrawler(SiteCrawlerInterface ...$siteCrawlers): QuoteCrawlerInterface
     {
@@ -135,10 +132,10 @@ final class StockTickerFactory implements StockTickerFactoryInterface
     private function createEmailChannel(string $templateName = 'email.twig'): EmailChannel
     {
         return new EmailChannel(
-            $this->config->getToAddress(),
+            $this->getConfig()->getToAddress(),
             new Mailer(new GmailSmtpTransport(
-                $this->config->getMailerUsername(),
-                $this->config->getMailerPassword()
+                $this->getConfig()->getMailerUsername(),
+                $this->getConfig()->getMailerPassword()
             )),
             new TwigTemplateGenerator(
                 $this->createTwigEnvironment(),
@@ -150,9 +147,9 @@ final class StockTickerFactory implements StockTickerFactoryInterface
     private function createSlackChannel(string $templateName = 'slack.twig'): SlackChannel
     {
         return new SlackChannel(
-            $this->config->getSlackDestinyChannelId(),
+            $this->getConfig()->getSlackDestinyChannelId(),
             new HttpSlackClient(HttpClient::create([
-                'auth_bearer' => $this->config->getSlackBotUserOauthAccessToken(),
+                'auth_bearer' => $this->getConfig()->getSlackBotUserOauthAccessToken(),
             ])),
             new TwigTemplateGenerator(
                 $this->createTwigEnvironment(),
@@ -163,8 +160,8 @@ final class StockTickerFactory implements StockTickerFactoryInterface
 
     private function createTwigEnvironment(): Environment
     {
-        $loader = new FilesystemLoader($this->config->getTemplatesDir());
-        $isDebug = $this->config->isDebug();
+        $loader = new FilesystemLoader($this->getConfig()->getTemplatesDir());
+        $isDebug = $this->getConfig()->isDebug();
         $twig = new Environment($loader, ['debug' => $isDebug]);
 
         if ($isDebug) {

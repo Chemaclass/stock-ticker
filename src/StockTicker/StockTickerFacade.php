@@ -7,17 +7,14 @@ namespace Chemaclass\StockTicker;
 use Chemaclass\StockTicker\Domain\Crawler\CrawlResult;
 use Chemaclass\StockTicker\Domain\Notifier\NotifierPolicy;
 use Chemaclass\StockTicker\Domain\Notifier\NotifyResult;
+use Gacela\Framework\AbstractFacade;
 
-final class StockTickerFacade
+/**
+ * @method StockTickerFactory getFactory()
+ */
+final class StockTickerFacade extends AbstractFacade
 {
     private const DEFAULT_MAX_NEWS_TO_FETCH = 9;
-
-    private StockTickerFactoryInterface $factory;
-
-    public function __construct(StockTickerFactoryInterface $factory)
-    {
-        $this->factory = $factory;
-    }
 
     /**
      * @param string[] $channelNames
@@ -27,12 +24,12 @@ final class StockTickerFacade
         NotifierPolicy $policy,
         int $maxNewsToFetch = self::DEFAULT_MAX_NEWS_TO_FETCH
     ): NotifyResult {
-        $channels = $this->factory
+        $channels = $this->getFactory()
             ->createChannels($channelNames);
 
         $crawlResult = $this->crawlStock($policy->symbols(), $maxNewsToFetch);
 
-        return $this->factory
+        return $this->getFactory()
             ->createNotifier($policy, ...$channels)
             ->notify($crawlResult);
     }
@@ -44,10 +41,10 @@ final class StockTickerFacade
         array $symbols,
         int $maxNewsToFetch = self::DEFAULT_MAX_NEWS_TO_FETCH
     ): CrawlResult {
-        $siteCrawlers = $this->factory
+        $siteCrawlers = $this->getFactory()
             ->createSiteCrawlers($maxNewsToFetch);
 
-        return $this->factory
+        return $this->getFactory()
             ->createQuoteCrawler(...$siteCrawlers)
             ->crawlStock(...$symbols);
     }

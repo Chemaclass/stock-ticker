@@ -12,9 +12,7 @@ use Chemaclass\StockTicker\Domain\Notifier\NotifyResult;
 use Chemaclass\StockTicker\Domain\Notifier\Policy\Condition\RecentNewsWasFound;
 use Chemaclass\StockTicker\Domain\Notifier\Policy\PolicyGroup;
 use Chemaclass\StockTicker\Infrastructure\Command\ReadModel\NotifyCommandInput;
-use Chemaclass\StockTicker\StockTickerConfig;
 use Chemaclass\StockTicker\StockTickerFacade;
-use Chemaclass\StockTicker\StockTickerFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -80,7 +78,7 @@ final class NotifyCommand extends Command
         $channelNames = $this->mapChannelNames($commandInput->getChannelsAsString());
 
         $policy = $this->createPolicyForSymbols($commandInput->getSymbols());
-        $facade = $this->createStockTickerFacade();
+        $facade = new StockTickerFacade();
 
         for ($i = 0; $i < $commandInput->getMaxRepetitions(); $i++) {
             $this->printStartingIteration($output, $commandInput, $i);
@@ -120,18 +118,6 @@ final class NotifyCommand extends Command
         ]));
 
         return new NotifierPolicy($conditions);
-    }
-
-    private function createStockTickerFacade(): StockTickerFacade
-    {
-        return new StockTickerFacade(
-            new StockTickerFactory(
-                StockTickerConfig::createWith(
-                    dirname(__DIR__) . '/../Presentation/notification',
-                    $_ENV
-                )
-            ),
-        );
     }
 
     private function printStartingIteration(

@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Chemaclass\StockTicker\Infrastructure\Command;
 
 use Chemaclass\StockTicker\Domain\Crawler\CrawlResult;
-use Chemaclass\StockTicker\StockTickerConfig;
 use Chemaclass\StockTicker\StockTickerFacade;
-use Chemaclass\StockTicker\StockTickerFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -41,7 +39,7 @@ final class CrawlCommand extends Command
         $symbols = (array) $input->getArgument('symbols');
 
         $output->writeln(sprintf('<comment>Crawling stock for symbols: %s</comment>', implode(', ', $symbols)));
-        $facade = $this->createStockTickerFacade();
+        $facade = new StockTickerFacade();
 
         $crawlResult = $facade->crawlStock($symbols, (int) $input->getOption('maxNews'));
 
@@ -54,13 +52,6 @@ final class CrawlCommand extends Command
         $this->printCrawResult($output, $crawlResult);
 
         return Command::SUCCESS;
-    }
-
-    private function createStockTickerFacade(): StockTickerFacade
-    {
-        return new StockTickerFacade(
-            new StockTickerFactory(StockTickerConfig::empty())
-        );
     }
 
     private function printCrawResult(OutputInterface $output, CrawlResult $crawlResult): void

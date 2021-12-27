@@ -4,61 +4,43 @@ declare(strict_types=1);
 
 namespace Chemaclass\StockTicker;
 
-final class StockTickerConfig implements StockTickerConfigInterface
+use Gacela\Framework\AbstractConfig;
+
+final class StockTickerConfig extends AbstractConfig
 {
-    private string $templatesDir;
-
-    private array $env;
-
-    public static function empty(): self
-    {
-        return new self('', []);
-    }
-
-    public static function createWith(string $templatesDir, array $env): self
-    {
-        return new self($templatesDir, $env);
-    }
-
-    private function __construct(string $templatesDir, array $env)
-    {
-        $this->templatesDir = $templatesDir;
-        $this->env = $env;
-    }
-
     public function getTemplatesDir(): string
     {
-        return $this->templatesDir;
+        return dirname(__DIR__) . '/notification';
     }
 
     public function getToAddress(): string
     {
-        return $this->env['TO_ADDRESS'];
+        return $this->get('TO_ADDRESS');
     }
 
     public function getMailerUsername(): string
     {
-        return $this->env['MAILER_USERNAME'];
+        return $this->get('MAILER_USERNAME');
     }
 
     public function getMailerPassword(): string
     {
-        return $this->env['MAILER_PASSWORD'];
+        return $this->get('MAILER_PASSWORD');
     }
 
     public function getSlackDestinyChannelId(): string
     {
-        return $this->env['SLACK_DESTINY_CHANNEL_ID'];
+        return $this->get('SLACK_DESTINY_CHANNEL_ID');
     }
 
     public function getSlackBotUserOauthAccessToken(): string
     {
-        return $this->env['SLACK_BOT_USER_OAUTH_ACCESS_TOKEN'];
+        return $this->get('SLACK_BOT_USER_OAUTH_ACCESS_TOKEN');
     }
 
     public function isDebug(): bool
     {
-        return $this->isTrue($this->env['DEBUG'] ?? null);
+        return $this->isTrue($this->get('DEBUG'));
     }
 
     private function isTrue(?string $bool): bool
