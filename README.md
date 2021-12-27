@@ -43,7 +43,3 @@ docker exec -ti -u dev stock_ticker php bin/console crawl DIS TSLA
     - `maxRepetitions`: Max number repetitions for the loop
     - `channels`: Channels to notify separated by a comma. For example `email` and `slack`
     - `sleepingTime`: Sleeping time in seconds
-
-----------
-
-More info about this scaffolding: https://github.com/Chemaclass/php-scaffolding
