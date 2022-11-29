@@ -1,0 +1,9 @@
+includes:
+    - vendor/gacela-project/phpstan-extension/extension.neon
+
+parameters:
+    level: 5
+    paths:
+        - %currentWorkingDirectory%/src/
+    gacela:
+        modulesNamespace: Chemaclass

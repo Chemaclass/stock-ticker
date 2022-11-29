@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 
 final class NotifyCommandInput
 {
+    /** @var list<string> */
     private array $symbols;
     private int $maxNews;
     private int $maxRepetitions;
@@ -28,6 +29,7 @@ final class NotifyCommandInput
         );
     }
 
+    /** @param list<string> $symbols*/
     public function __construct(
         array $symbols,
         int $maxNews,

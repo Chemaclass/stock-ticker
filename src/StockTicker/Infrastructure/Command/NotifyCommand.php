@@ -98,6 +98,9 @@ final class NotifyCommand extends Command
         return Command::SUCCESS;
     }
 
+    /**
+     * @return list<string>
+     */
     private function mapChannelNames(string $channelsAsString): array
     {
         return array_filter(array_map(

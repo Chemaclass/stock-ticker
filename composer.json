@@ -33,7 +33,9 @@
         "symfony/var-dumper": "^5.2",
         "symfony/google-mailer": "^5.2",
         "vimeo/psalm": "^4.3",
-        "vlucas/phpdotenv": "^5.2"
+        "vlucas/phpdotenv": "^5.2",
+        "phpstan/phpstan": "1.9.x-dev",
+        "gacela-project/phpstan-extension": "dev-master"
     },
     "minimum-stability": "dev",
     "autoload": {
@@ -54,12 +56,14 @@
         ],
         "test-quality": [
             "@csrun",
-            "@psalm"
+            "@psalm",
+            "@phpstan"
         ],
         "test-unit": "./vendor/bin/phpunit --testsuite unit",
         "test-feature": "./vendor/bin/phpunit --testsuite feature",
         "test-coverage": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-html coverage",
         "psalm": "./vendor/bin/psalm",
+        "phpstan": "./vendor/bin/phpstan",
         "csfix": "./vendor/bin/php-cs-fixer fix",
         "csrun": "./vendor/bin/php-cs-fixer fix --dry-run"
     }

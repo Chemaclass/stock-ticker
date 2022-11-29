@@ -74,10 +74,6 @@ final class News implements HtmlCrawlerInterface
     {
         $dt = (new DateTimeImmutable())->setTimestamp($timestamp);
 
-        if (false === $dt) {
-            throw InvalidDateFormat::couldNotCreateFromTimestamp($timestamp);
-        }
-
         return $this->newsNormalizer->normalizeDateTime($dt);
     }
 

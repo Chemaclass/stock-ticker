@@ -31,7 +31,7 @@ final class NewsNormalizer implements NewsNormalizerInterface
 
     public function normalizeDateTime(DateTimeImmutable $dt): string
     {
-        $dt->setTimeZone($this->timeZone);
+        $dt = $dt->setTimeZone($this->timeZone);
 
         return $dt->format(self::NORMALIZED_DATETIME_FORMAT);
     }

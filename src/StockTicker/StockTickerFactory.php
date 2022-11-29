@@ -68,6 +68,8 @@ final class StockTickerFactory extends AbstractFactory
     }
 
     /**
+     * @param list<string> $channelNames
+     *
      * @return ChannelInterface[]
      */
     public function createChannels(array $channelNames): array
