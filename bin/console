@@ -5,11 +5,14 @@ declare(strict_types=1);
 
 use Chemaclass\StockTicker\Infrastructure\Command\CrawlCommand;
 use Chemaclass\StockTicker\Infrastructure\Command\NotifyCommand;
+use Gacela\Framework\Gacela;
 use Symfony\Component\Console\Application;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 Dotenv\Dotenv::createImmutable(dirname(__DIR__))->load();
+
+Gacela::bootstrap(dirname(__DIR__));
 
 $application = new Application();
 $application->add(new CrawlCommand());

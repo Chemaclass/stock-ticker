@@ -1,18 +1,10 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-use Gacela\Framework\AbstractConfigGacela;
+use Gacela\Framework\Bootstrap\GacelaConfig;
+use Gacela\Framework\Config\ConfigReader\EnvConfigReader;
 
-return static function () {
-    return new class() extends AbstractConfigGacela {
-        public function config(): array
-        {
-            return [
-                'type' => 'env',
-                'path' => '.env.dist',
-                'path_local' => '.env',
-            ];
-        }
-    };
+return static function (GacelaConfig $config): void {
+    $config->addAppConfig('config/.env*', 'config/.env.local.dist', EnvConfigReader::class);
 };

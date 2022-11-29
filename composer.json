@@ -23,7 +23,8 @@
         "symfony/dom-crawler": "^5.2",
         "symfony/css-selector": "^5.2",
         "symfony/console": "^5.2",
-        "gacela-project/gacela": "^0.10.0"
+        "gacela-project/gacela": "^0.32",
+        "gacela-project/gacela-env-config-reader": "^0.1"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.16",
@@ -34,6 +35,7 @@
         "vimeo/psalm": "^4.3",
         "vlucas/phpdotenv": "^5.2"
     },
+    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "Chemaclass\\StockTicker\\": "src/StockTicker/"

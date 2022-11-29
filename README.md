@@ -11,21 +11,24 @@ Stock Symbol that you are interested in based on a personal lookup that you can 
 
 ### Set up the project
 
-Using docker:
+#### Define your env variables
 ```bash
-docker-compose up -d
-docker-compose exec stock_ticker composer install
 cp .env.dist .env
 ```
 
-You can go inside the docker container to run the commands:
+#### Install dependencies
 ```bash
-docker exec -ti -u dev stock_ticker bash
-php bin/console crawl DIS TSLA
+composer install
+# Or using docker
+docker-compose up -d
+docker-compose exec stock_ticker composer install
 ```
 
-Or directly from your local machine using `docker exec`:
+#### Execute the commands
+
 ```bash
+php bin/console crawl DIS TSLA
+# Or using docker
 docker exec -ti -u dev stock_ticker php bin/console crawl DIS TSLA
 ```
 
