@@ -20,7 +20,7 @@ final class News implements HtmlCrawlerInterface
      * (?<month>\w{3}) (?<day>\d{1,2}), (?<year>\d{4}) ?(?<time>)
      *
      * @var array<int, string> the key is the length of the incoming date,
-     *                         the value is the mask-format that we can apply to it.
+     *                         the value is the mask-format that we can apply to it
      */
     private const DIFF_INCOMING_FORMATS = [
         11 => 'M d, Y',     // Dec 9, 2020
@@ -43,7 +43,7 @@ final class News implements HtmlCrawlerInterface
 
         $news = array_map(
             fn ($node) => $this->extractInfo($node),
-            iterator_to_array($nodes)
+            iterator_to_array($nodes),
         );
 
         return $this->newsNormalizer->limitByMaxToFetch($news);
@@ -54,7 +54,7 @@ final class News implements HtmlCrawlerInterface
         preg_match(
             '/^<span class="date">(?<date>.+)<\/span><a href="(?<url>.+)">(?<title>.+)<\/a>/',
             $this->innerHtml($node),
-            $matches
+            $matches,
         );
 
         return [
@@ -71,7 +71,7 @@ final class News implements HtmlCrawlerInterface
         $innerHtml = '';
 
         foreach ($node->childNodes as $child) {
-            if (null !== $child->ownerDocument) {
+            if ($child->ownerDocument !== null) {
                 $innerHtml .= $child->ownerDocument->saveXML($child);
             }
         }
@@ -90,13 +90,13 @@ final class News implements HtmlCrawlerInterface
         $len = mb_strlen($incomingDate);
         $incomingFormat = self::DIFF_INCOMING_FORMATS[$len] ?? null;
 
-        if (null === $incomingFormat) {
+        if ($incomingFormat === null) {
             throw InvalidDateFormat::forIncomingDate($incomingDate);
         }
 
         $dt = DateTimeImmutable::createFromFormat($incomingFormat, $incomingDate);
 
-        if (false === $dt) {
+        if ($dt === false) {
             throw InvalidDateFormat::couldNotCreateDateTime($incomingDate, $incomingFormat);
         }
 

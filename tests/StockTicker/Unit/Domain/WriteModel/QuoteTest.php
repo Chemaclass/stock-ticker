@@ -86,78 +86,78 @@ final class QuoteTest extends TestCase
         ]);
     }
 
-    public function testCompanyName(): void
+    public function test_company_name(): void
     {
         self::assertEquals(
             (new CompanyName())
                 ->setShortName('Short Company name, Inc.')
                 ->setLongName('Long Company name, Inc.'),
-            $this->quote->getCompanyName()
+            $this->quote->getCompanyName(),
         );
     }
 
-    public function testSymbol(): void
+    public function test_symbol(): void
     {
         self::assertEquals('AMZN', $this->quote->getSymbol());
     }
 
-    public function testCurrency(): void
+    public function test_currency(): void
     {
         self::assertEquals(
             (new Currency())
                 ->setSymbol('$')
                 ->setCurrency('USD'),
-            $this->quote->getCurrency()
+            $this->quote->getCurrency(),
         );
     }
 
-    public function testUrl(): void
+    public function test_url(): void
     {
         self::assertEquals('https://example.url.com', $this->quote->getUrl());
     }
 
-    public function testRegularMarketPrice(): void
+    public function test_regular_market_price(): void
     {
         self::assertEquals(
             (new RegularMarketPrice())
                 ->setFmt('629.99')
                 ->setRaw(629.999),
-            $this->quote->getRegularMarketPrice()
+            $this->quote->getRegularMarketPrice(),
         );
     }
 
-    public function testRegularMarketChange(): void
+    public function test_regular_market_change(): void
     {
         self::assertEquals(
             (new RegularMarketChange())
                 ->setFmt('-3.29')
                 ->setRaw(-3.2900085),
-            $this->quote->getRegularMarketChange()
+            $this->quote->getRegularMarketChange(),
         );
     }
 
-    public function testRegularMarketChangePercent(): void
+    public function test_regular_market_change_percent(): void
     {
         self::assertEquals(
             (new RegularMarketChangePercent())
                 ->setFmt('-1.82%')
                 ->setRaw(-1.8199171),
-            $this->quote->getRegularMarketChangePercent()
+            $this->quote->getRegularMarketChangePercent(),
         );
     }
 
-    public function testMarketCap(): void
+    public function test_market_cap(): void
     {
         self::assertEquals(
             (new MarketCap())
                 ->setRaw(797834477568)
                 ->setFmt('797.834B')
                 ->setLongFmt('797,834,477,568'),
-            $this->quote->getMarketCap()
+            $this->quote->getMarketCap(),
         );
     }
 
-    public function testLastTrend(): void
+    public function test_last_trend(): void
     {
         self::assertEquals([
             (new Trend())
@@ -177,7 +177,7 @@ final class QuoteTest extends TestCase
         ], $this->quote->getLastTrend());
     }
 
-    public function testLatestNews(): void
+    public function test_latest_news(): void
     {
         self::assertEquals([
             (new News())

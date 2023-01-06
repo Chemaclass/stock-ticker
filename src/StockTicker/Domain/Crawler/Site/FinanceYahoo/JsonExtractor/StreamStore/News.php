@@ -37,7 +37,7 @@ final class News implements JsonExtractorInterface
     {
         return array_filter(
             $items,
-            static fn (array $i): bool => self::TYPE_ARTICLE === $i['type']
+            static fn (array $i): bool => $i['type'] === self::TYPE_ARTICLE,
         );
     }
 
@@ -45,7 +45,7 @@ final class News implements JsonExtractorInterface
     {
         $normalizedArticles = array_map(
             fn (array $article): array => $this->normalizeArticle($article),
-            $articles
+            $articles,
         );
 
         return array_values($normalizedArticles);
@@ -68,7 +68,7 @@ final class News implements JsonExtractorInterface
     private function normalizeDateTimeFromUnix(int $pubtime): string
     {
         $unixTime = (int) mb_substr((string) $pubtime, 0, -3);
-        $dateTime = new DateTimeImmutable("@$unixTime");
+        $dateTime = new DateTimeImmutable("@{$unixTime}");
 
         return $this->newsNormalizer->normalizeDateTime($dateTime);
     }
@@ -77,7 +77,7 @@ final class News implements JsonExtractorInterface
     {
         usort(
             $articles,
-            static fn (array $a, array $b) => $b['datetime'] <=> $a['datetime']
+            static fn (array $a, array $b) => $b['datetime'] <=> $a['datetime'],
         );
 
         return $articles;

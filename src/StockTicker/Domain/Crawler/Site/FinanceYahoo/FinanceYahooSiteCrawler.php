@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Chemaclass\StockTicker\Domain\Crawler\Site\FinanceYahoo;
 
-use function assert;
 use Chemaclass\StockTicker\Domain\Crawler\SiteCrawlerInterface;
 use Chemaclass\StockTicker\Domain\ReadModel\Site;
 use Chemaclass\StockTicker\Domain\ReadModel\Symbol;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+
+use function assert;
+use function get_class;
+use function is_int;
 
 /**
  * @see "data/RootAppMainJsonExample.json" to see the structure of the `root.App.main` json.

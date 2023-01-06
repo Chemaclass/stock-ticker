@@ -16,12 +16,12 @@ final class EmailChannelTest extends TestCase
 {
     private const EXAMPLE_EMAIL = 'example.email@noreply.com';
 
-    public function testSend(): void
+    public function test_send(): void
     {
         $channel = new EmailChannel(
             self::EXAMPLE_EMAIL,
             $this->mockMailer(self::once()),
-            $this->mockTemplateGenerator(self::once())
+            $this->mockTemplateGenerator(self::once()),
         );
 
         $notifyResult = (new NotifyResult())

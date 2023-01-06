@@ -46,7 +46,7 @@ final class StockTickerFactory extends AbstractFactory
         return new QuoteCrawler(
             HttpClient::create(),
             $this->createCrawledInfoMapper(),
-            ...$siteCrawlers
+            ...$siteCrawlers,
         );
     }
 
@@ -88,7 +88,7 @@ final class StockTickerFactory extends AbstractFactory
 
     private function createCrawledInfoMapper(): CrawledInfoMapperInterface
     {
-        return new CrawledInfoMapper(function (array $info): array {
+        return new CrawledInfoMapper(static function (array $info): array {
             $info[Quote::URL] = $info[self::URLS][0];
 
             return $info;
@@ -135,12 +135,12 @@ final class StockTickerFactory extends AbstractFactory
             $this->getConfig()->getToAddress(),
             new Mailer(new GmailSmtpTransport(
                 $this->getConfig()->getMailerUsername(),
-                $this->getConfig()->getMailerPassword()
+                $this->getConfig()->getMailerPassword(),
             )),
             new TwigTemplateGenerator(
                 $this->createTwigEnvironment(),
-                $templateName
-            )
+                $templateName,
+            ),
         );
     }
 
@@ -153,8 +153,8 @@ final class StockTickerFactory extends AbstractFactory
             ])),
             new TwigTemplateGenerator(
                 $this->createTwigEnvironment(),
-                $templateName
-            )
+                $templateName,
+            ),
         );
     }
 

@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 final class NewsTest extends TestCase
 {
-    public function testToArray(): void
+    public function test_to_array(): void
     {
         $array = [
             'datetime' => 'example datetime',

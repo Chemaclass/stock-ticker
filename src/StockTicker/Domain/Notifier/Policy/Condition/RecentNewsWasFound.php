@@ -18,7 +18,7 @@ final class RecentNewsWasFound implements PolicyConditionInterface
 
     public function __invoke(Quote $quote): bool
     {
-        if (null === $quote->getSymbol()) {
+        if ($quote->getSymbol() === null) {
             return false;
         }
 
@@ -35,14 +35,14 @@ final class RecentNewsWasFound implements PolicyConditionInterface
         $reduced = array_reduce(
             $quote->getLatestNews(),
             static function (?News $carry, News $current): News {
-                if (null === $carry) {
+                if ($carry === null) {
                     return $current;
                 }
 
                 return $carry->getDatetime() > $current->getDatetime()
                     ? $carry
                     : $current;
-            }
+            },
         );
 
         return $reduced->getDatetime() ?? '';

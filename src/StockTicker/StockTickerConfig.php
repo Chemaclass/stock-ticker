@@ -6,6 +6,9 @@ namespace Chemaclass\StockTicker;
 
 use Gacela\Framework\AbstractConfig;
 
+use function dirname;
+use function in_array;
+
 final class StockTickerConfig extends AbstractConfig
 {
     public function getTemplatesDir(): string
@@ -15,35 +18,35 @@ final class StockTickerConfig extends AbstractConfig
 
     public function getToAddress(): string
     {
-        return $this->get('TO_ADDRESS');
+        return (string) $this->get('TO_ADDRESS');
     }
 
     public function getMailerUsername(): string
     {
-        return $this->get('MAILER_USERNAME');
+        return (string) $this->get('MAILER_USERNAME');
     }
 
     public function getMailerPassword(): string
     {
-        return $this->get('MAILER_PASSWORD');
+        return (string) $this->get('MAILER_PASSWORD');
     }
 
     public function getSlackDestinyChannelId(): string
     {
-        return $this->get('SLACK_DESTINY_CHANNEL_ID');
+        return (string) $this->get('SLACK_DESTINY_CHANNEL_ID');
     }
 
     public function getSlackBotUserOauthAccessToken(): string
     {
-        return $this->get('SLACK_BOT_USER_OAUTH_ACCESS_TOKEN');
+        return (string) $this->get('SLACK_BOT_USER_OAUTH_ACCESS_TOKEN');
     }
 
     public function isDebug(): bool
     {
-        return $this->isTrue($this->get('DEBUG'));
+        return $this->isTrue((string) $this->get('DEBUG'));
     }
 
-    private function isTrue(?string $bool): bool
+    private function isTrue(string $bool): bool
     {
         return in_array($bool, ['true', '1', 'yes'], true);
     }

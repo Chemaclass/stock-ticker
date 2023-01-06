@@ -11,6 +11,8 @@ use Chemaclass\StockTicker\Domain\ReadModel\Symbol;
 use Chemaclass\StockTickerTests\Unit\WithFakeHttpClient;
 use PHPUnit\Framework\TestCase;
 
+use function get_class;
+
 final class FinanceYahooSiteCrawlerTest extends TestCase
 {
     use WithFakeHttpClient;
@@ -21,7 +23,7 @@ root.App.main = {"key": {"sub-key": "example expected value"}};
 any random string 2
 BODY;
 
-    public function testCrawlUsingNamedExtractor(): void
+    public function test_crawl_using_named_extractor(): void
     {
         $crawler = new FinanceYahooSiteCrawler([
             'extractor name' => $this->stubJsonExtractor(),
@@ -29,7 +31,7 @@ BODY;
 
         $actual = $crawler->crawl(
             $this->mockHttpClient(self::RESPONSE_BODY),
-            Symbol::fromString('EXAMPLE_TICKER')
+            Symbol::fromString('EXAMPLE_TICKER'),
         );
 
         self::assertEquals(new Site([
@@ -38,14 +40,14 @@ BODY;
         ]), $actual);
     }
 
-    public function testCrawlUsingExtractorWithoutName(): void
+    public function test_crawl_using_extractor_without_name(): void
     {
         $jsonExtractor = $this->stubJsonExtractor();
         $crawler = new FinanceYahooSiteCrawler([$jsonExtractor]);
 
         $actual = $crawler->crawl(
             $this->mockHttpClient(self::RESPONSE_BODY),
-            Symbol::fromString('EXAMPLE_TICKER')
+            Symbol::fromString('EXAMPLE_TICKER'),
         );
 
         self::assertEquals(new Site([

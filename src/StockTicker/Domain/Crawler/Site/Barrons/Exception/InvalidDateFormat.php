@@ -12,7 +12,7 @@ final class InvalidDateFormat extends RuntimeException
     {
         return new self(sprintf(
             'Format not found for the incomingDate: "%s"',
-            $incomingDate
+            $incomingDate,
         ));
     }
 
@@ -21,7 +21,7 @@ final class InvalidDateFormat extends RuntimeException
         return new self(sprintf(
             'Could not create a dateTime for incomingDate: "%s" to this format: "%s"',
             $incomingDate,
-            $incomingFormat
+            $incomingFormat,
         ));
     }
 }

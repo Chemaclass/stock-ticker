@@ -6,6 +6,9 @@ namespace Chemaclass\StockTicker\Domain\WriteModel;
 
 use JsonSerializable;
 
+use function array_key_exists;
+use function in_array;
+
 abstract class AbstractWriteModel implements JsonSerializable
 {
     protected const TYPE_INT = 'int';
@@ -107,7 +110,7 @@ abstract class AbstractWriteModel implements JsonSerializable
     {
         return array_map(
             static fn (array $i): self => (new $type())->fromArray($i),
-            $value
+            $value,
         );
     }
 

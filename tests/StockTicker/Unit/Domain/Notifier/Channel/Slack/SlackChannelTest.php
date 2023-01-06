@@ -16,12 +16,12 @@ final class SlackChannelTest extends TestCase
 {
     private const EXAMPLE_SLACK_DESTINY_CHANNEL_ID = 'SLACK_DESTINY_CHANNEL_ID';
 
-    public function testSend(): void
+    public function test_send(): void
     {
         $channel = new SlackChannel(
             self::EXAMPLE_SLACK_DESTINY_CHANNEL_ID,
             $this->mockSlackClient(self::once()),
-            $this->mockTemplateGenerator(self::once())
+            $this->mockTemplateGenerator(self::once()),
         );
 
         $notifyResult = (new NotifyResult())

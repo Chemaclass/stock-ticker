@@ -23,7 +23,7 @@ final class EmailChannel implements ChannelInterface
     public function __construct(
         string $toAddress,
         MailerInterface $mailer,
-        TemplateGeneratorInterface $templateGenerator
+        TemplateGeneratorInterface $templateGenerator,
     ) {
         $this->toAddress = $toAddress;
         $this->mailer = $mailer;

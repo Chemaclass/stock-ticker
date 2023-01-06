@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 final class RegularMarketChangePercentTest extends TestCase
 {
-    public function testToArray(): void
+    public function test_to_array(): void
     {
         $array = [
             'raw' => 10.989,

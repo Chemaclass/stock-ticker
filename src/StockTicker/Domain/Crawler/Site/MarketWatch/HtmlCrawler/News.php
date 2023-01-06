@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Chemaclass\StockTicker\Domain\Crawler\Site\MarketWatch\HtmlCrawler;
 
-use Chemaclass\StockTicker\Domain\Crawler\Site\MarketWatch\Exception\InvalidDateFormat;
 use Chemaclass\StockTicker\Domain\Crawler\Site\MarketWatch\HtmlCrawlerInterface;
 use Chemaclass\StockTicker\Domain\Crawler\Site\Shared\NewsNormalizerInterface;
 use DateTimeImmutable;
+use DOMDocument;
 use DOMNode;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -29,7 +29,7 @@ final class News implements HtmlCrawlerInterface
 
         $news = array_map(
             fn ($node) => $this->extractInfo($node),
-            iterator_to_array($nodes)
+            iterator_to_array($nodes),
         );
 
         return $this->newsNormalizer->limitByMaxToFetch($news);
@@ -39,7 +39,7 @@ final class News implements HtmlCrawlerInterface
     {
         $innerHtml = $this->innerHtml($node);
 
-        if (false !== mb_strpos($innerHtml, 'data-srcset=')) {
+        if (mb_strpos($innerHtml, 'data-srcset=') !== false) {
             $match = '/<div data-timestamp="(?<timestamp>\d{10})(.|\n)*data-srcset=(?<image>.[^\?]*)(.|\n)*<a class="link" href="(?<url>.*)".*(?<title>(.|\n)*)<\/a>(.|\n)*<span class="article__author">by (?<author>.*)<\/span>/';
         } else {
             $match = '/<div data-timestamp="(?<timestamp>\d{10})(.|\n)*(.|\n)*<a class="link" href="(?<url>.*)".*(?<title>(.|\n)*)<\/a>(.|\n)*<span class="article__author">by (?<author>.*)<\/span>/';
@@ -48,7 +48,7 @@ final class News implements HtmlCrawlerInterface
         preg_match(
             $match,
             $this->innerHtml($node),
-            $matches
+            $matches,
         );
 
         return [
@@ -64,7 +64,7 @@ final class News implements HtmlCrawlerInterface
 
     private function innerHtml(DOMNode $node): string
     {
-        $doc = new \DOMDocument();
+        $doc = new DOMDocument();
         $doc->appendChild($doc->importNode($node, true));
 
         return htmlspecialchars_decode(trim($doc->saveHTML()));
@@ -73,10 +73,6 @@ final class News implements HtmlCrawlerInterface
     private function normalizeIncomingDate(int $timestamp): string
     {
         $dt = (new DateTimeImmutable())->setTimestamp($timestamp);
-
-        if (false === $dt) {
-            throw InvalidDateFormat::couldNotCreateFromTimestamp($timestamp);
-        }
 
         return $this->newsNormalizer->normalizeDateTime($dt);
     }

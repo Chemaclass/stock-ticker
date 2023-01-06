@@ -12,7 +12,7 @@ final class InvalidDateFormat extends RuntimeException
     {
         return new self(sprintf(
             'Could not create a dateTime for timestamp: "%s"',
-            $timestamp
+            $timestamp,
         ));
     }
 }

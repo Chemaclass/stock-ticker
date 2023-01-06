@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 final class CompanyNameTest extends TestCase
 {
-    public function testToArray(): void
+    public function test_to_array(): void
     {
         $array = [
             'shortName' => 'Short Company name, Inc.',

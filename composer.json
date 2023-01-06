@@ -27,7 +27,7 @@
         "gacela-project/gacela-env-config-reader": "^0.1"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^2.19",
+        "friendsofphp/php-cs-fixer": "^3.13",
         "phpunit/phpunit": "^9.5",
         "roave/security-advisories": "dev-latest",
         "symfony/var-dumper": "^5.4",

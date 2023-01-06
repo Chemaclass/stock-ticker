@@ -22,7 +22,7 @@ final class StockTickerFacade extends AbstractFacade
     public function sendNotifications(
         array $channelNames,
         NotifierPolicy $policy,
-        int $maxNewsToFetch = self::DEFAULT_MAX_NEWS_TO_FETCH
+        int $maxNewsToFetch = self::DEFAULT_MAX_NEWS_TO_FETCH,
     ): NotifyResult {
         $channels = $this->getFactory()
             ->createChannels($channelNames);
@@ -39,7 +39,7 @@ final class StockTickerFacade extends AbstractFacade
      */
     public function crawlStock(
         array $symbols,
-        int $maxNewsToFetch = self::DEFAULT_MAX_NEWS_TO_FETCH
+        int $maxNewsToFetch = self::DEFAULT_MAX_NEWS_TO_FETCH,
     ): CrawlResult {
         $siteCrawlers = $this->getFactory()
             ->createSiteCrawlers($maxNewsToFetch);

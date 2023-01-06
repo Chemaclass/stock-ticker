@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 final class TrendTest extends TestCase
 {
-    public function testToArray(): void
+    public function test_to_array(): void
     {
         $array = [
             'period' => '0m',

@@ -21,7 +21,7 @@ final class QuoteCrawler implements QuoteCrawlerInterface
     public function __construct(
         HttpClientInterface $httpClient,
         CrawledInfoMapperInterface $crawledInfoMapper,
-        SiteCrawlerInterface ...$siteCrawlers
+        SiteCrawlerInterface ...$siteCrawlers,
     ) {
         $this->httpClient = $httpClient;
         $this->crawledInfoMapper = $crawledInfoMapper;
@@ -54,7 +54,7 @@ final class QuoteCrawler implements QuoteCrawlerInterface
     {
         return array_map(
             static fn (string $symbol) => Symbol::fromString($symbol),
-            $symbolStrings
+            $symbolStrings,
         );
     }
 
@@ -65,7 +65,7 @@ final class QuoteCrawler implements QuoteCrawlerInterface
     {
         return array_map(
             fn (SiteCrawlerInterface $crawler): Site => $crawler->crawl($this->httpClient, $symbol),
-            $this->siteCrawlers
+            $this->siteCrawlers,
         );
     }
 
@@ -84,7 +84,7 @@ final class QuoteCrawler implements QuoteCrawlerInterface
     {
         return array_map(
             static fn (Site $site): array => $site->crawled(),
-            array_values($sites)
+            array_values($sites),
         );
     }
 }

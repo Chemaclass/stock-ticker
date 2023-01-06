@@ -8,6 +8,9 @@ use Chemaclass\StockTicker\Domain\Crawler\CrawlResult;
 use Chemaclass\StockTicker\Domain\Notifier\Policy\PolicyGroup;
 use Chemaclass\StockTicker\Domain\WriteModel\Quote;
 
+use function get_class;
+use function is_int;
+
 final class Notifier implements NotifierInterface
 {
     private NotifierPolicy $policy;
@@ -17,7 +20,7 @@ final class Notifier implements NotifierInterface
 
     public function __construct(
         NotifierPolicy $policy,
-        ChannelInterface ...$channels
+        ChannelInterface ...$channels,
     ) {
         $this->policy = $policy;
         $this->channels = $channels;

@@ -25,7 +25,7 @@ final class TwigTemplateGenerator implements TemplateGeneratorInterface
             $this->templateName,
             [
                 'notifyResult' => $notifyResult,
-            ]
+            ],
         );
     }
 }

@@ -19,7 +19,7 @@ final class SlackChannel implements ChannelInterface
     public function __construct(
         string $slackDestinyChannelId,
         SlackClientInterface $slackClient,
-        TemplateGeneratorInterface $templateGenerator
+        TemplateGeneratorInterface $templateGenerator,
     ) {
         $this->slackClient = $slackClient;
         $this->slackDestinyChannelId = $slackDestinyChannelId;
@@ -30,7 +30,7 @@ final class SlackChannel implements ChannelInterface
     {
         $this->slackClient->postToChannel(
             $this->slackDestinyChannelId,
-            $this->templateGenerator->generateHtml($notifyResult)
+            $this->templateGenerator->generateHtml($notifyResult),
         );
     }
 }

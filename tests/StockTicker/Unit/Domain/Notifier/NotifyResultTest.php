@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 final class NotifyResultTest extends TestCase
 {
-    public function testConditionNamesGroupBySymbol(): void
+    public function test_condition_names_group_by_symbol(): void
     {
         $notifyResult = (new NotifyResult())
             ->add($this->createCompany('SYMBOL_1'), ['condition 1', 'condition 2'])
@@ -21,7 +21,7 @@ final class NotifyResultTest extends TestCase
                 'SYMBOL_1' => ['condition 1', 'condition 2'],
                 'SYMBOL_2' => ['condition 3'],
             ],
-            $notifyResult->conditionNamesGroupBySymbol()
+            $notifyResult->conditionNamesGroupBySymbol(),
         );
     }
 

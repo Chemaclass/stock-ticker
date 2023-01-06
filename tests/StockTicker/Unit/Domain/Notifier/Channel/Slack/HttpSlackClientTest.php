@@ -11,10 +11,10 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class HttpSlackClientTest extends TestCase
 {
-    public function testPostToChannel(): void
+    public function test_post_to_channel(): void
     {
         $client = new HttpSlackClient(
-            $this->mockHttpClient(self::once())
+            $this->mockHttpClient(self::once()),
         );
 
         $client->postToChannel('channel_id', 'text');

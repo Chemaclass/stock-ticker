@@ -29,7 +29,7 @@ final class HttpSlackClient implements SlackClientInterface
                     'text' => $text,
                     'as_user' => true,
                 ],
-            ]
+            ],
         );
     }
 }

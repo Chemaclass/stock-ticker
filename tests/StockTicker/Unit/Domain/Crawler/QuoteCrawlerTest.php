@@ -21,18 +21,18 @@ final class QuoteCrawlerTest extends TestCase
 {
     use WithFakeHttpClient;
 
-    public function testEmptyStockWhenNoTickerWasProvided(): void
+    public function test_empty_stock_when_no_ticker_was_provided(): void
     {
         $companyCrawler = new QuoteCrawler(
             $this->mockHttpClient(),
             $this->createCrawledInfoMapper(),
-            $this->mockSiteCrawler('key1', 'value1')
+            $this->mockSiteCrawler('key1', 'value1'),
         );
 
         self::assertEquals(new CrawlResult([]), $companyCrawler->crawlStock());
     }
 
-    public function testCrawlStockForOneTickerAndMultipleCrawlers(): void
+    public function test_crawl_stock_for_one_ticker_and_multiple_crawlers(): void
     {
         $companyCrawler = new QuoteCrawler(
             $this->mockHttpClient(),
@@ -42,7 +42,7 @@ final class QuoteCrawlerTest extends TestCase
                 return $info;
             }),
             $this->mockSiteCrawler('symbol', 'SYMBOL'),
-            $this->mockSiteCrawler('longName', 'Company Name, Inc.')
+            $this->mockSiteCrawler('longName', 'Company Name, Inc.'),
         );
 
         $actual = $companyCrawler->crawlStock('SYMBOL');

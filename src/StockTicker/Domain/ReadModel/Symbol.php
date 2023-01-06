@@ -11,6 +11,11 @@ final class Symbol
 {
     private string $symbol;
 
+    private function __construct(string $symbol)
+    {
+        $this->symbol = $symbol;
+    }
+
     /**
      * @psalm-pure
      */
@@ -25,11 +30,6 @@ final class Symbol
     public static function empty(): self
     {
         return new self('');
-    }
-
-    private function __construct(string $symbol)
-    {
-        $this->symbol = $symbol;
     }
 
     public function toString(): string

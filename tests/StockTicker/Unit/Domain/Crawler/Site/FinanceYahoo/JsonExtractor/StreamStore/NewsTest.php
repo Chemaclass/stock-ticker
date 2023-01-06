@@ -21,16 +21,16 @@ final class NewsTest extends TestCase
     /**
      * @dataProvider providerExtractFromJson
      */
-    public function testExtractFromJson(array $allItems, array $expected): void
+    public function test_extract_from_json(array $allItems, array $expected): void
     {
         $json = $this->createJsonWithItems($allItems);
         $news = new News(
-            new NewsNormalizer(new DateTimeZone(self::EXAMPLE_TIMEZONE))
+            new NewsNormalizer(new DateTimeZone(self::EXAMPLE_TIMEZONE)),
         );
 
         self::assertEquals(
             $expected,
-            $news->extractFromJson($json)
+            $news->extractFromJson($json),
         );
     }
 

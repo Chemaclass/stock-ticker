@@ -7,6 +7,8 @@ namespace Chemaclass\StockTicker\Domain\Crawler\Site\Shared;
 use DateTimeImmutable;
 use DateTimeZone;
 
+use function array_slice;
+
 final class NewsNormalizer implements NewsNormalizerInterface
 {
     private const NORMALIZED_DATETIME_FORMAT = 'Y-m-d H:i:s';
@@ -22,7 +24,7 @@ final class NewsNormalizer implements NewsNormalizerInterface
     public function __construct(
         DateTimeZone $timeZone,
         ?int $maxNewsToFetch = null,
-        int $maxTextLengthChars = self::DEFAULT_MAX_TEXT_LENGTH_CHARS
+        int $maxTextLengthChars = self::DEFAULT_MAX_TEXT_LENGTH_CHARS,
     ) {
         $this->timeZone = $timeZone;
         $this->maxNewsToFetch = $maxNewsToFetch;
@@ -52,7 +54,7 @@ final class NewsNormalizer implements NewsNormalizerInterface
 
     public function limitByMaxToFetch(array $info): array
     {
-        if (null === $this->maxNewsToFetch) {
+        if ($this->maxNewsToFetch === null) {
             return $info;
         }
 

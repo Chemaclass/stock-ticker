@@ -14,6 +14,20 @@ final class NotifyCommandInput
     private int $sleepingTime;
     private string $channelsAsString;
 
+    public function __construct(
+        array $symbols,
+        int $maxNews,
+        int $maxRepetitions,
+        int $sleepingTime,
+        string $channelsAsString,
+    ) {
+        $this->symbols = $symbols;
+        $this->maxNews = $maxNews;
+        $this->maxRepetitions = $maxRepetitions;
+        $this->sleepingTime = $sleepingTime;
+        $this->channelsAsString = $channelsAsString;
+    }
+
     public static function createFromInput(InputInterface $input): self
     {
         /** @psalm-suppress PossiblyInvalidCast */
@@ -24,22 +38,8 @@ final class NotifyCommandInput
             (int) $input->getOption('maxNews'),
             (int) $input->getOption('maxRepetitions'),
             (int) $input->getOption('sleepingTime'),
-            $channelsAsString
+            $channelsAsString,
         );
-    }
-
-    public function __construct(
-        array $symbols,
-        int $maxNews,
-        int $maxRepetitions,
-        int $sleepingTime,
-        string $channelsAsString
-    ) {
-        $this->symbols = $symbols;
-        $this->maxNews = $maxNews;
-        $this->maxRepetitions = $maxRepetitions;
-        $this->sleepingTime = $sleepingTime;
-        $this->channelsAsString = $channelsAsString;
     }
 
     /**

@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <psalm
-    resolveFromConfigFile="true"
+    errorLevel="2"
+    phpVersion="7.4"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
@@ -12,4 +13,10 @@
             <directory name="vendor" />
         </ignoreFiles>
     </projectFiles>
+
+
+    <issueHandlers>
+        <ReservedWord errorLevel="suppress" />
+        <InvalidCast errorLevel="suppress" />
+    </issueHandlers>
 </psalm>

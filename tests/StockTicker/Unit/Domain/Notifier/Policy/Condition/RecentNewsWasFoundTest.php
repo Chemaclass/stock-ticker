@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 final class RecentNewsWasFoundTest extends TestCase
 {
-    public function testInvoke(): void
+    public function test_invoke(): void
     {
         $foundMoreNews = new RecentNewsWasFound();
 

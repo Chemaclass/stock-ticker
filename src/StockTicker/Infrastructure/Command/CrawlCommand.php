@@ -23,14 +23,14 @@ final class CrawlCommand extends Command
             ->addArgument(
                 'symbols',
                 InputArgument::IS_ARRAY|InputArgument::REQUIRED,
-                'Which stock symbols do you want to crawl?'
+                'Which stock symbols do you want to crawl?',
             )
             ->addOption(
                 'maxNews',
                 'm',
                 InputArgument::OPTIONAL,
                 'Max number of news to fetch per crawled site',
-                self::DEFAULT_MAX_NEWS_TO_FETCH
+                self::DEFAULT_MAX_NEWS_TO_FETCH,
             );
     }
 
@@ -61,7 +61,7 @@ final class CrawlCommand extends Command
         $output->writeln('~~~~~~~~~~~~~~~~~~~~~~~~~~');
 
         foreach ($crawlResult->getCompaniesGroupedBySymbol() as $symbol => $quote) {
-            $output->writeln("Symbol: <options=bold,underscore>$symbol</>");
+            $output->writeln("Symbol: <options=bold,underscore>{$symbol}</>");
 
             foreach ($quote->toArray() as $key => $value) {
                 $output->writeln(sprintf('# <comment>%s</comment> => <info>%s</info>', $key, json_encode($value)));

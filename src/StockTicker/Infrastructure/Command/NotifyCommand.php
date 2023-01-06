@@ -40,35 +40,35 @@ final class NotifyCommand extends Command
             ->addArgument(
                 'symbols',
                 InputArgument::IS_ARRAY|InputArgument::REQUIRED,
-                'Which stock symbols do you want to crawl?'
+                'Which stock symbols do you want to crawl?',
             )
             ->addOption(
                 'channels',
                 'c',
                 InputArgument::OPTIONAL,
                 'Channels to notify separated by comma [email,slack]',
-                self::DEFAULT_CHANNEL
+                self::DEFAULT_CHANNEL,
             )
             ->addOption(
                 'maxNews',
                 'm',
                 InputArgument::OPTIONAL,
                 'Max number of news to fetch per crawled site',
-                self::DEFAULT_MAX_NEWS_PER_CRAWLED_SITE
+                self::DEFAULT_MAX_NEWS_PER_CRAWLED_SITE,
             )
             ->addOption(
                 'maxRepetitions',
                 'r',
                 InputArgument::OPTIONAL,
                 'Max number repetitions for the loop',
-                self::DEFAULT_MAX_REPETITIONS
+                self::DEFAULT_MAX_REPETITIONS,
             )
             ->addOption(
                 'sleepingTime',
                 's',
                 InputArgument::OPTIONAL,
                 'Sleeping time in seconds',
-                self::DEFAULT_SLEEPING_TIME_IN_SECONDS
+                self::DEFAULT_SLEEPING_TIME_IN_SECONDS,
             );
     }
 
@@ -80,13 +80,13 @@ final class NotifyCommand extends Command
         $policy = $this->createPolicyForSymbols($commandInput->getSymbols());
         $facade = new StockTickerFacade();
 
-        for ($i = 0; $i < $commandInput->getMaxRepetitions(); $i++) {
+        for ($i = 0; $i < $commandInput->getMaxRepetitions(); ++$i) {
             $this->printStartingIteration($output, $commandInput, $i);
 
             $notifyResult = $facade->sendNotifications(
                 $channelNames,
                 $policy,
-                $commandInput->getMaxNews()
+                $commandInput->getMaxNews(),
             );
 
             $this->printNotifyResult($output, $notifyResult);
@@ -102,7 +102,7 @@ final class NotifyCommand extends Command
     {
         return array_filter(array_map(
             static fn (string $c): string => self::MAP_POSSIBLE_CHANNELS[$c] ?? '',
-            explode(',', $channelsAsString)
+            explode(',', $channelsAsString),
         ));
     }
 
@@ -123,7 +123,7 @@ final class NotifyCommand extends Command
     private function printStartingIteration(
         OutputInterface $output,
         NotifyCommandInput $commandInput,
-        int $actualIteration
+        int $actualIteration,
     ): void {
         $output->writeln(sprintf('<comment>Looking for news in %s</comment>', implode(', ', $commandInput->getSymbols())));
         $output->writeln(sprintf('<comment>Completed %d of %d</comment>', $actualIteration, $commandInput->getMaxRepetitions()));
@@ -144,7 +144,7 @@ final class NotifyCommand extends Command
         foreach ($notifyResult->conditionNamesGroupBySymbol() as $symbol => $conditionNames) {
             $quote = $notifyResult->quoteBySymbol($symbol);
 
-            $companyName = (null !== $quote->getCompanyName())
+            $companyName = ($quote->getCompanyName() !== null)
                 ? $quote->getCompanyName()->getLongName() ?? ''
                 : '';
 
@@ -152,7 +152,7 @@ final class NotifyCommand extends Command
             $output->writeln(sprintf('<options=bold,underscore>%s</> (%s)', $companyName, $symbol));
 
             foreach ($conditionNames as $conditionName) {
-                $output->writeln("  - <info>$conditionName</info>");
+                $output->writeln("  - <info>{$conditionName}</info>");
             }
             $output->writeln('');
         }
@@ -164,8 +164,8 @@ final class NotifyCommand extends Command
         $text = "<comment>Sleeping {$sec} seconds</comment>";
         $len = mb_strlen((string) $sec);
 
-        for ($i = $sec; $i > 0; $i--) {
-            $output->write(sprintf("$text: %0{$len}d\r", $i));
+        for ($i = $sec; $i > 0; --$i) {
+            $output->write(sprintf("{$text}: %0{$len}d\r", $i));
             sleep(1);
         }
 
