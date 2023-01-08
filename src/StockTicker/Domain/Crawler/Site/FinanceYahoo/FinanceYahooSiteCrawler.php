@@ -52,6 +52,7 @@ final class FinanceYahooSiteCrawler implements SiteCrawlerInterface
 
         foreach ($this->jsonExtractors as $name => $extractor) {
             $name = is_int($name) ? get_class($extractor) : $name;
+            // FIXME: $json['context']['dispatcher']['stores'] has the content encoded... and I don't know how to decode it now
             $data[$name] = $extractor->extractFromJson($json);
         }
 

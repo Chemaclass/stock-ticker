@@ -61,7 +61,7 @@ final class StockTickerFactory extends AbstractFactory
     public function createSiteCrawlers(int $maxNewsToFetch): array
     {
         return [
-            $this->createFinanceYahooSiteCrawler($maxNewsToFetch),
+//            $this->createFinanceYahooSiteCrawler($maxNewsToFetch),
             $this->createBarronsSiteCrawler($maxNewsToFetch),
             $this->createMarketWatchSiteCrawler($maxNewsToFetch),
         ];
@@ -89,7 +89,7 @@ final class StockTickerFactory extends AbstractFactory
     private function createCrawledInfoMapper(): CrawledInfoMapperInterface
     {
         return new CrawledInfoMapper(static function (array $info): array {
-            $info[Quote::URL] = $info[self::URLS][0];
+            $info[Quote::URL] = $info[self::URLS][0] ?? 'URLS not found';
 
             return $info;
         });

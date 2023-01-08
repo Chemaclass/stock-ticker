@@ -46,7 +46,7 @@ final class CrawlCommand extends Command
         if ($crawlResult->isEmpty()) {
             $output->writeln('<question>Nothing new here...</question>');
 
-            return Command::FAILURE;
+            return Command::INVALID;
         }
 
         $this->printCrawResult($output, $crawlResult);
